@@ -1,0 +1,24 @@
+Package: org.cuberact.json
+Extension-Name: cuberact-json
+Specification-Title: cuberact-json
+Specification-Vendor: Cuberact.org
+Specification-Version: ${project.version}
+Implementation-Vendor: Cuberact.org
+Implementation-Title: org.cuberact.json
+Implementation-Version: ${project.version}
+Implementation-Vendor-Id: org.cuberact
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Cuberact.org
+Bundle-Name: cuberact-json
+Bundle-SymbolicName: cuberact-json
+Bundle-Version: ${project.version}
+Export-Package: org.cuberact.json;version=${project.version},
+ org.cuberact.json.builder;version=${project.version},
+ org.cuberact.json.builder.number;version=${project.version},
+ org.cuberact.json.formatter;version=${project.version},
+ org.cuberact.json.input;version=${project.version},
+ org.cuberact.json.output;version=${project.version},
+ org.cuberact.json.parser;version=${project.version}
+Bundle-License: Apache 2.0
+Bundle-DocURL: https://github.com/cuberact/cuberact-json
