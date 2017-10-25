@@ -29,8 +29,7 @@ String prettyString = jsonArray.toString(JsonFormatter.PRETTY());
 String packedString = jsonObject.toString(JsonFormatter.PACKED());
 ```
 
-##### Custom builder - parse to Map and List
-
+##### Parse to java.util.Map and java.util.List - custom JsonBuilder
 ```java
 JsonBuilder builder = new JsonBuilder() {
 
@@ -66,41 +65,66 @@ JsonParser jsonParser = new JsonParser(builder);
 Map<String, Object> map = jsonParser.parse("{ \"array\" : [1,2,3] }");
 ```
 
-##### Custom input - parse from CharBuffer
+##### Parse from many types - JsonInput
 
 ```java
-class JsonInputCharBuffer extends JsonInputBase {
+JsonParser parser = new JsonParser();
 
-    CharBuffer buffer;
+//as string - JsonInputCharSequence
+String sInput = "[1]";
+Json json1 = parser.parse(sInput);
 
-    JsonInputCharBuffer(CharBuffer buffer) {
-        this.buffer = buffer;
+//as string builder - JsonInputCharSequence
+StringBuilder sbInput = new StringBuilder("[1]");
+Json json2 = parser.parse(sbInput);
+
+//as char buffer - JsonInputCharSequence
+CharBuffer cbInput = CharBuffer.wrap("[1]");
+Json json3 = parser.parse(cbInput);
+
+//as input stream - JsonInputReader
+InputStream isInput = new ByteArrayInputStream("[1]".getBytes());
+Reader reader = new InputStreamReader(isInput, StandardCharsets.UTF_8);
+Json json4 = parser.parse(reader);
+
+//as char array - custom JsonInputArray
+JsonInputArray jsonInputArray = new JsonInputArray("[1]".toCharArray());
+Json json5 = parser.parse(jsonInputArray);
+
+private static class JsonInputArray extends JsonInputBase {
+
+    private char[] input;
+    private int position = 0;
+
+    JsonInputArray(char[] input) {
+        this.input = input;
     }
 
     @Override
     public char nextChar() {
-        actualChar = buffer.hasRemaining() ? buffer.get() : END_OF_INPUT;
-        return actualChar;
+        if (position == input.length) {
+            return END_OF_INPUT;
+        }
+        actualChar = input[position];
+        position++;
+        return actualChar();
     }
 
     @Override
     public void readLastCharAgain() {
-        buffer.position(buffer.position() - 1);
+        if (position > 0) {
+            position--;
+        }
     }
 
     @Override
     public String buildExceptionMessage(String error) {
-        return error;
+        return "Parse error on position " + position + "\n\n" + error;
     }
 }
-
-String jsonAsString = "{ \"array\" : [1,2,3] }";
-CharBuffer jsonBuffer = CharBuffer.wrap(jsonAsString);
-JsonParser jsonParser = new JsonParser();
-Json json = jsonParser.parse(new JsonInputCharBuffer(jsonBuffer));
 ```
 
-##### Custom output - String and StringBuilder
+##### JsonOutput and JsonFormatter
 
 ```java
 JsonParser jsonParser = new JsonParser(); // this instance is thread-safe
