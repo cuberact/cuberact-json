@@ -12,6 +12,8 @@
     <name>cuberact-json</name>
     <description>Fast JSON parser with highly customizable input, output and builder.</description>
 
+    <url>https://github.com/cuberact/cuberact-json</url>
+
     <developers>
         <developer>
             <id>NkD</id>
@@ -21,7 +23,7 @@
                 <role>Project Lead</role>
             </roles>
             <organization>Cuberact</organization>
-            <organizationUrl>https://github.com/cuberact</organizationUrl>
+            <organizationUrl>http://www.cuberact.org</organizationUrl>
             <timezone>1</timezone>
             <url>https://github.com/nkd</url>
         </developer>
@@ -57,6 +59,7 @@
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     </properties>
 
     <dependencies>
@@ -147,6 +150,20 @@
                     <quiet>true</quiet>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -157,7 +174,7 @@
         </snapshotRepository>
         <repository>
             <id>sonatype-repo</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
     </distributionManagement>
 
