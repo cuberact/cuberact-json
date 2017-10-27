@@ -101,14 +101,14 @@ class Token {
                 while (isNumber(c = input.nextChar())) {
                     buffer[i++] = c;
                 }
-            }
-            if (c == 'e' || c == 'E') {
-                buffer[i++] = 'e';
-                c = input.nextChar();
-                if (c == '-' || c == '+' || isNumber(c)) {
-                    buffer[i++] = c;
-                    while (isNumber(c = input.nextChar())) {
+                if (c == 'e' || c == 'E') {
+                    buffer[i++] = 'e';
+                    c = input.nextChar();
+                    if (c == '-' || c == '+' || isNumber(c)) {
                         buffer[i++] = c;
+                        while (isNumber(c = input.nextChar())) {
+                            buffer[i++] = c;
+                        }
                     }
                 }
             }
