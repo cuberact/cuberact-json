@@ -17,7 +17,7 @@
 package org.cuberact.json.parser;
 
 import org.junit.Test;
-import org.cuberact.json.builder.number.NumberConverterLongDouble;
+import org.cuberact.json.number.NumberConverterLongDouble;
 import org.cuberact.json.input.JsonInputCharSequence;
 
 import static org.junit.Assert.assertEquals;

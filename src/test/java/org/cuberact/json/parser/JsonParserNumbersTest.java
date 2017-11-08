@@ -2,8 +2,8 @@ package org.cuberact.json.parser;
 
 import org.cuberact.json.builder.JsonBuilder;
 import org.cuberact.json.builder.JsonBuilderTree;
-import org.cuberact.json.builder.number.NumberConverter;
-import org.cuberact.json.builder.number.NumberConverterIntFloat;
+import org.cuberact.json.number.NumberConverter;
+import org.cuberact.json.number.NumberConverterIntFloat;
 import org.junit.Test;
 import org.cuberact.json.JsonArray;
 
@@ -33,8 +33,7 @@ public class JsonParserNumbersTest {
     @Test
     public void numberAsIntAndFloat() {
         String jsonAsString = "[1,2,3,1.1,2.2,3.3E-6]";
-        JsonBuilder builder = new JsonBuilderTree(NumberConverterIntFloat.REF);
-        JsonParser jsonParser = new JsonParser(builder);
+        JsonParser jsonParser = new JsonParser(JsonBuilderTree.REF, NumberConverterIntFloat.REF);
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
         assertEquals(1, jsonArray.get(0));
         assertEquals(2, jsonArray.get(1));
@@ -58,8 +57,7 @@ public class JsonParserNumbersTest {
                 return new BigDecimal(new String(number, offset, count));
             }
         };
-        JsonBuilder builder = new JsonBuilderTree(numberConverter);
-        JsonParser jsonParser = new JsonParser(builder);
+        JsonParser jsonParser = new JsonParser(JsonBuilderTree.REF, numberConverter);
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
         assertEquals(new BigInteger("1"), jsonArray.get(0));
         assertEquals(new BigInteger("2"), jsonArray.get(1));

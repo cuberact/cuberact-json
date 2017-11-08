@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cuberact.json.builder.number;
+package org.cuberact.json.number;
 
 import org.cuberact.json.JsonException;
 

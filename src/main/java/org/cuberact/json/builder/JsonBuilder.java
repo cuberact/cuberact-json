@@ -16,17 +16,14 @@
 
 package org.cuberact.json.builder;
 
-import org.cuberact.json.builder.number.NumberConverter;
 import org.cuberact.json.parser.JsonParser;
 
 /**
- * Used by {@link JsonParser#JsonParser(JsonBuilder)} for build Json tree
+ * Used by {@link JsonParser#JsonParser(JsonBuilder, org.cuberact.json.number.NumberConverter)} for build Json tree
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public interface JsonBuilder {
-
-    JsonBuilder DEFAULT = new JsonBuilderTree();
 
     /**
      * @return json object representation
@@ -51,9 +48,4 @@ public interface JsonBuilder {
      */
     void addToJsonArray(Object jsonArray, Object value);
 
-    /**
-     * @return NumberConverter
-     * {@link NumberConverter}
-     */
-    NumberConverter getNumberConverter();
 }

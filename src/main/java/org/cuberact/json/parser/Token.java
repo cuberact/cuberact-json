@@ -17,7 +17,7 @@
 package org.cuberact.json.parser;
 
 import org.cuberact.json.JsonException;
-import org.cuberact.json.builder.number.NumberConverter;
+import org.cuberact.json.number.NumberConverter;
 import org.cuberact.json.input.JsonInput;
 
 import static org.cuberact.json.input.JsonInput.END_OF_INPUT;

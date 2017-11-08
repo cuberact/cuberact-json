@@ -17,11 +17,13 @@
 package org.cuberact.json.parser;
 
 import org.cuberact.json.JsonException;
+import org.cuberact.json.JsonGlobalConfig;
 import org.cuberact.json.builder.JsonBuilder;
 import org.cuberact.json.builder.JsonBuilderTree;
 import org.cuberact.json.input.JsonInput;
 import org.cuberact.json.input.JsonInputCharSequence;
 import org.cuberact.json.input.JsonInputReader;
+import org.cuberact.json.number.NumberConverter;
 
 import java.io.Reader;
 import java.util.Objects;
@@ -36,14 +38,15 @@ import java.util.Objects;
 public class JsonParser {
 
     private final JsonBuilder builder;
+    private final NumberConverter numberConverter;
 
     public JsonParser() {
-        this(JsonBuilder.DEFAULT);
+        this(JsonGlobalConfig.DEFAULT_BUILDER, JsonGlobalConfig.DEFAULT_NUMBER_CONVERTER);
     }
 
-    public JsonParser(JsonBuilder builder) {
+    public JsonParser(JsonBuilder builder, NumberConverter numberConverter) {
         this.builder = Objects.requireNonNull(builder, "builder");
-        Objects.requireNonNull(builder.getNumberConverter(), "numberConverter");
+        this.numberConverter = Objects.requireNonNull(numberConverter, "numberConverter");
     }
 
     /**
@@ -132,7 +135,7 @@ public class JsonParser {
                         case '7':
                         case '8':
                         case '9':
-                            builder.addToJsonObject(jsonObject, attr, Token.consumeNumber(input, builder.getNumberConverter()));
+                            builder.addToJsonObject(jsonObject, attr, Token.consumeNumber(input, numberConverter));
                             break;
                         default:
                             throw new JsonException(input.buildExceptionMessage("Expected \" or ] or number or boolean or null"));
@@ -193,7 +196,7 @@ public class JsonParser {
                 case '7':
                 case '8':
                 case '9':
-                    builder.addToJsonArray(jsonArray, Token.consumeNumber(input, builder.getNumberConverter()));
+                    builder.addToJsonArray(jsonArray, Token.consumeNumber(input, numberConverter));
                     break;
                 case ']':
                     return;

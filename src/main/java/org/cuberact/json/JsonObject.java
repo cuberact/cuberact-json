@@ -172,7 +172,7 @@ public class JsonObject extends Json {
                 return null;
             }
             if (!type.isAssignableFrom(value.getClass())) {
-                throw new JsonException("Wrong value type for attr\"" + attr + "\". Expected " + type.getName() + ", but is " + value.getClass().getName());
+                throw new JsonException("Wrong value type for attr \"" + attr + "\". Expected " + type.getName() + ", but is " + value.getClass().getName());
             }
             return (E) value;
         } catch (Throwable t) {

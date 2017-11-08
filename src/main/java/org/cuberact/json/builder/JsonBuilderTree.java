@@ -18,34 +18,21 @@ package org.cuberact.json.builder;
 
 import org.cuberact.json.JsonArray;
 import org.cuberact.json.JsonObject;
-import org.cuberact.json.builder.number.NumberConverter;
-import org.cuberact.json.builder.number.NumberConverterLongDouble;
+import org.cuberact.json.number.NumberConverter;
+import org.cuberact.json.number.NumberConverterLongDouble;
 
 /**
  * Default builder which build Recipe Json tree structure - {@link JsonObject} and {@link JsonArray}
- * <p>
- * NumberConverterLongDouble is used
+ * This builder is Thread-safe
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonBuilderTree implements JsonBuilder {
 
-    private final NumberConverter numberConverter;
+    public static final JsonBuilderTree REF = new JsonBuilderTree();
 
-    /**
-     * Builder with {@link NumberConverterLongDouble}
-     */
-    public JsonBuilderTree() {
-        this.numberConverter = NumberConverterLongDouble.REF;
-    }
-
-    /**
-     * For custom {@link NumberConverter}
-     *
-     * @param numberConverter - custom number converter
-     */
-    public JsonBuilderTree(NumberConverter numberConverter) {
-        this.numberConverter = numberConverter;
+    private JsonBuilderTree(){
+        //singleton, use REF
     }
 
     /**
@@ -81,13 +68,5 @@ public class JsonBuilderTree implements JsonBuilder {
     @Override
     public void addToJsonArray(Object jsonArray, Object value) {
         ((JsonArray) jsonArray).add(value);
-    }
-
-    /**
-     * @return NumberConverter for this builder
-     */
-    @Override
-    public NumberConverter getNumberConverter() {
-        return numberConverter;
     }
 }
