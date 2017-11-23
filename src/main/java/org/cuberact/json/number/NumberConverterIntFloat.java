@@ -16,6 +16,8 @@
 
 package org.cuberact.json.number;
 
+import static org.cuberact.json.optimize.CharTable.toInt;
+
 /**
  * Number converter to Integer and Float
  *
@@ -24,22 +26,6 @@ package org.cuberact.json.number;
 public class NumberConverterIntFloat implements NumberConverter {
 
     public static final NumberConverterIntFloat REF = new NumberConverterIntFloat();
-
-    private final int[] char2int = new int[58];
-
-    private NumberConverterIntFloat() {
-        //use NumberConverterIntFloat.REF
-        char2int['0'] = 0;
-        char2int['1'] = 1;
-        char2int['2'] = 2;
-        char2int['3'] = 3;
-        char2int['4'] = 4;
-        char2int['5'] = 5;
-        char2int['6'] = 6;
-        char2int['7'] = 7;
-        char2int['8'] = 8;
-        char2int['9'] = 9;
-    }
 
     /**
      * @return number as Integer
@@ -53,10 +39,10 @@ public class NumberConverterIntFloat implements NumberConverter {
         if (c == '-') {
             sign = -1;
         } else {
-            result = char2int[c];
+            result = toInt(c);
         }
         for (int i = offset + 1; i < count; i++) {
-            result = result * 10 + char2int[number[i]];
+            result = result * 10 + toInt(number[i]);
         }
         return sign * result;
     }

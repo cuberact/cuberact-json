@@ -35,7 +35,7 @@ import java.util.Objects;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonParser {
+public final class JsonParser {
 
     private final JsonBuilder builder;
     private final NumberConverter numberConverter;

@@ -5,39 +5,13 @@ import org.cuberact.json.input.JsonInput;
 import org.cuberact.json.number.NumberConverter;
 
 import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
+import static org.cuberact.json.optimize.CharTable.hexBitShift;
+import static org.cuberact.json.optimize.CharTable.toInt;
 
 /**
  * @author Michal Nikodim (michal.nikodim@topmonks.com)
  */
 final class JsonScanner {
-
-    private static final int[] CHAR_TO_INT = new int[103];
-    private static final int[] HEX_BIT_SHIFT = new int[]{12, 8, 4, 0};
-
-    static {
-        CHAR_TO_INT['0'] = 0;
-        CHAR_TO_INT['1'] = 1;
-        CHAR_TO_INT['2'] = 2;
-        CHAR_TO_INT['3'] = 3;
-        CHAR_TO_INT['4'] = 4;
-        CHAR_TO_INT['5'] = 5;
-        CHAR_TO_INT['6'] = 6;
-        CHAR_TO_INT['7'] = 7;
-        CHAR_TO_INT['8'] = 8;
-        CHAR_TO_INT['9'] = 9;
-        CHAR_TO_INT['a'] = 10;
-        CHAR_TO_INT['b'] = 11;
-        CHAR_TO_INT['c'] = 12;
-        CHAR_TO_INT['d'] = 13;
-        CHAR_TO_INT['e'] = 14;
-        CHAR_TO_INT['f'] = 15;
-        CHAR_TO_INT['A'] = 10;
-        CHAR_TO_INT['B'] = 11;
-        CHAR_TO_INT['C'] = 12;
-        CHAR_TO_INT['D'] = 13;
-        CHAR_TO_INT['E'] = 14;
-        CHAR_TO_INT['F'] = 15;
-    }
 
     private JsonInput input;
     private char[] buffer = new char[1024];
@@ -72,7 +46,7 @@ final class JsonScanner {
         return c == ' ' || c == '\n' || c == '\r' || c == '\t';
     }
 
-    private boolean isLineBreak(char c){
+    private boolean isLineBreak(char c) {
         return c == '\n' || c == '\r';
     }
 
@@ -80,7 +54,7 @@ final class JsonScanner {
         return c > '/' && c < ':'; //0-9
     }
 
-    String error(String error){
+    String error(String error) {
         StringBuilder message = new StringBuilder("Parse error on position ");
         message.append(position).append("\n\n");
         try {
@@ -113,7 +87,6 @@ final class JsonScanner {
         }
         return message.toString();
     }
-
 
     void consumeTrue() {
         if (!(nextChar() == 'r' && nextChar() == 'u' && nextChar() == 'e')) {
@@ -226,7 +199,7 @@ final class JsonScanner {
         for (int h = 0; h < 4; h++) {
             char c = nextChar();
             if ((c > '/' && c < ':') || (c > '@' && c < 'G') || (c > '`' && c < 'g')) { //0-9 a-f A-F
-                unicodeChar += (CHAR_TO_INT[c] << HEX_BIT_SHIFT[h]);
+                unicodeChar += (toInt(c) << hexBitShift(h));
             } else {
                 throw new JsonException(error("Expected 4 digits hex number"));
             }

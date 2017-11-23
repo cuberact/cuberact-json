@@ -16,6 +16,10 @@
 
 package org.cuberact.json.number;
 
+import org.cuberact.json.optimize.CharTable;
+
+import static org.cuberact.json.optimize.CharTable.toLong;
+
 /**
  * Number converter to Long and Double
  *
@@ -24,22 +28,6 @@ package org.cuberact.json.number;
 public class NumberConverterLongDouble implements NumberConverter {
 
     public static final NumberConverterLongDouble REF = new NumberConverterLongDouble();
-
-    private final long[] char2long = new long[58];
-
-    private NumberConverterLongDouble() {
-        //use NumberConverterLongDouble.REF
-        char2long['0'] = 0;
-        char2long['1'] = 1;
-        char2long['2'] = 2;
-        char2long['3'] = 3;
-        char2long['4'] = 4;
-        char2long['5'] = 5;
-        char2long['6'] = 6;
-        char2long['7'] = 7;
-        char2long['8'] = 8;
-        char2long['9'] = 9;
-    }
 
     /**
      * @return number as Long
@@ -53,10 +41,10 @@ public class NumberConverterLongDouble implements NumberConverter {
         if (c == '-') {
             sign = -1;
         } else {
-            result = char2long[c];
+            result = toLong(c);
         }
         for (int i = offset + 1; i < count; i++) {
-            result = result * 10 + char2long[number[i]];
+            result = result * 10 + toLong(number[i]);
         }
         return sign * result;
     }
