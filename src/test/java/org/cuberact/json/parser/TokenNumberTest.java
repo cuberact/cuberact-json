@@ -76,7 +76,8 @@ public class TokenNumberTest {
     }
 
     private Number convertByTokenNumber(String json) {
-        JsonInputCharSequence scanner = new JsonInputCharSequence(json);
+        JsonInputCharSequence input = new JsonInputCharSequence(json);
+        JsonScanner scanner = new JsonScanner(input);
         scanner.nextImportantChar();
         return Token.consumeNumber(scanner, NumberConverterLongDouble.REF);
     }

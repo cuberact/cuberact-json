@@ -18,7 +18,6 @@ package org.cuberact.json.parser;
 
 import org.cuberact.json.JsonException;
 import org.cuberact.json.number.NumberConverter;
-import org.cuberact.json.input.JsonInput;
 
 import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
 
@@ -62,80 +61,86 @@ class Token {
         //hidden constructor
     }
 
-    static void consumeTrue(JsonInput input) {
-        if (!(input.nextChar() == 'r' && input.nextChar() == 'u' && input.nextChar() == 'e')) {
-            throw new JsonException(input.buildExceptionMessage("Expected true"));
+    static void consumeTrue(JsonScanner scanner) {
+        if (!(scanner.nextChar() == 'r' && scanner.nextChar() == 'u' && scanner.nextChar() == 'e')) {
+            throw new JsonException(scanner.buildExceptionMessage("Expected true"));
         }
+        scanner.nextImportantChar();
     }
 
-    static void consumeFalse(JsonInput input) {
-        if (!(input.nextChar() == 'a' && input.nextChar() == 'l' && input.nextChar() == 's' && input.nextChar() == 'e')) {
-            throw new JsonException(input.buildExceptionMessage("Expected false"));
+    static void consumeFalse(JsonScanner scanner) {
+        if (!(scanner.nextChar() == 'a' && scanner.nextChar() == 'l' && scanner.nextChar() == 's' && scanner.nextChar() == 'e')) {
+            throw new JsonException(scanner.buildExceptionMessage("Expected false"));
         }
+        scanner.nextImportantChar();
     }
 
-    static void consumeNull(JsonInput input) {
-        if (!(input.nextChar() == 'u' && input.nextChar() == 'l' && input.nextChar() == 'l')) {
-            throw new JsonException(input.buildExceptionMessage("Expected null"));
+    static void consumeNull(JsonScanner scanner) {
+        if (!(scanner.nextChar() == 'u' && scanner.nextChar() == 'l' && scanner.nextChar() == 'l')) {
+            throw new JsonException(scanner.buildExceptionMessage("Expected null"));
         }
+        scanner.nextImportantChar();
     }
 
-    static Number consumeNumber(JsonInput input, NumberConverter numberConverter) {
+    static Number consumeNumber(JsonScanner scanner, NumberConverter numberConverter) {
         try {
             char[] buffer = THREAD_BUFFER.get();
             char c;
             int i = 0;
-            buffer[i++] = input.actualChar();
+            buffer[i++] = scanner.lastReadChar();
             if (buffer[0] == '-') {
-                if (!isNumber(c = input.nextChar())) {
-                    throw new JsonException(input.buildExceptionMessage("Expected correct number"));
+                if (!isNumber(c = scanner.nextChar())) {
+                    throw new JsonException(scanner.buildExceptionMessage("Expected correct number"));
                 }
                 buffer[i++] = c;
             }
-            while (isNumber(c = input.nextChar())) {
+            while (isNumber(c = scanner.nextChar())) {
                 buffer[i++] = c;
             }
             boolean containsDot = c == '.';
             if (containsDot) {
                 buffer[i++] = '.';
-                while (isNumber(c = input.nextChar())) {
+                while (isNumber(c = scanner.nextChar())) {
                     buffer[i++] = c;
                 }
                 if (c == 'e' || c == 'E') {
                     buffer[i++] = 'e';
-                    c = input.nextChar();
+                    c = scanner.nextChar();
                     if (c == '-' || c == '+' || isNumber(c)) {
                         buffer[i++] = c;
-                        while (isNumber(c = input.nextChar())) {
+                        while (isNumber(c = scanner.nextChar())) {
                             buffer[i++] = c;
                         }
                     }
                 }
             }
-            input.readLastCharAgain();
+            if (scanner.isWhiteChar(c)) {
+                scanner.nextImportantChar();
+            }
             if (containsDot) {
                 return numberConverter.convertFloatingPointNumber(buffer, 0, i);
             }
             return numberConverter.convertWholeNumber(buffer, 0, i);
         } catch (Throwable t) {
-            throw new JsonException(input.buildExceptionMessage("Wrong number"), t);
+            throw new JsonException(scanner.buildExceptionMessage("Wrong number"), t);
         }
     }
 
-    static String consumeString(JsonInput input) {
+    static String consumeString(JsonScanner scanner) {
         char[] buffer = THREAD_BUFFER.get();
         StringBuilder token = null;
         int i = 0;
         char c;
-        while ((c = input.nextChar()) != END_OF_INPUT) {
+        while ((c = scanner.nextChar()) != END_OF_INPUT) {
             if (c == '"') {
+                scanner.nextImportantChar();
                 if (token != null) {
                     token.append(buffer, 0, i);
                     return token.toString();
                 }
                 return new String(buffer, 0, i);
             } else if (c == '\\') {
-                c = input.nextChar();
+                c = scanner.nextChar();
                 if (c == 'b') {
                     c = '\b';
                 } else if (c == 'f') {
@@ -147,7 +152,7 @@ class Token {
                 } else if (c == 't') {
                     c = '\t';
                 } else if (c == 'u') {
-                    c = parseUnicode(input);
+                    c = parseUnicode(scanner);
                 }
             }
             buffer[i++] = c;
@@ -161,21 +166,21 @@ class Token {
                 }
             }
         }
-        throw new JsonException(input.buildExceptionMessage("Expected \""));
+        throw new JsonException(scanner.buildExceptionMessage("Expected \""));
     }
 
     private static boolean isNumber(char c) {
-        return (c > '/' && c < ':'); //0-9
+        return c > '/' && c < ':'; //0-9
     }
 
-    private static char parseUnicode(JsonInput input) {
+    private static char parseUnicode(JsonScanner scanner) {
         int unicodeChar = 0;
         for (int h = 0; h < 4; h++) {
-            char c = input.nextChar();
+            char c = scanner.nextChar();
             if ((c > '/' && c < ':') || (c > '@' && c < 'G') || (c > '`' && c < 'g')) { //0-9 a-f A-F
                 unicodeChar += (CHAR_TO_INT[c] << HEX_BIT_SHIFT[h]);
             } else {
-                throw new JsonException(input.buildExceptionMessage("Expected 4 digits hex number"));
+                throw new JsonException(scanner.buildExceptionMessage("Expected 4 digits hex number"));
             }
         }
         return (char) (unicodeChar);

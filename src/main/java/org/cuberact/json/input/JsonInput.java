@@ -26,30 +26,11 @@ public interface JsonInput {
     char END_OF_INPUT = '\uFFFF';
 
     /**
-     * @return actual (last read) char
-     */
-    char actualChar();
-
-    /**
      * @return next char of input
      */
     char nextChar();
 
-    /**
-     * @return next non-white char
-     */
-    char nextImportantChar();
 
-    /**
-     * ensure that next call of {@link JsonInput#nextChar()} read actualChar instead of real next char
-     */
-    void readLastCharAgain();
 
-    /**
-     * Build a detailed exception message
-     *
-     * @param error - short error message
-     * @return error or detailed error message
-     */
-    String buildExceptionMessage(String error);
+
 }
