@@ -16,9 +16,10 @@
 
 package org.cuberact.json.parser;
 
-import org.junit.Test;
-import org.cuberact.json.number.NumberConverterLongDouble;
 import org.cuberact.json.input.JsonInputCharSequence;
+import org.cuberact.json.number.JsonNumber;
+import org.cuberact.json.number.JsonNumberConverterLongDouble;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -79,6 +80,6 @@ public class TokenNumberTest {
         JsonInputCharSequence input = new JsonInputCharSequence(json);
         JsonScanner scanner = new JsonScanner(input);
         scanner.nextImportantChar();
-        return scanner.consumeNumber(NumberConverterLongDouble.REF);
+        return JsonNumberConverterLongDouble.REF.convert(scanner.consumeNumber());
     }
 }

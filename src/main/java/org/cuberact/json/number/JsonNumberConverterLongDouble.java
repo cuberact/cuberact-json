@@ -23,36 +23,33 @@ import static org.cuberact.json.optimize.CharTable.toLong;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class NumberConverterLongDouble implements NumberConverter {
+public class JsonNumberConverterLongDouble implements JsonNumberConverter {
 
-    public static final NumberConverterLongDouble REF = new NumberConverterLongDouble();
+    public static final JsonNumberConverterLongDouble REF = new JsonNumberConverterLongDouble();
 
-    /**
-     * @return number as Long
-     * {@link NumberConverter#convertWholeNumber(char[], int, int)}
-     */
-    @Override
-    public Number convertWholeNumber(char[] number, int offset, int count) throws Throwable {
-        long result = 0;
-        long sign = 1;
-        char c = number[offset];
-        if (c == '-') {
-            sign = -1;
-        } else {
-            result = toLong(c);
-        }
-        for (int i = offset + 1; i < count; i++) {
-            result = result * 10 + toLong(number[i]);
-        }
-        return sign * result;
+    private JsonNumberConverterLongDouble() {
+        //use REF instead
     }
 
     /**
-     * @return number as Double
-     * {@link NumberConverter#convertFloatingPointNumber(char[], int, int)}
+     * @return JsonNumber as Long or Double
      */
     @Override
-    public Number convertFloatingPointNumber(char[] number, int offset, int count) throws Throwable {
-        return Double.parseDouble(new String(number, offset, count));
+    public Number convert(JsonNumber jsonNumber) {
+        if (jsonNumber.isFloatingNumber()) {
+            return Double.parseDouble(jsonNumber.toString());
+        }
+        long result = 0L;
+        long sign = 1L;
+        char c = jsonNumber.charAt(0);
+        if (c == '-') {
+            sign = -1L;
+        } else {
+            result = toLong(c);
+        }
+        for (int i = 1; i < jsonNumber.length(); i++) {
+            result = result * 10L + toLong(jsonNumber.charAt(i));
+        }
+        return sign * result;
     }
 }

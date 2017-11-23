@@ -1,11 +1,10 @@
 package org.cuberact.json.parser;
 
-import org.cuberact.json.builder.JsonBuilder;
-import org.cuberact.json.builder.JsonBuilderTree;
-import org.cuberact.json.number.NumberConverter;
-import org.cuberact.json.number.NumberConverterIntFloat;
-import org.junit.Test;
 import org.cuberact.json.JsonArray;
+import org.cuberact.json.builder.JsonBuilderTree;
+import org.cuberact.json.number.JsonNumberConverter;
+import org.cuberact.json.number.JsonNumberConverterIntFloat;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -33,7 +32,7 @@ public class JsonParserNumbersTest {
     @Test
     public void numberAsIntAndFloat() {
         String jsonAsString = "[1,2,3,1.1,2.2,3.3E-6]";
-        JsonParser jsonParser = new JsonParser(JsonBuilderTree.REF, NumberConverterIntFloat.REF);
+        JsonParser jsonParser = new JsonParser(new JsonBuilderTree(JsonNumberConverterIntFloat.REF));
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
         assertEquals(1, jsonArray.get(0));
         assertEquals(2, jsonArray.get(1));
@@ -46,18 +45,13 @@ public class JsonParserNumbersTest {
     @Test
     public void numberAsBigIntegerAndBigDecimal() {
         String jsonAsString = "[1,2,3,1.1,2.2,3.3E-6]";
-        NumberConverter numberConverter = new NumberConverter() {
-            @Override
-            public Number convertWholeNumber(char[] number, int offset, int count) throws Throwable {
-                return new BigInteger(new String(number, offset, count));
+        JsonNumberConverter jsonNumberConverter = number -> {
+            if (number.isFloatingNumber()) {
+                return new BigDecimal(number.toString());
             }
-
-            @Override
-            public Number convertFloatingPointNumber(char[] number, int offset, int count) throws Throwable {
-                return new BigDecimal(new String(number, offset, count));
-            }
+            return new BigInteger(number.toString());
         };
-        JsonParser jsonParser = new JsonParser(JsonBuilderTree.REF, numberConverter);
+        JsonParser jsonParser = new JsonParser(new JsonBuilderTree(jsonNumberConverter));
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
         assertEquals(new BigInteger("1"), jsonArray.get(0));
         assertEquals(new BigInteger("2"), jsonArray.get(1));

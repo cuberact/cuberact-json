@@ -18,19 +18,25 @@ package org.cuberact.json.builder;
 
 import org.cuberact.json.JsonArray;
 import org.cuberact.json.JsonObject;
+import org.cuberact.json.number.JsonNumber;
+import org.cuberact.json.number.JsonNumberConverter;
+import org.cuberact.json.number.JsonNumberConverterLongDouble;
+
+import java.util.Objects;
 
 /**
  * Default builder which build Recipe Json tree structure - {@link JsonObject} and {@link JsonArray}
- * This builder is Thread-safe
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonBuilderTree implements JsonBuilder {
 
-    public static final JsonBuilderTree REF = new JsonBuilderTree();
+    public static JsonBuilderTree DEFAULT = new JsonBuilderTree(JsonNumberConverterLongDouble.REF);
 
-    private JsonBuilderTree() {
-        //singleton, use REF
+    private final JsonNumberConverter jsonNumberConverter;
+
+    public JsonBuilderTree(JsonNumberConverter jsonNumberConverter) {
+        this.jsonNumberConverter = Objects.requireNonNull(jsonNumberConverter, "NumberConverter");
     }
 
     /**
@@ -49,22 +55,63 @@ public class JsonBuilderTree implements JsonBuilder {
         return new JsonArray();
     }
 
-    /**
-     * @param jsonObject - {@link JsonObject}
-     * @param attr       - attribute name
-     * @param value      - attribute value
-     */
     @Override
-    public void addToJsonObject(Object jsonObject, String attr, Object value) {
+    public void addJsonObjectToJsonObject(Object jsonObject, String attr, Object subJsonObject) {
+        ((JsonObject) jsonObject).add(attr, subJsonObject);
+    }
+
+    @Override
+    public void addJsonArrayToJsonObject(Object jsonObject, String attr, Object subJsonArray) {
+        ((JsonObject) jsonObject).add(attr, subJsonArray);
+    }
+
+    @Override
+    public void addStringToJsonObject(Object jsonObject, String attr, String value) {
         ((JsonObject) jsonObject).add(attr, value);
     }
 
-    /**
-     * @param jsonArray - {@link JsonArray}
-     * @param value     - array item value
-     */
     @Override
-    public void addToJsonArray(Object jsonArray, Object value) {
+    public void addBooleanToJsonObject(Object jsonObject, String attr, Boolean value) {
+        ((JsonObject) jsonObject).add(attr, value);
+    }
+
+    @Override
+    public void addNullToJsonObject(Object jsonObject, String attr) {
+        ((JsonObject) jsonObject).add(attr, null);
+    }
+
+    @Override
+    public void addNumberToJsonObject(Object jsonObject, String attr, JsonNumber value) {
+        ((JsonObject) jsonObject).add(attr, jsonNumberConverter.convert(value));
+    }
+
+    @Override
+    public void addJsonObjectToJsonArray(Object jsonArray, Object subJsonObject) {
+        ((JsonArray) jsonArray).add(subJsonObject);
+    }
+
+    @Override
+    public void addJsonArrayToJsonArray(Object jsonArray, Object subJsonArray) {
+        ((JsonArray) jsonArray).add(subJsonArray);
+    }
+
+    @Override
+    public void addStringToJsonArray(Object jsonArray, String value) {
         ((JsonArray) jsonArray).add(value);
+    }
+
+    @Override
+    public void addBooleanToJsonArray(Object jsonArray, Boolean value) {
+        ((JsonArray) jsonArray).add(value);
+    }
+
+    @Override
+    public void addNullToJsonArray(Object jsonArray) {
+        ((JsonArray) jsonArray).add(null);
+    }
+
+    @Override
+    public void addNumberToJsonArray(Object jsonArray, JsonNumber value) {
+        ((JsonArray) jsonArray).add(jsonNumberConverter.convert(value));
     }
 }

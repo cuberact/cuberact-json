@@ -18,7 +18,7 @@ package org.cuberact.json.parser;
 
 import org.cuberact.json.JsonException;
 import org.cuberact.json.input.JsonInput;
-import org.cuberact.json.number.NumberConverter;
+import org.cuberact.json.number.JsonNumber;
 
 import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
 import static org.cuberact.json.optimize.CharTable.hexBitShift;
@@ -125,7 +125,7 @@ final class JsonScanner {
         nextImportantChar();
     }
 
-    Number consumeNumber(NumberConverter numberConverter) {
+    JsonNumber consumeNumber() {
         try {
             char c;
             int i = 0;
@@ -159,10 +159,7 @@ final class JsonScanner {
             if (isWhiteChar(c)) {
                 nextImportantChar();
             }
-            if (containsDot) {
-                return numberConverter.convertFloatingPointNumber(buffer, 0, i);
-            }
-            return numberConverter.convertWholeNumber(buffer, 0, i);
+            return new JsonNumber(new String(buffer, 0, i), containsDot);
         } catch (Throwable t) {
             throw new JsonException(error("Wrong number"), t);
         }

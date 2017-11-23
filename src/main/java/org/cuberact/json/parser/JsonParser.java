@@ -17,13 +17,11 @@
 package org.cuberact.json.parser;
 
 import org.cuberact.json.JsonException;
-import org.cuberact.json.JsonGlobalConfig;
 import org.cuberact.json.builder.JsonBuilder;
 import org.cuberact.json.builder.JsonBuilderTree;
 import org.cuberact.json.input.JsonInput;
 import org.cuberact.json.input.JsonInputCharSequence;
 import org.cuberact.json.input.JsonInputReader;
-import org.cuberact.json.number.NumberConverter;
 
 import java.io.Reader;
 import java.util.Objects;
@@ -38,15 +36,13 @@ import java.util.Objects;
 public final class JsonParser {
 
     private final JsonBuilder builder;
-    private final NumberConverter numberConverter;
 
     public JsonParser() {
-        this(JsonGlobalConfig.DEFAULT_BUILDER, JsonGlobalConfig.DEFAULT_NUMBER_CONVERTER);
+        this(JsonBuilderTree.DEFAULT);
     }
 
-    public JsonParser(JsonBuilder builder, NumberConverter numberConverter) {
+    public JsonParser(JsonBuilder builder) {
         this.builder = Objects.requireNonNull(builder, "builder");
-        this.numberConverter = Objects.requireNonNull(numberConverter, "numberConverter");
     }
 
     /**
@@ -101,31 +97,31 @@ public final class JsonParser {
                     }
                     switch (scanner.nextImportantChar()) {
                         case '"':
-                            builder.addToJsonObject(jsonObject, attr, scanner.consumeString());
+                            builder.addStringToJsonObject(jsonObject, attr, scanner.consumeString());
                             break;
                         case '{':
                             final Object jsonSubObject = builder.createJsonObject();
-                            builder.addToJsonObject(jsonObject, attr, jsonSubObject);
+                            builder.addJsonObjectToJsonObject(jsonObject, attr, jsonSubObject);
                             parseObject(scanner, jsonSubObject);
                             scanner.nextImportantChar();
                             break;
                         case '[':
                             final Object jsonSubArray = builder.createJsonArray();
-                            builder.addToJsonObject(jsonObject, attr, jsonSubArray);
+                            builder.addJsonArrayToJsonObject(jsonObject, attr, jsonSubArray);
                             parseArray(scanner, jsonSubArray);
                             scanner.nextImportantChar();
                             break;
                         case 't':
                             scanner.consumeTrue();
-                            builder.addToJsonObject(jsonObject, attr, Boolean.TRUE);
+                            builder.addBooleanToJsonObject(jsonObject, attr, Boolean.TRUE);
                             break;
                         case 'f':
                             scanner.consumeFalse();
-                            builder.addToJsonObject(jsonObject, attr, Boolean.FALSE);
+                            builder.addBooleanToJsonObject(jsonObject, attr, Boolean.FALSE);
                             break;
                         case 'n':
                             scanner.consumeNull();
-                            builder.addToJsonObject(jsonObject, attr, null);
+                            builder.addNullToJsonObject(jsonObject, attr);
                             break;
                         case '-':
                         case '0':
@@ -138,7 +134,7 @@ public final class JsonParser {
                         case '7':
                         case '8':
                         case '9':
-                            builder.addToJsonObject(jsonObject, attr, scanner.consumeNumber(numberConverter));
+                            builder.addNumberToJsonObject(jsonObject, attr, scanner.consumeNumber());
                             break;
                         default:
                             throw new JsonException(scanner.error("Expected \" or number or boolean or null"));
@@ -164,31 +160,31 @@ public final class JsonParser {
         for (; ; ) {
             switch (scanner.nextImportantChar()) {
                 case '"':
-                    builder.addToJsonArray(jsonArray, scanner.consumeString());
+                    builder.addStringToJsonArray(jsonArray, scanner.consumeString());
                     break;
                 case '{':
                     final Object jsonSubObject = builder.createJsonObject();
-                    builder.addToJsonArray(jsonArray, jsonSubObject);
+                    builder.addJsonObjectToJsonArray(jsonArray, jsonSubObject);
                     parseObject(scanner, jsonSubObject);
                     scanner.nextImportantChar();
                     break;
                 case '[':
                     final Object jsonSubArray = builder.createJsonArray();
-                    builder.addToJsonArray(jsonArray, jsonSubArray);
+                    builder.addJsonArrayToJsonArray(jsonArray, jsonSubArray);
                     parseArray(scanner, jsonSubArray);
                     scanner.nextImportantChar();
                     break;
                 case 't':
                     scanner.consumeTrue();
-                    builder.addToJsonArray(jsonArray, Boolean.TRUE);
+                    builder.addBooleanToJsonArray(jsonArray, Boolean.TRUE);
                     break;
                 case 'f':
                     scanner.consumeFalse();
-                    builder.addToJsonArray(jsonArray, Boolean.FALSE);
+                    builder.addBooleanToJsonArray(jsonArray, Boolean.FALSE);
                     break;
                 case 'n':
                     scanner.consumeNull();
-                    builder.addToJsonArray(jsonArray, null);
+                    builder.addNullToJsonArray(jsonArray);
                     break;
                 case '-':
                 case '0':
@@ -201,7 +197,7 @@ public final class JsonParser {
                 case '7':
                 case '8':
                 case '9':
-                    builder.addToJsonArray(jsonArray, scanner.consumeNumber(numberConverter));
+                    builder.addNumberToJsonArray(jsonArray, scanner.consumeNumber());
                     break;
                 case ']':
                     return;

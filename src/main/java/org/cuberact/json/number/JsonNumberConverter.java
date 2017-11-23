@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package org.cuberact.json;
-
-import org.cuberact.json.builder.JsonBuilder;
-import org.cuberact.json.builder.JsonBuilderTree;
-import org.cuberact.json.number.NumberConverter;
-import org.cuberact.json.number.NumberConverterLongDouble;
+package org.cuberact.json.number;
 
 /**
+ * Char array to Number converter
+ *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonGlobalConfig {
+public interface JsonNumberConverter {
 
-    public static JsonBuilder DEFAULT_BUILDER = JsonBuilderTree.REF;
-    public static NumberConverter DEFAULT_NUMBER_CONVERTER = NumberConverterLongDouble.REF;
+    /**
+     * Convert JsonNumber to number
+     *
+     * @param jsonNumber - string representation of number
+     * @return number - usually Integer or Long, but can be BigInteger or else number representation
+     */
+    Number convert(JsonNumber jsonNumber);
 }
