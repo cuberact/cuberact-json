@@ -16,15 +16,9 @@
 
 package org.cuberact.json.parser;
 
+import org.cuberact.json.Json;
 import org.cuberact.json.formatter.JsonFormatter;
 import org.junit.Test;
-import org.cuberact.json.Json;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 
@@ -45,10 +39,8 @@ public class JsonParserTest {
                 "  }\n" +
                 "}";
         String expected = "{\"rect\":[486,\"HelloWorld\",{\"data\":\"ěščřžýáíé\"},-23.54],\"perspectiveSelector\":{\"perspectives\":[true,false],\"selected\":null,\"some\":[1,2,3.2]}}";
-        Json jsonFromString = parseFromString(jsonAsString);
-        Json jsonFromReader = parseFromReader(jsonAsString);
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
         assertEquals(expected, jsonFromString.toString(JsonFormatter.PACKED()));
-        assertEquals(expected, jsonFromReader.toString(JsonFormatter.PACKED()));
     }
 
     @Test
@@ -67,10 +59,8 @@ public class JsonParserTest {
                 "\t\"clientIpEnforced\" : false\n" +
                 "}";
         String expected = "{\"id\":\"abcdef1234567890\",\"apiKey\":\"abcdef-ghijkl\",\"name\":\"Main_key\",\"validFrom\":1505858400000,\"softQuota\":10000000,\"hardQuota\":10.12345,\"useSignature\":null,\"state\":\"ENABLED\",\"mocking\":true,\"clientIpUsed\":false,\"clientIpEnforced\":false}";
-        Json jsonFromString = parseFromString(jsonAsString);
-        Json jsonFromReader = parseFromReader(jsonAsString);
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
         assertEquals(expected, jsonFromString.toString(JsonFormatter.PACKED()));
-        assertEquals(expected, jsonFromReader.toString(JsonFormatter.PACKED()));
     }
 
     @Test
@@ -85,28 +75,22 @@ public class JsonParserTest {
                 "2.2], \n" +
                 "1.1]";
         String expected = "[1,[2,[3,[4,[5],4.4],3.3],2.2],1.1]";
-        Json jsonFromString = parseFromString(jsonAsString);
-        Json jsonFromReader = parseFromReader(jsonAsString);
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
         assertEquals(expected, jsonFromString.toString(JsonFormatter.PACKED()));
-        assertEquals(expected, jsonFromReader.toString(JsonFormatter.PACKED()));
     }
 
     @Test
     public void parseExample4() {
         String jsonAsString = "[[[[[[[[[[1]]]]]]]]]]";
-        Json jsonFromString = parseFromString(jsonAsString);
-        Json jsonFromReader = parseFromReader(jsonAsString);
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
         assertEquals(jsonAsString, jsonFromString.toString(JsonFormatter.PACKED()));
-        assertEquals(jsonAsString, jsonFromReader.toString(JsonFormatter.PACKED()));
     }
 
     @Test
     public void parseExample5() {
         String jsonAsString = "[1,-2,\"text\",true,false,null,1.1,-1.1,{},[]]";
-        Json jsonFromString = parseFromString(jsonAsString);
-        Json jsonFromReader = parseFromReader(jsonAsString);
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
         assertEquals(jsonAsString, jsonFromString.toString(JsonFormatter.PACKED()));
-        assertEquals(jsonAsString, jsonFromReader.toString(JsonFormatter.PACKED()));
     }
 
     @Test
@@ -116,28 +100,29 @@ public class JsonParserTest {
                 "12345.12345e8, 12345.12345e-8, -12345.12345e8, -12345.12345e-8" +
                 "]";
         String expected = "[1.1,-1.1,2.2E10,2.2E10,-2.2E10,-2.2E-10,2.2E-10,2.2E-10,-2.2E-10,-2.2E-10,1.234512345E12,1.234512345E-4,-1.234512345E12,-1.234512345E-4]";
-        Json jsonFromString = parseFromString(jsonAsString);
-        Json jsonFromReader = parseFromReader(jsonAsString);
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
         assertEquals(expected, jsonFromString.toString(JsonFormatter.PACKED()));
-        assertEquals(expected, jsonFromReader.toString(JsonFormatter.PACKED()));
     }
 
     @Test
     public void parseExample7() {
         String jsonAsString = "{\"1\":{\"2\":{\"3\":{\"4\":{\"5\":{\"6\":{\"7\":{\"8\":{\"9\":{\"name\":\"jack\"}}}}},\"age\":15}}}}}";
-        Json jsonFromString = parseFromString(jsonAsString);
-        Json jsonFromReader = parseFromReader(jsonAsString);
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
         assertEquals(jsonAsString, jsonFromString.toString(JsonFormatter.PACKED()));
-        assertEquals(jsonAsString, jsonFromReader.toString(JsonFormatter.PACKED()));
     }
 
-    private Json parseFromString(String jsonAsString) {
-        return new JsonParser().parse(jsonAsString);
-    }
-
-    private Json parseFromReader(String jsonAsString) {
-        InputStream stream = new ByteArrayInputStream(jsonAsString.getBytes(StandardCharsets.UTF_8));
-        Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-        return new JsonParser().parse(reader);
+    @Test
+    public void parseExampleVeryLongStrings() {
+        StringBuilder jsonAsString = new StringBuilder("{\"");
+        for (int i = 0; i < 10000; i++) {
+            jsonAsString.append((char) ((i & 15) + 65));
+        }
+        jsonAsString.append("\":\"");
+        for (int i = 0; i < 100000; i++) {
+            jsonAsString.append((char) ((i & 15) + 65));
+        }
+        jsonAsString.append("\"}");
+        Json jsonFromString = new JsonParser().parse(jsonAsString);
+        assertEquals(jsonAsString.toString(), jsonFromString.toString(JsonFormatter.PACKED()));
     }
 }

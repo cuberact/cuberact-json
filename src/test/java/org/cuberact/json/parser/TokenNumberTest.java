@@ -79,6 +79,6 @@ public class TokenNumberTest {
         JsonInputCharSequence input = new JsonInputCharSequence(json);
         JsonScanner scanner = new JsonScanner(input);
         scanner.nextImportantChar();
-        return Token.consumeNumber(scanner, NumberConverterLongDouble.REF);
+        return scanner.consumeNumber(NumberConverterLongDouble.REF);
     }
 }

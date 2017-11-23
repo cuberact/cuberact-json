@@ -86,7 +86,7 @@ public class JsonParser {
                 parseArray(scanner, root);
                 break;
             default:
-                throw new JsonException(scanner.buildExceptionMessage("Expected { or ["));
+                throw new JsonException(scanner.error("Expected { or ["));
         }
         return (E) root;
     }
@@ -95,13 +95,13 @@ public class JsonParser {
         for (; ; ) {
             switch (scanner.nextImportantChar()) {
                 case '"':
-                    final String attr = Token.consumeString(scanner);
+                    final String attr = scanner.consumeString();
                     if (scanner.lastReadChar() != ':') {
-                        throw new JsonException(scanner.buildExceptionMessage("Expected :"));
+                        throw new JsonException(scanner.error("Expected :"));
                     }
                     switch (scanner.nextImportantChar()) {
                         case '"':
-                            builder.addToJsonObject(jsonObject, attr, Token.consumeString(scanner));
+                            builder.addToJsonObject(jsonObject, attr, scanner.consumeString());
                             break;
                         case '{':
                             final Object jsonSubObject = builder.createJsonObject();
@@ -116,15 +116,15 @@ public class JsonParser {
                             scanner.nextImportantChar();
                             break;
                         case 't':
-                            Token.consumeTrue(scanner);
+                            scanner.consumeTrue();
                             builder.addToJsonObject(jsonObject, attr, Boolean.TRUE);
                             break;
                         case 'f':
-                            Token.consumeFalse(scanner);
+                            scanner.consumeFalse();
                             builder.addToJsonObject(jsonObject, attr, Boolean.FALSE);
                             break;
                         case 'n':
-                            Token.consumeNull(scanner);
+                            scanner.consumeNull();
                             builder.addToJsonObject(jsonObject, attr, null);
                             break;
                         case '-':
@@ -138,16 +138,16 @@ public class JsonParser {
                         case '7':
                         case '8':
                         case '9':
-                            builder.addToJsonObject(jsonObject, attr, Token.consumeNumber(scanner, numberConverter));
+                            builder.addToJsonObject(jsonObject, attr, scanner.consumeNumber(numberConverter));
                             break;
                         default:
-                            throw new JsonException(scanner.buildExceptionMessage("Expected \" or number or boolean or null"));
+                            throw new JsonException(scanner.error("Expected \" or number or boolean or null"));
                     }
                     break;
                 case '}':
                     return;
                 default:
-                    throw new JsonException(scanner.buildExceptionMessage("Expected \""));
+                    throw new JsonException(scanner.error("Expected \""));
             }
             switch (scanner.lastReadChar()) {
                 case ',':
@@ -155,7 +155,7 @@ public class JsonParser {
                 case '}':
                     return;
                 default:
-                    throw new JsonException(scanner.buildExceptionMessage("Expected } or ,"));
+                    throw new JsonException(scanner.error("Expected } or ,"));
             }
         }
     }
@@ -164,7 +164,7 @@ public class JsonParser {
         for (; ; ) {
             switch (scanner.nextImportantChar()) {
                 case '"':
-                    builder.addToJsonArray(jsonArray, Token.consumeString(scanner));
+                    builder.addToJsonArray(jsonArray, scanner.consumeString());
                     break;
                 case '{':
                     final Object jsonSubObject = builder.createJsonObject();
@@ -179,15 +179,15 @@ public class JsonParser {
                     scanner.nextImportantChar();
                     break;
                 case 't':
-                    Token.consumeTrue(scanner);
+                    scanner.consumeTrue();
                     builder.addToJsonArray(jsonArray, Boolean.TRUE);
                     break;
                 case 'f':
-                    Token.consumeFalse(scanner);
+                    scanner.consumeFalse();
                     builder.addToJsonArray(jsonArray, Boolean.FALSE);
                     break;
                 case 'n':
-                    Token.consumeNull(scanner);
+                    scanner.consumeNull();
                     builder.addToJsonArray(jsonArray, null);
                     break;
                 case '-':
@@ -201,12 +201,12 @@ public class JsonParser {
                 case '7':
                 case '8':
                 case '9':
-                    builder.addToJsonArray(jsonArray, Token.consumeNumber(scanner, numberConverter));
+                    builder.addToJsonArray(jsonArray, scanner.consumeNumber(numberConverter));
                     break;
                 case ']':
                     return;
                 default:
-                    throw new JsonException(scanner.buildExceptionMessage("Expected \" or ] or number or boolean or null"));
+                    throw new JsonException(scanner.error("Expected \" or ] or number or boolean or null"));
             }
             switch (scanner.lastReadChar()) {
                 case ',':
@@ -214,7 +214,7 @@ public class JsonParser {
                 case ']':
                     return;
                 default:
-                    throw new JsonException(scanner.buildExceptionMessage("Expected ] or ,"));
+                    throw new JsonException(scanner.error("Expected ] or ,"));
             }
         }
     }

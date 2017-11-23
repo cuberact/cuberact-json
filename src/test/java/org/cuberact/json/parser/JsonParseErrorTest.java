@@ -16,16 +16,10 @@
 
 package org.cuberact.json.parser;
 
-import org.cuberact.json.Json;
 import org.cuberact.json.JsonException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -151,16 +145,10 @@ public class JsonParseErrorTest {
         } catch (JsonException e) {
             assertErrorInJsonException(e, expectedErrorOnPos);
         }
-        try {
-            useJsonInputReader(errorJson);
-            Assert.fail("Expected JsonException");
-        } catch (JsonException e) {
-            assertErrorInJsonException(e, expectedErrorOnPos);
-        }
     }
 
     private void assertErrorInJsonException(JsonException jsonException, int expectedErrorOnPos) {
-        //System.out.println(e.getMessage());
+        System.out.println(jsonException.getMessage());
         String prefix = "Parse error on position ";
         Pattern p = Pattern.compile(prefix + "[0-9]+");
         Matcher m = p.matcher(jsonException.getMessage());
@@ -173,11 +161,5 @@ public class JsonParseErrorTest {
 
     private void useJsonInputCharSequence(String jsonAsString) {
         new JsonParser().parse(jsonAsString);
-    }
-
-    private void useJsonInputReader(String jsonAsString) {
-        InputStream stream = new ByteArrayInputStream(jsonAsString.getBytes(StandardCharsets.UTF_8));
-        Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-        new JsonParser().parse(reader);
     }
 }
