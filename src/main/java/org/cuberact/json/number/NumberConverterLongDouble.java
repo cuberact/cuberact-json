@@ -16,8 +16,6 @@
 
 package org.cuberact.json.number;
 
-import org.cuberact.json.optimize.CharTable;
-
 import static org.cuberact.json.optimize.CharTable.toLong;
 
 /**

@@ -18,8 +18,6 @@ package org.cuberact.json.builder;
 
 import org.cuberact.json.JsonArray;
 import org.cuberact.json.JsonObject;
-import org.cuberact.json.number.NumberConverter;
-import org.cuberact.json.number.NumberConverterLongDouble;
 
 /**
  * Default builder which build Recipe Json tree structure - {@link JsonObject} and {@link JsonArray}
@@ -31,7 +29,7 @@ public class JsonBuilderTree implements JsonBuilder {
 
     public static final JsonBuilderTree REF = new JsonBuilderTree();
 
-    private JsonBuilderTree(){
+    private JsonBuilderTree() {
         //singleton, use REF
     }
 

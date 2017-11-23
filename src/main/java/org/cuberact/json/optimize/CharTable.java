@@ -23,7 +23,7 @@ public final class CharTable {
 
     private static final int[] CHAR_TO_INT = new int[103];
     private static final long[] CHAR_TO_LONG = new long[103];
-    
+
     private static final int[] HEX_BIT_SHIFT = new int[]{12, 8, 4, 0};
 
     static {

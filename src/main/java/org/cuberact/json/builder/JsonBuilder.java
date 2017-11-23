@@ -47,5 +47,4 @@ public interface JsonBuilder {
      * @param value     - array item value
      */
     void addToJsonArray(Object jsonArray, Object value);
-
 }

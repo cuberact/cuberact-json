@@ -29,8 +29,4 @@ public interface JsonInput {
      * @return next char of input
      */
     char nextChar();
-
-
-
-
 }
