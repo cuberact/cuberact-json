@@ -17,7 +17,7 @@
 package org.cuberact.json.number;
 
 /**
- * Char array to Number converter
+ * JsonNumber to Number converter
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */

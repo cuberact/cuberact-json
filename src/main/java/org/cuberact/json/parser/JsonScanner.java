@@ -70,40 +70,6 @@ final class JsonScanner {
         return c > '/' && c < ':'; //0-9
     }
 
-    String error(String error) {
-        StringBuilder message = new StringBuilder("Parse error on position ");
-        message.append(position).append("\n\n");
-        try {
-            int arrowPosition = -1;
-            position++;
-            for (int i = 0; i < errorBuffer.length; i++) {
-                char c = errorBuffer[position & 63];
-                position++;
-                if (!isLineBreak(c) && c != 0 && c != JsonInput.END_OF_INPUT) {
-                    message.append(c);
-                    arrowPosition++;
-                }
-            }
-            for (int i = 0; i < 36; i++) {
-                char c = nextChar();
-                if (!isLineBreak(c)) {
-                    if (c == JsonInput.END_OF_INPUT) {
-                        break;
-                    }
-                    message.append(c);
-                }
-            }
-            message.append("\n");
-            for (int i = 0; i < arrowPosition; i++) {
-                message.append(".");
-            }
-            message.append("^ ERROR - ").append(error).append("\n");
-        } catch (Throwable t) {
-            message.append(" -- ").append(error).append(" [pointer build failed: ").append(t.getMessage()).append("]\n");
-        }
-        return message.toString();
-    }
-
     void consumeTrue() {
         if (!(nextChar() == 'r' && nextChar() == 'u' && nextChar() == 'e')) {
             throw new JsonException(error("Expected true"));
@@ -126,43 +92,39 @@ final class JsonScanner {
     }
 
     JsonNumber consumeNumber() {
-        try {
-            char c;
-            int i = 0;
-            buffer[i++] = lastReadChar();
-            if (buffer[0] == '-') {
-                if (!isNumber(c = nextChar())) {
-                    throw new JsonException(error("Expected correct number"));
-                }
-                buffer[i++] = c;
+        char c;
+        int i = 0;
+        buffer[i++] = lastReadChar();
+        if (buffer[0] == '-') {
+            if (!isNumber(c = nextChar())) {
+                throw new JsonException(error("Expected correct number"));
             }
+            buffer[i++] = c;
+        }
+        while (isNumber(c = nextChar())) {
+            buffer[i++] = c;
+        }
+        boolean containsDot = c == '.';
+        if (containsDot) {
+            buffer[i++] = '.';
             while (isNumber(c = nextChar())) {
                 buffer[i++] = c;
             }
-            boolean containsDot = c == '.';
-            if (containsDot) {
-                buffer[i++] = '.';
-                while (isNumber(c = nextChar())) {
+            if (c == 'e' || c == 'E') {
+                buffer[i++] = 'e';
+                c = nextChar();
+                if (c == '-' || c == '+' || isNumber(c)) {
                     buffer[i++] = c;
-                }
-                if (c == 'e' || c == 'E') {
-                    buffer[i++] = 'e';
-                    c = nextChar();
-                    if (c == '-' || c == '+' || isNumber(c)) {
+                    while (isNumber(c = nextChar())) {
                         buffer[i++] = c;
-                        while (isNumber(c = nextChar())) {
-                            buffer[i++] = c;
-                        }
                     }
                 }
             }
-            if (isWhiteChar(c)) {
-                nextImportantChar();
-            }
-            return new JsonNumber(new String(buffer, 0, i), containsDot);
-        } catch (Throwable t) {
-            throw new JsonException(error("Wrong number"), t);
         }
+        if (isWhiteChar(c)) {
+            nextImportantChar();
+        }
+        return new JsonNumber(buffer, i, containsDot);
     }
 
     String consumeString() {
@@ -218,5 +180,39 @@ final class JsonScanner {
             }
         }
         return (char) (unicodeChar);
+    }
+
+    String error(String error) {
+        StringBuilder message = new StringBuilder("Parse error on position ");
+        message.append(position).append("\n\n");
+        try {
+            int arrowPosition = -1;
+            position++;
+            for (int i = 0; i < 64; i++) {
+                char c = errorBuffer[position & 63];
+                position++;
+                if (!isLineBreak(c) && c != 0 && c != JsonInput.END_OF_INPUT) {
+                    message.append(c);
+                    arrowPosition++;
+                }
+            }
+            for (int i = 0; i < 36; i++) {
+                char c = nextChar();
+                if (!isLineBreak(c)) {
+                    if (c == JsonInput.END_OF_INPUT) {
+                        break;
+                    }
+                    message.append(c);
+                }
+            }
+            message.append("\n");
+            for (int i = 0; i < arrowPosition; i++) {
+                message.append(".");
+            }
+            message.append("^ ERROR - ").append(error).append("\n");
+        } catch (Throwable t) {
+            message.append(" -- ").append(error).append(" [pointer build failed: ").append(t.getMessage()).append("]\n");
+        }
+        return message.toString();
     }
 }

@@ -29,7 +29,7 @@ public class JsonObjectTest {
     public void api() {
         JsonObject json = new JsonObject();
 
-        assertEquals(JsonType.JSON_OBJECT, json.type());
+        assertEquals(JsonType.OBJECT, json.type());
 
         json.add("obj", new JsonObject());
         json.add("arr", new JsonArray());

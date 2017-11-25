@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class TokenNumberTest {
+public class NumberTest {
 
     @Test
     public void validDouble1() {

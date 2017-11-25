@@ -26,7 +26,7 @@ public interface JsonInput {
     char END_OF_INPUT = '\uFFFF';
 
     /**
-     * @return next char of input
+     * @return next char of input or END_OF_INPUT.
      */
     char nextChar();
 }

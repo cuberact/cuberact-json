@@ -27,9 +27,6 @@ public class JsonInputReader implements JsonInput {
 
     private final Reader input;
 
-    /**
-     * @param input - {@link Reader}
-     */
     public JsonInputReader(Reader input) {
         this.input = Objects.requireNonNull(input, "input");
     }

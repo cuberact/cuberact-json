@@ -40,7 +40,7 @@ public class JsonObject extends Json {
 
     @Override
     public JsonType type() {
-        return JsonType.JSON_OBJECT;
+        return JsonType.OBJECT;
     }
 
     public Object get(String attr) {
@@ -150,18 +150,18 @@ public class JsonObject extends Json {
 
     @Override
     public void toOutput(JsonFormatter formatter, JsonOutput output) {
-        formatter.appendJsonObjectStart(output);
+        formatter.writeObjectStart(output);
         boolean addComma = false;
         for (Entry<String, Object> entry : data.entrySet()) {
             if (addComma) {
-                formatter.appendJsonObjectComma(output);
+                formatter.writeObjectComma(output);
             }
             addComma = true;
-            formatter.appendJsonObjectAttribute(entry.getKey(), output);
-            formatter.appendJsonObjectColon(output);
-            formatter.appendJsonObjectValue(entry.getValue(), output);
+            formatter.writeObjectAttr(entry.getKey(), output);
+            formatter.writeObjectColon(output);
+            formatter.writeObjectValue(entry.getValue(), output);
         }
-        formatter.appendJsonObjectEnd(output);
+        formatter.writeObjectEnd(output);
     }
 
     @SuppressWarnings("unchecked")

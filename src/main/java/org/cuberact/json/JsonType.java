@@ -22,6 +22,6 @@ package org.cuberact.json;
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public enum JsonType {
-    JSON_OBJECT,
-    JSON_ARRAY
+    OBJECT,
+    ARRAY
 }

@@ -13,7 +13,7 @@ public class JsonArrayTest {
     public void api() {
         JsonArray json = new JsonArray();
 
-        assertEquals(JsonType.JSON_ARRAY, json.type());
+        assertEquals(JsonType.ARRAY, json.type());
 
         json.add(new JsonObject());
         json.add(new JsonArray());

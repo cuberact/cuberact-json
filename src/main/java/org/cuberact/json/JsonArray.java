@@ -37,7 +37,7 @@ public class JsonArray extends Json {
 
     @Override
     public JsonType type() {
-        return JsonType.JSON_ARRAY;
+        return JsonType.ARRAY;
     }
 
     public Object get(int index) {
@@ -177,16 +177,16 @@ public class JsonArray extends Json {
 
     @Override
     public void toOutput(JsonFormatter formatter, JsonOutput output) {
-        formatter.appendJsonArrayStart(output);
+        formatter.writeArrayStart(output);
         boolean addComma = false;
         for (Object value : data) {
             if (addComma) {
-                formatter.appendJsonArrayComma(output);
+                formatter.writeArrayComma(output);
             }
             addComma = true;
-            formatter.appendJsonArrayValue(value, output);
+            formatter.writeArrayValue(value, output);
         }
-        formatter.appendJsonArrayEnd(output);
+        formatter.writeArrayEnd(output);
     }
 
     @SuppressWarnings("unchecked")

@@ -41,7 +41,6 @@ public class JsonNumberConverterIntFloat implements JsonNumberConverter {
         }
         int result = 0;
         int sign = 1;
-
         char c = jsonNumber.charAt(0);
         if (c == '-') {
             sign = -1;

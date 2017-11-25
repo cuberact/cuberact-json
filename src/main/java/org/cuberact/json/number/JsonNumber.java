@@ -16,16 +16,19 @@
 
 package org.cuberact.json.number;
 
+import java.util.Arrays;
+
 /**
  * @author Michal Nikodim (michal.nikodim@topmonks.com)
  */
 public final class JsonNumber implements CharSequence {
 
-    private final String number;
+    private final char[] number;
     private final boolean floatingNumber;
 
-    public JsonNumber(String number, boolean floatingNumber) {
-        this.number = number;
+    public JsonNumber(char[] number, int count, boolean floatingNumber) {
+        this.number = new char[count];
+        System.arraycopy(number, 0, this.number, 0, count);
         this.floatingNumber = floatingNumber;
     }
 
@@ -35,22 +38,22 @@ public final class JsonNumber implements CharSequence {
 
     @Override
     public int length() {
-        return number.length();
+        return number.length;
     }
 
     @Override
     public char charAt(int index) {
-        return number.charAt(index);
+        return number[index];
     }
 
     @Override
     public CharSequence subSequence(int start, int end) {
-        return number.subSequence(start, end);
+        return new String(number, start, end);
     }
 
     @Override
     public int hashCode() {
-        return number.hashCode() * 31;
+        return Arrays.hashCode(number) * 31;
     }
 
     @Override
@@ -58,11 +61,11 @@ public final class JsonNumber implements CharSequence {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JsonNumber that = (JsonNumber) o;
-        return number != null ? number.equals(that.number) : that.number == null;
+        return number != null ? Arrays.equals(number, that.number) : that.number == null;
     }
 
     @Override
     public String toString() {
-        return number;
+        return new String(number);
     }
 }

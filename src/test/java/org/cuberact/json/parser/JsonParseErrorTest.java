@@ -138,6 +138,24 @@ public class JsonParseErrorTest {
         expectedErrorOnPosition(errorJson, 107);
     }
 
+    @Test
+    public void testError19() {
+        String errorJson = "{\"number\" : - 12}";
+        expectedErrorOnPosition(errorJson, 14);
+    }
+
+    @Test
+    public void testError20() {
+        String errorJson = "{\"number\" : +12}";
+        expectedErrorOnPosition(errorJson, 13);
+    }
+
+    @Test
+    public void testError21() {
+        String errorJson = "{\"number\" : -12.23f+32}";
+        expectedErrorOnPosition(errorJson, 19);
+    }
+
     private void expectedErrorOnPosition(String errorJson, int expectedErrorOnPos) {
         try {
             useJsonInputCharSequence(errorJson);

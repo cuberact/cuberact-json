@@ -27,88 +27,88 @@ import org.cuberact.json.parser.JsonParser;
 public interface JsonBuilder {
 
     /**
-     * @return json object representation
+     * @return object representation
      */
-    Object createJsonObject();
+    Object createObject();
 
     /**
-     * @return json array representation
+     * @return array representation
      */
-    Object createJsonArray();
+    Object createArray();
 
     /**
-     * @param jsonObject    - json object representation created by {@link JsonBuilder#createJsonObject()}
-     * @param attr          - attribute
-     * @param subJsonObject - json object representation created by {@link JsonBuilder#createJsonObject()}
+     * @param object    - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr      - attribute
+     * @param subObject - json object representation created by {@link JsonBuilder#createObject()}
      */
-    void addJsonObjectToJsonObject(Object jsonObject, String attr, Object subJsonObject);
+    void addObjectToObject(Object object, String attr, Object subObject);
 
     /**
-     * @param jsonObject   - json object representation created by {@link JsonBuilder#createJsonObject()}
-     * @param attr         - attribute
-     * @param subJsonArray - json array representation created by {@link JsonBuilder#createJsonArray()}
+     * @param object   - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr     - attribute
+     * @param subArray - json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addJsonArrayToJsonObject(Object jsonObject, String attr, Object subJsonArray);
+    void addArrayToObject(Object object, String attr, Object subArray);
 
     /**
-     * @param jsonObject - json object representation created by {@link JsonBuilder#createJsonObject()}
-     * @param attr       - attribute
-     * @param value      - value
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr   - attribute
+     * @param value  - value
      */
-    void addStringToJsonObject(Object jsonObject, String attr, String value);
+    void addStringToObject(Object object, String attr, String value);
 
     /**
-     * @param jsonObject - json object representation created by {@link JsonBuilder#createJsonObject()}
-     * @param attr       - attribute
-     * @param value      - value
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr   - attribute
+     * @param value  - value
      */
-    void addBooleanToJsonObject(Object jsonObject, String attr, Boolean value);
+    void addBooleanToObject(Object object, String attr, Boolean value);
 
     /**
-     * @param jsonObject - json object representation created by {@link JsonBuilder#createJsonObject()}
-     * @param attr       - attribute
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr   - attribute
      */
-    void addNullToJsonObject(Object jsonObject, String attr);
+    void addNullToObject(Object object, String attr);
 
     /**
-     * @param jsonObject - json object representation created by {@link JsonBuilder#createJsonObject()}
-     * @param attr       - attribute
-     * @param value      - value
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr   - attribute
+     * @param value  - value
      */
-    void addNumberToJsonObject(Object jsonObject, String attr, JsonNumber value);
+    void addNumberToObject(Object object, String attr, JsonNumber value);
 
     /**
-     * @param jsonArray     - json array representation created by {@link JsonBuilder#createJsonArray()}
-     * @param subJsonObject - json object representation created by {@link JsonBuilder#createJsonObject()}
+     * @param array     - json array representation created by {@link JsonBuilder#createArray()}
+     * @param subObject - json object representation created by {@link JsonBuilder#createObject()}
      */
-    void addJsonObjectToJsonArray(Object jsonArray, Object subJsonObject);
+    void addObjectToArray(Object array, Object subObject);
 
     /**
-     * @param jsonArray    - json array representation created by {@link JsonBuilder#createJsonArray()}
-     * @param subJsonArray - json array representation created by {@link JsonBuilder#createJsonArray()}
+     * @param array    - json array representation created by {@link JsonBuilder#createArray()}
+     * @param subArray - json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addJsonArrayToJsonArray(Object jsonArray, Object subJsonArray);
+    void addArrayToArray(Object array, Object subArray);
 
     /**
-     * @param jsonArray - json array representation created by {@link JsonBuilder#createJsonArray()}
-     * @param value     - value
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
+     * @param value - value
      */
-    void addStringToJsonArray(Object jsonArray, String value);
+    void addStringToArray(Object array, String value);
 
     /**
-     * @param jsonArray - json array representation created by {@link JsonBuilder#createJsonArray()}
-     * @param value     - value
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
+     * @param value - value
      */
-    void addBooleanToJsonArray(Object jsonArray, Boolean value);
+    void addBooleanToArray(Object array, Boolean value);
 
     /**
-     * @param jsonArray - json array representation created by {@link JsonBuilder#createJsonArray()}
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addNullToJsonArray(Object jsonArray);
+    void addNullToArray(Object array);
 
     /**
-     * @param jsonArray - json array representation created by {@link JsonBuilder#createJsonArray()}
-     * @param value     - value
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
+     * @param value - value
      */
-    void addNumberToJsonArray(Object jsonArray, JsonNumber value);
+    void addNumberToArray(Object array, JsonNumber value);
 }

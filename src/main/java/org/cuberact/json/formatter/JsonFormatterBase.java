@@ -25,14 +25,14 @@ import org.cuberact.json.output.JsonOutput;
 public abstract class JsonFormatterBase implements JsonFormatter {
 
     @Override
-    public void appendJsonObjectAttribute(CharSequence attribute, JsonOutput output) {
+    public void writeObjectAttr(CharSequence attr, JsonOutput output) {
         output.write("\"");
-        escape(attribute, output);
+        escape(attr, output);
         output.write("\"");
     }
 
     @Override
-    public void appendJsonObjectValue(Object value, JsonOutput output) {
+    public void writeObjectValue(Object value, JsonOutput output) {
         if (value instanceof Json) {
             ((Json) value).toOutput(this, output);
         } else if (value instanceof CharSequence) {
@@ -47,8 +47,8 @@ public abstract class JsonFormatterBase implements JsonFormatter {
     }
 
     @Override
-    public void appendJsonArrayValue(Object value, JsonOutput output) {
-        appendJsonObjectValue(value, output);
+    public void writeArrayValue(Object value, JsonOutput output) {
+        writeObjectValue(value, output);
     }
 
     public static void escape(CharSequence input, JsonOutput output) {

@@ -34,23 +34,23 @@ public interface JsonFormatter {
         return new JsonFormatterPretty();
     }
 
-    void appendJsonObjectStart(JsonOutput output);
+    void writeObjectStart(JsonOutput output);
 
-    void appendJsonObjectEnd(JsonOutput output);
+    void writeObjectEnd(JsonOutput output);
 
-    void appendJsonArrayStart(JsonOutput output);
+    void writeArrayStart(JsonOutput output);
 
-    void appendJsonArrayEnd(JsonOutput output);
+    void writeArrayEnd(JsonOutput output);
 
-    void appendJsonObjectColon(JsonOutput output);
+    void writeObjectColon(JsonOutput output);
 
-    void appendJsonObjectComma(JsonOutput output);
+    void writeObjectComma(JsonOutput output);
 
-    void appendJsonArrayComma(JsonOutput output);
+    void writeArrayComma(JsonOutput output);
 
-    void appendJsonObjectAttribute(CharSequence attribute, JsonOutput output);
+    void writeObjectAttr(CharSequence attr, JsonOutput output);
 
-    void appendJsonObjectValue(Object value, JsonOutput output);
+    void writeObjectValue(Object value, JsonOutput output);
 
-    void appendJsonArrayValue(Object value, JsonOutput output);
+    void writeArrayValue(Object value, JsonOutput output);
 }
