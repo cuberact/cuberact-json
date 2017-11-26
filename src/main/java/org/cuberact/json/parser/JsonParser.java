@@ -92,7 +92,7 @@ public final class JsonParser {
             switch (scanner.nextImportantChar()) {
                 case '"':
                     final String attr = scanner.consumeString();
-                    if (scanner.lastReadChar() != ':') {
+                    if (scanner.lastReadChar != ':') {
                         throw new JsonException(scanner.error("Expected :"));
                     }
                     switch (scanner.nextImportantChar()) {
@@ -145,7 +145,7 @@ public final class JsonParser {
                 default:
                     throw new JsonException(scanner.error("Expected \""));
             }
-            switch (scanner.lastReadChar()) {
+            switch (scanner.lastReadChar) {
                 case ',':
                     continue;
                 case '}':
@@ -204,7 +204,7 @@ public final class JsonParser {
                 default:
                     throw new JsonException(scanner.error("Expected \" or ] or number or boolean or null"));
             }
-            switch (scanner.lastReadChar()) {
+            switch (scanner.lastReadChar) {
                 case ',':
                     continue;
                 case ']':

@@ -29,33 +29,26 @@ import static org.cuberact.json.optimize.CharTable.toInt;
  */
 final class JsonScanner {
 
-    private JsonInput input;
-    private char[] buffer = new char[1024];
-    private char lastReadChar;
+    private final JsonInput input;
+    private final char[] buffer = new char[1024];
+    private final char[] errorBuffer = new char[64];
+    char lastReadChar;
     private int position;
-    private char[] errorBuffer = new char[64];
 
     JsonScanner(JsonInput input) {
         this.input = input;
     }
 
     private char nextChar() {
-        position++;
-        lastReadChar = errorBuffer[position & 63] = input.nextChar();
-        return lastReadChar;
+        return lastReadChar = errorBuffer[++position & 63] = input.nextChar();
     }
 
     char nextImportantChar() {
         for (; ; ) {
-            nextChar();
-            if (!isWhiteChar(lastReadChar)) {
+            if (!isWhiteChar(nextChar())) {
                 return lastReadChar;
             }
         }
-    }
-
-    char lastReadChar() {
-        return lastReadChar;
     }
 
     private boolean isWhiteChar(char c) {
@@ -94,7 +87,7 @@ final class JsonScanner {
     JsonNumber consumeNumber() {
         char c;
         int i = 0;
-        buffer[i++] = lastReadChar();
+        buffer[i++] = lastReadChar;
         if (buffer[0] == '-') {
             if (!isNumber(c = nextChar())) {
                 throw new JsonException(error("Expected correct number"));
