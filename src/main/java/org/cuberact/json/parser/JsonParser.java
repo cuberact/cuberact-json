@@ -16,7 +16,6 @@
 
 package org.cuberact.json.parser;
 
-import org.cuberact.json.JsonException;
 import org.cuberact.json.builder.JsonBuilder;
 import org.cuberact.json.builder.JsonBuilderTree;
 import org.cuberact.json.input.JsonInput;
@@ -83,22 +82,20 @@ public final class JsonParser {
                 parseArray(scanner, root);
                 break;
             default:
-                throw new JsonException(scanner.error("Expected { or ["));
+                throw scanner.jsonException("Expected { or [");
         }
         return (E) root;
     }
 
     private void parseObject(JsonScanner scanner, Object object) {
         for (; ; ) {
-            scanner.nextImportantChar();
-            switch (scanner.lastReadChar) {
+            switch (scanner.nextImportantChar()) {
                 case '"':
                     final String attr = scanner.consumeString();
                     if (scanner.lastReadChar != ':') {
-                        throw new JsonException(scanner.error("Expected :"));
+                        throw scanner.jsonException("Expected :");
                     }
-                    scanner.nextImportantChar();
-                    switch (scanner.lastReadChar) {
+                    switch (scanner.nextImportantChar()) {
                         case '"':
                             builder.addStringToObject(object, attr, scanner.consumeString());
                             break;
@@ -140,13 +137,13 @@ public final class JsonParser {
                             builder.addNumberToObject(object, attr, scanner.consumeNumber());
                             break;
                         default:
-                            throw new JsonException(scanner.error("Expected \" or number or boolean or null"));
+                            throw scanner.jsonException("Expected \" or number or boolean or null");
                     }
                     break;
                 case '}':
                     return;
                 default:
-                    throw new JsonException(scanner.error("Expected \""));
+                    throw scanner.jsonException("Expected \"");
             }
             switch (scanner.lastReadChar) {
                 case ',':
@@ -154,15 +151,14 @@ public final class JsonParser {
                 case '}':
                     return;
                 default:
-                    throw new JsonException(scanner.error("Expected } or ,"));
+                    throw scanner.jsonException("Expected } or ,");
             }
         }
     }
 
     private void parseArray(JsonScanner scanner, Object array) {
         for (; ; ) {
-            scanner.nextImportantChar();
-            switch (scanner.lastReadChar) {
+            switch (scanner.nextImportantChar()) {
                 case '"':
                     builder.addStringToArray(array, scanner.consumeString());
                     break;
@@ -206,7 +202,7 @@ public final class JsonParser {
                 case ']':
                     return;
                 default:
-                    throw new JsonException(scanner.error("Expected \" or ] or number or boolean or null"));
+                    throw scanner.jsonException("Expected \" or ] or number or boolean or null");
             }
             switch (scanner.lastReadChar) {
                 case ',':
@@ -214,7 +210,7 @@ public final class JsonParser {
                 case ']':
                     return;
                 default:
-                    throw new JsonException(scanner.error("Expected ] or ,"));
+                    throw scanner.jsonException("Expected ] or ,");
             }
         }
     }
