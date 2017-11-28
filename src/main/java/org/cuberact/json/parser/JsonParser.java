@@ -72,7 +72,8 @@ public final class JsonParser {
     public <E> E parse(JsonInput input) {
         JsonScanner scanner = new JsonScanner(input);
         Object root;
-        switch (scanner.nextImportantChar()) {
+        scanner.nextImportantChar();
+        switch (scanner.lastReadChar) {
             case '{':
                 root = builder.createObject();
                 parseObject(scanner, root);
@@ -89,13 +90,15 @@ public final class JsonParser {
 
     private void parseObject(JsonScanner scanner, Object object) {
         for (; ; ) {
-            switch (scanner.nextImportantChar()) {
+            scanner.nextImportantChar();
+            switch (scanner.lastReadChar) {
                 case '"':
                     final String attr = scanner.consumeString();
                     if (scanner.lastReadChar != ':') {
                         throw new JsonException(scanner.error("Expected :"));
                     }
-                    switch (scanner.nextImportantChar()) {
+                    scanner.nextImportantChar();
+                    switch (scanner.lastReadChar) {
                         case '"':
                             builder.addStringToObject(object, attr, scanner.consumeString());
                             break;
@@ -158,7 +161,8 @@ public final class JsonParser {
 
     private void parseArray(JsonScanner scanner, Object array) {
         for (; ; ) {
-            switch (scanner.nextImportantChar()) {
+            scanner.nextImportantChar();
+            switch (scanner.lastReadChar) {
                 case '"':
                     builder.addStringToArray(array, scanner.consumeString());
                     break;

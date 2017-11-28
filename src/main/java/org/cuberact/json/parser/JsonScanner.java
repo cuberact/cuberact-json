@@ -37,38 +37,65 @@ final class JsonScanner {
         this.input = input;
     }
 
-    private char nextChar() {
-        return lastReadChar = input.nextChar();
+    private void nextChar() {
+        lastReadChar = input.nextChar();
     }
 
-    char nextImportantChar() {
+    void nextImportantChar() {
         for (; ; ) {
             nextChar();
             if (!(lastReadChar == ' ' || lastReadChar == '\n' || lastReadChar == '\r' || lastReadChar == '\t')) {
-                return lastReadChar;
+                return;
             }
         }
     }
 
     void consumeTrue() {
-        if (!(nextChar() == 'r' && nextChar() == 'u' && nextChar() == 'e')) {
-            throw new JsonException(error("Expected true"));
+        nextChar();
+        if (lastReadChar == 'r') {
+            nextChar();
+            if (lastReadChar == 'u') {
+                nextChar();
+                if (lastReadChar == 'e') {
+                    nextImportantChar();
+                    return;
+                }
+            }
         }
-        nextImportantChar();
+        throw new JsonException(error("Expected true"));
     }
 
     void consumeFalse() {
-        if (!(nextChar() == 'a' && nextChar() == 'l' && nextChar() == 's' && nextChar() == 'e')) {
-            throw new JsonException(error("Expected false"));
+        nextChar();
+        if (lastReadChar == 'a') {
+            nextChar();
+            if (lastReadChar == 'l') {
+                nextChar();
+                if (lastReadChar == 's') {
+                    nextChar();
+                    if (lastReadChar == 'e') {
+                        nextImportantChar();
+                        return;
+                    }
+                }
+            }
         }
-        nextImportantChar();
+        throw new JsonException(error("Expected false"));
     }
 
     void consumeNull() {
-        if (!(nextChar() == 'u' && nextChar() == 'l' && nextChar() == 'l')) {
-            throw new JsonException(error("Expected null"));
+        nextChar();
+        if (lastReadChar == 'u') {
+            nextChar();
+            if (lastReadChar == 'l') {
+                nextChar();
+                if (lastReadChar == 'l') {
+                    nextImportantChar();
+                    return;
+                }
+            }
         }
-        nextImportantChar();
+        throw new JsonException(error("Expected null"));
     }
 
     JsonNumber consumeNumber() {
