@@ -26,6 +26,7 @@ import java.util.Objects;
 public class JsonInputReader implements JsonInput {
 
     private final Reader input;
+    private int position;
 
     public JsonInputReader(Reader input) {
         this.input = Objects.requireNonNull(input, "input");
@@ -34,9 +35,16 @@ public class JsonInputReader implements JsonInput {
     @Override
     public char nextChar() {
         try {
-            return (char) input.read();
+            char c = (char) input.read();
+            position++;
+            return c;
         } catch (IOException e) {
             return END_OF_INPUT;
         }
+    }
+
+    @Override
+    public int position() {
+        return position;
     }
 }

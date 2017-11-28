@@ -156,6 +156,12 @@ public class JsonParseErrorTest {
         expectedErrorOnPosition(errorJson, 19);
     }
 
+    @Test
+    public void testError22() {
+        String errorJson = "{\"number";
+        expectedErrorOnPosition(errorJson, 9);
+    }
+
     private void expectedErrorOnPosition(String errorJson, int expectedErrorOnPos) {
         try {
             useJsonInputCharSequence(errorJson);
@@ -166,7 +172,7 @@ public class JsonParseErrorTest {
     }
 
     private void assertErrorInJsonException(JsonException jsonException, int expectedErrorOnPos) {
-        //System.out.println(jsonException.getMessage());
+        System.out.println(jsonException.getMessage());
         String prefix = "Parse error on position ";
         Pattern p = Pattern.compile(prefix + "[0-9]+");
         Matcher m = p.matcher(jsonException.getMessage());

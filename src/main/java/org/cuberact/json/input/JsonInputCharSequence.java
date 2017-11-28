@@ -39,4 +39,9 @@ public class JsonInputCharSequence implements JsonInput {
             return END_OF_INPUT;
         }
     }
+
+    @Override
+    public int position() {
+        return position;
+    }
 }

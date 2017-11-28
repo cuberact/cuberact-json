@@ -29,4 +29,9 @@ public interface JsonInput {
      * @return next char of input or END_OF_INPUT.
      */
     char nextChar();
+
+    /**
+     * @return actual position in input. Used only for error message.
+     */
+    int position();
 }

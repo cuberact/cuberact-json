@@ -31,36 +31,23 @@ final class JsonScanner {
 
     private final JsonInput input;
     private final char[] buffer = new char[1024];
-    private final char[] errorBuffer = new char[64];
     char lastReadChar;
-    private int position;
 
     JsonScanner(JsonInput input) {
         this.input = input;
     }
 
     private char nextChar() {
-        return lastReadChar = errorBuffer[++position & 63] = input.nextChar();
+        return lastReadChar = input.nextChar();
     }
 
     char nextImportantChar() {
         for (; ; ) {
-            if (!isWhiteChar(nextChar())) {
+            nextChar();
+            if (!(lastReadChar == ' ' || lastReadChar == '\n' || lastReadChar == '\r' || lastReadChar == '\t')) {
                 return lastReadChar;
             }
         }
-    }
-
-    private boolean isWhiteChar(char c) {
-        return c == ' ' || c == '\n' || c == '\r' || c == '\t';
-    }
-
-    private boolean isLineBreak(char c) {
-        return c == '\n' || c == '\r';
-    }
-
-    private boolean isNumber(char c) {
-        return c > '/' && c < ':'; //0-9
     }
 
     void consumeTrue() {
@@ -85,36 +72,42 @@ final class JsonScanner {
     }
 
     JsonNumber consumeNumber() {
-        char c;
         int i = 0;
         buffer[i++] = lastReadChar;
         if (buffer[0] == '-') {
-            if (!isNumber(c = nextChar())) {
+            nextChar();
+            if (lastReadChar < '0' || lastReadChar > '9') {
                 throw new JsonException(error("Expected correct number"));
             }
-            buffer[i++] = c;
+            buffer[i++] = lastReadChar;
         }
-        while (isNumber(c = nextChar())) {
-            buffer[i++] = c;
+        for (; ; ) {
+            nextChar();
+            if (lastReadChar < '0' || lastReadChar > '9') break;
+            buffer[i++] = lastReadChar;
         }
-        boolean containsDot = c == '.';
+        boolean containsDot = lastReadChar == '.';
         if (containsDot) {
             buffer[i++] = '.';
-            while (isNumber(c = nextChar())) {
-                buffer[i++] = c;
+            for (; ; ) {
+                nextChar();
+                if (lastReadChar < '0' || lastReadChar > '9') break;
+                buffer[i++] = lastReadChar;
             }
-            if (c == 'e' || c == 'E') {
+            if (lastReadChar == 'e' || lastReadChar == 'E') {
                 buffer[i++] = 'e';
-                c = nextChar();
-                if (c == '-' || c == '+' || isNumber(c)) {
-                    buffer[i++] = c;
-                    while (isNumber(c = nextChar())) {
-                        buffer[i++] = c;
+                nextChar();
+                if (lastReadChar == '-' || lastReadChar == '+' || !(lastReadChar < '0' || lastReadChar > '9')) {
+                    buffer[i++] = lastReadChar;
+                    for (; ; ) {
+                        nextChar();
+                        if (lastReadChar < '0' || lastReadChar > '9') break;
+                        buffer[i++] = lastReadChar;
                     }
                 }
             }
         }
-        if (isWhiteChar(c)) {
+        if (lastReadChar == ' ' || lastReadChar == '\n' || lastReadChar == '\r' || lastReadChar == '\t') {
             nextImportantChar();
         }
         return new JsonNumber(buffer, i, containsDot);
@@ -122,37 +115,39 @@ final class JsonScanner {
 
     String consumeString() {
         StringBuilder token = null;
-        int i = 0;
-        char c;
-        while ((c = nextChar()) != END_OF_INPUT) {
-            if (c == '"') {
+        int count = 0;
+        for (; ; ) {
+            nextChar();
+            if (lastReadChar == '"') {
                 nextImportantChar();
                 if (token != null) {
-                    token.append(buffer, 0, i);
+                    token.append(buffer, 0, count);
                     return token.toString();
                 }
-                return new String(buffer, 0, i);
-            } else if (c == '\\') {
-                c = nextChar();
-                if (c == 'b') {
-                    c = '\b';
-                } else if (c == 'f') {
-                    c = '\f';
-                } else if (c == 'n') {
-                    c = '\n';
-                } else if (c == 'r') {
-                    c = '\r';
-                } else if (c == 't') {
-                    c = '\t';
-                } else if (c == 'u') {
-                    c = consumeUnicodeChar();
+                return new String(buffer, 0, count);
+            } else if (lastReadChar == '\\') {
+                nextChar();
+                if (lastReadChar == 'b') {
+                    lastReadChar = '\b';
+                } else if (lastReadChar == 'f') {
+                    lastReadChar = '\f';
+                } else if (lastReadChar == 'n') {
+                    lastReadChar = '\n';
+                } else if (lastReadChar == 'r') {
+                    lastReadChar = '\r';
+                } else if (lastReadChar == 't') {
+                    lastReadChar = '\t';
+                } else if (lastReadChar == 'u') {
+                    lastReadChar = consumeUnicodeChar();
                 }
+            } else if (lastReadChar == END_OF_INPUT) {
+                break;
             }
-            buffer[i++] = c;
-            if (i == buffer.length) {
-                i = 0;
+            buffer[count++] = lastReadChar;
+            if (count == 1024) {
+                count = 0;
                 if (token == null) {
-                    token = new StringBuilder();
+                    token = new StringBuilder(2064);
                     token.append(buffer);
                 } else {
                     token.append(buffer);
@@ -165,9 +160,9 @@ final class JsonScanner {
     private char consumeUnicodeChar() {
         int unicodeChar = 0;
         for (int h = 0; h < 4; h++) {
-            char c = nextChar();
-            if ((c > '/' && c < ':') || (c > '@' && c < 'G') || (c > '`' && c < 'g')) { //0-9 a-f A-F
-                unicodeChar += (toInt(c) << hexBitShift(h));
+            nextChar();
+            if ((lastReadChar > '/' && lastReadChar < ':') || (lastReadChar > '@' && lastReadChar < 'G') || (lastReadChar > '`' && lastReadChar < 'g')) { //0-9 a-f A-F
+                unicodeChar += (toInt(lastReadChar) << hexBitShift(h));
             } else {
                 throw new JsonException(error("Expected 4 digits hex number"));
             }
@@ -176,36 +171,6 @@ final class JsonScanner {
     }
 
     String error(String error) {
-        StringBuilder message = new StringBuilder("Parse error on position ");
-        message.append(position).append("\n\n");
-        try {
-            int arrowPosition = -1;
-            position++;
-            for (int i = 0; i < 64; i++) {
-                char c = errorBuffer[position & 63];
-                position++;
-                if (!isLineBreak(c) && c != 0 && c != JsonInput.END_OF_INPUT) {
-                    message.append(c);
-                    arrowPosition++;
-                }
-            }
-            for (int i = 0; i < 36; i++) {
-                char c = nextChar();
-                if (!isLineBreak(c)) {
-                    if (c == JsonInput.END_OF_INPUT) {
-                        break;
-                    }
-                    message.append(c);
-                }
-            }
-            message.append("\n");
-            for (int i = 0; i < arrowPosition; i++) {
-                message.append(".");
-            }
-            message.append("^ ERROR - ").append(error).append("\n");
-        } catch (Throwable t) {
-            message.append(" -- ").append(error).append(" [pointer build failed: ").append(t.getMessage()).append("]\n");
-        }
-        return message.toString();
+        return "Parse error on position " + input.position() + " - " + error;
     }
 }

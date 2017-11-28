@@ -41,8 +41,7 @@ public interface JsonOutput {
     void write(char data);
 
     /**
-     * @param <E> - output result type
      * @return output result
      */
-    <E> E result();
+    Object result();
 }
