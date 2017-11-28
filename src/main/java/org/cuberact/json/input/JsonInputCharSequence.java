@@ -23,10 +23,10 @@ import java.util.Objects;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonInputCharSequence implements JsonInput {
+public final class JsonInputCharSequence implements JsonInput {
 
     private final CharSequence input;
-    private int position = 0;
+    private int position;
 
     public JsonInputCharSequence(CharSequence input) {
         this.input = Objects.requireNonNull(input, "input");

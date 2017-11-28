@@ -147,11 +147,9 @@ final class JsonScanner {
             nextChar();
             if (lastReadChar == '"') {
                 nextImportantChar();
-                if (token != null) {
-                    token.append(buffer, 0, count);
-                    return token.toString();
-                }
-                return new String(buffer, 0, count);
+                if (token == null) return new String(buffer, 0, count);
+                token.append(buffer, 0, count);
+                return token.toString();
             } else if (lastReadChar == '\\') {
                 nextChar();
                 if (lastReadChar == 'b') {
@@ -175,10 +173,8 @@ final class JsonScanner {
                 count = 0;
                 if (token == null) {
                     token = new StringBuilder(2064);
-                    token.append(buffer);
-                } else {
-                    token.append(buffer);
                 }
+                token.append(buffer);
             }
         }
         throw new JsonException(error("Expected \""));
