@@ -26,7 +26,7 @@ public interface JsonNumberConverter {
     /**
      * Convert JsonNumber to number
      *
-     * @param jsonNumber - string representation of number
+     * @param jsonNumber - charSequence representation of number
      * @return number - usually Integer or Long, but can be BigInteger or else number representation
      */
     Number convert(JsonNumber jsonNumber);

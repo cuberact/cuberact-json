@@ -25,6 +25,7 @@ public final class JsonNumber implements CharSequence {
 
     private final char[] number;
     private final boolean floatingNumber;
+    private String strNumber;
 
     public JsonNumber(char[] number, int count, boolean floatingNumber) {
         this.number = new char[count];
@@ -66,6 +67,9 @@ public final class JsonNumber implements CharSequence {
 
     @Override
     public String toString() {
-        return new String(number);
+        if (strNumber == null) {
+            strNumber = new String(number);
+        }
+        return strNumber;
     }
 }

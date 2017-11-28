@@ -25,7 +25,7 @@ import org.cuberact.json.number.JsonNumberConverterLongDouble;
 import java.util.Objects;
 
 /**
- * Default builder which build Recipe Json tree structure - {@link JsonObject} and {@link JsonArray}
+ * Default builder which build cuberact json tree structure - {@link JsonObject} and {@link JsonArray}
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
