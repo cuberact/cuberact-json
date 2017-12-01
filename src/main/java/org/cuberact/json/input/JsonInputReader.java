@@ -16,6 +16,8 @@
 
 package org.cuberact.json.input;
 
+import org.cuberact.json.JsonException;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Objects;
@@ -36,10 +38,12 @@ public class JsonInputReader implements JsonInput {
     public char nextChar() {
         try {
             char c = (char) input.read();
-            position++;
+            if (c != END_OF_INPUT) {
+                position++;
+            }
             return c;
         } catch (IOException e) {
-            return END_OF_INPUT;
+            throw new JsonException(e);
         }
     }
 
