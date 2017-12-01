@@ -16,10 +16,12 @@
 
 package org.cuberact.json.number;
 
+import org.cuberact.json.JsonException;
+
 import java.util.Arrays;
 
 /**
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public final class JsonNumber implements CharSequence {
 
@@ -48,13 +50,23 @@ public final class JsonNumber implements CharSequence {
     }
 
     @Override
-    public CharSequence subSequence(int start, int end) {
-        return new String(number, start, end);
+    public CharSequence subSequence(int beginIndex, int endIndex) {
+        if (beginIndex < 0) {
+            throw new JsonException("beginIndex out of bound");
+        }
+        if (endIndex > number.length) {
+            throw new JsonException("endIndex out of bound");
+        }
+        int count = endIndex - beginIndex;
+        if (count < 0) {
+            throw new JsonException("endIndex is lower then beginIndex");
+        }
+        return new String(number, beginIndex, count);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(number) * 31;
+        return 31 * Boolean.hashCode(floatingNumber) + Arrays.hashCode(number);
     }
 
     @Override
@@ -62,7 +74,7 @@ public final class JsonNumber implements CharSequence {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JsonNumber that = (JsonNumber) o;
-        return number != null ? Arrays.equals(number, that.number) : that.number == null;
+        return floatingNumber == that.floatingNumber && (number != null ? Arrays.equals(number, that.number) : that.number == null);
     }
 
     @Override
