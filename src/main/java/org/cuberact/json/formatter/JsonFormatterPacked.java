@@ -21,12 +21,12 @@ import org.cuberact.json.output.JsonOutput;
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonFormatterPacked extends JsonFormatterBase {
+public final class JsonFormatterPacked extends JsonFormatterBase {
 
-    public static final JsonFormatterPacked REF = new JsonFormatterPacked();
+    static final JsonFormatterPacked REF = new JsonFormatterPacked();
 
     private JsonFormatterPacked() {
-        // use JsonFormatter.PACKED() or JsonFormatterPacked.REF
+        // use JsonFormatter.PACKED()
     }
 
     @Override

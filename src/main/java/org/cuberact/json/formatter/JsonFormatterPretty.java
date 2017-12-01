@@ -23,8 +23,8 @@ import org.cuberact.json.output.JsonOutput;
  */
 public class JsonFormatterPretty extends JsonFormatterBase {
 
-    private String actualIndent;
-    private String indent;
+    protected String actualIndent;
+    protected String indent;
 
     public JsonFormatterPretty() {
         this("", "    ");
