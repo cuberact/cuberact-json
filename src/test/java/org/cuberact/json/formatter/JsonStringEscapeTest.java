@@ -16,8 +16,11 @@
 
 package org.cuberact.json.formatter;
 
-import org.junit.Test;
+import org.cuberact.json.Json;
 import org.cuberact.json.output.JsonOutputStringBuilder;
+import org.cuberact.json.parser.JsonParser;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,6 +28,23 @@ import static org.junit.Assert.assertEquals;
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonStringEscapeTest {
+
+    @Test
+    public void jsonWithEscapedChars() {
+        String jsonAsString = "{\"\\\"\b\r\f\n\t\\\\\":\"\\\"\b\r\f\n\\\\\"}";
+        Json json = new JsonParser().parse(jsonAsString);
+
+        String expected = "{\"\\\"\\b\\r\\f\\n\\t\\\\\":\"\\\"\\b\\r\\f\\n\\\\\"}";
+        Assert.assertEquals(expected, json.toString(JsonFormatter.PACKED()));
+    }
+
+    @Test
+    public void jsonWithLowUnicode() {
+        String jsonAsString = "{\"\\u000e\\u0010\":\"\\u000f\"}";
+        Json json = new JsonParser().parse(jsonAsString);
+        String expected = "{\"\\u000e\\u0010\":\"\\u000f\"}";
+        Assert.assertEquals(expected, json.toString(JsonFormatter.PACKED()));
+    }
 
     @Test
     public void escapeExample1() {
@@ -48,8 +68,8 @@ public class JsonStringEscapeTest {
     }
 
     private String escapeByFormatter(String value) {
-        JsonOutputStringBuilder writer = new JsonOutputStringBuilder();
-        JsonFormatterBase.escape(value, writer);
-        return writer.result().toString();
+        JsonOutputStringBuilder output = new JsonOutputStringBuilder();
+        JsonFormatterBase.escape(value, output);
+        return output.result().toString();
     }
 }

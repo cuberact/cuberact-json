@@ -16,7 +16,12 @@
 
 package org.cuberact.json;
 
+import org.cuberact.json.formatter.JsonFormatter;
+import org.cuberact.json.parser.JsonParser;
 import org.junit.Test;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -59,5 +64,180 @@ public class JsonObjectTest {
         json.remove("obj");
         assertFalse(json.contains("obj"));
         assertFalse(json.isNotNull("obj"));
+    }
+
+    @Test
+    public void stream() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("str1", "one");
+        jsonObject.add("str2", "two");
+        jsonObject.add("str3", "three");
+        jsonObject.add("lng1", 1L);
+        jsonObject.add("lng1", 2L);
+        jsonObject.add("lng1", 3L);
+        Map<String, Object> expected = jsonObject.map();
+        Map<String, Object> result = new LinkedHashMap<>();
+        jsonObject.stream().forEach(entry -> result.put(entry.getKey(), entry.getValue()));
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void streamStrings() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("str1", "one");
+        jsonObject.add("str2", "two");
+        jsonObject.add("str3", "three");
+        jsonObject.add("lng1", 1L);
+        jsonObject.add("lng1", 2L);
+        jsonObject.add("lng1", 3L);
+        Map<String, String> expected = new LinkedHashMap<>();
+        expected.put("str1", "one");
+        expected.put("str2", "two");
+        expected.put("str3", "three");
+        Map<String, String> result = new LinkedHashMap<>();
+        jsonObject.streamOf(String.class).forEach(entry -> result.put(entry.getKey(), entry.getValue()));
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void iter() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("str1", "one");
+        jsonObject.add("str2", "two");
+        jsonObject.add("str3", "three");
+        jsonObject.add("lng1", 1L);
+        jsonObject.add("lng1", 2L);
+        jsonObject.add("lng1", 3L);
+        Map<String, Object> expected = jsonObject.map();
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> entry : jsonObject.iterable()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void iterStrings() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("str1", "one");
+        jsonObject.add("str2", "two");
+        jsonObject.add("str3", "three");
+        jsonObject.add("lng1", 1L);
+        jsonObject.add("lng1", 2L);
+        jsonObject.add("lng1", 3L);
+        Map<String, String> expected = new LinkedHashMap<>();
+        expected.put("str1", "one");
+        expected.put("str2", "two");
+        expected.put("str3", "three");
+        Map<String, String> result = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : jsonObject.iterableOf(String.class)) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void mapOf() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("str1", "one");
+        jsonObject.add("str2", "two");
+        jsonObject.add("str3", "three");
+        jsonObject.add("lng1", 1L);
+        jsonObject.add("lng1", 2L);
+        jsonObject.add("lng1", 3L);
+        Map<String, String> expected = new LinkedHashMap<>();
+        expected.put("str1", "one");
+        expected.put("str2", "two");
+        expected.put("str3", "three");
+        Map<String, String> result = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : jsonObject.mapOf(String.class).entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void objectRoot() {
+        JsonObject root = new JsonObject();
+        assertEquals("{}", root.toString(JsonFormatter.PACKED()));
+    }
+
+    @Test
+    public void jsonObject() {
+        JsonObject root = new JsonObject();
+        root.add("empty", null);
+        root.add("boolean", true);
+        root.add("double", 1.0);
+        root.add("string", "hello");
+        root.add("intArray", new JsonArray().add(1L).add(2L).add(3L));
+        root.add("floatArray", new JsonArray().add(1.0).add(2.0).add(3.0));
+        root.add("stringArray", new JsonArray().add("1").add("2").add("3"));
+
+        String expected = "{'empty':null,'boolean':true,'double':1.0,'string':'hello','intArray':[1,2,3],'floatArray':[1.0,2.0,3.0],'stringArray':['1','2','3']}"
+                .replace('\'', '"');
+
+        assertEquals(expected, root.toString(JsonFormatter.PACKED()));
+
+        Json parsed = new JsonParser().parse(expected);
+        assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
+    }
+
+    @Test
+    public void nestedJsonObject() {
+        JsonObject root = new JsonObject();
+        root.add("string", "hello");
+        JsonObject nested = new JsonObject();
+        nested.add("value", true);
+        root.add("nested", nested);
+
+        String expected = "{'string':'hello','nested':{'value':true}}"
+                .replace('\'', '"');
+
+        assertEquals(expected, root.toString(JsonFormatter.PACKED()));
+
+        Json parsed = new JsonParser().parse(expected);
+        assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
+    }
+
+    @Test
+    public void complex() {
+        JsonObject root = new JsonObject();
+        root.add("attr", "value");
+        JsonObject person = new JsonObject();
+        person.add("name", "nkd");
+        person.add("age", 38L);
+        person.add("pick", new JsonArray().add(1L).add(2L).add(3L));
+        JsonArray children = new JsonArray();
+        JsonObject child1 = new JsonObject();
+        child1.add("name", "max");
+        child1.add("age", 15L);
+        JsonObject child2 = new JsonObject();
+        child2.add("name", "neto");
+        child2.add("age", 9L);
+        children.add(child1);
+        children.add(child2);
+        person.add("children", children);
+        root.add("person", person);
+
+        String expected = "{'attr':'value','person':{'name':'nkd','age':38,'pick':[1,2,3],'children':[{'name':'max','age':15},{'name':'neto','age':9}]}}"
+                .replace('\'', '"');
+
+        assertEquals(expected, root.toString(JsonFormatter.PACKED()));
+
+        Json parsed = new JsonParser().parse(expected);
+        assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
+    }
+
+    @Test
+    public void getWrongTypeButIsNull(){
+        JsonObject jsonObject = new JsonObject();
+        assertNull(jsonObject.getObj("attr"));
+    }
+
+    @Test(expected = JsonException.class)
+    public void getWrongType(){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("hello", "world");
+        jsonObject.getLong("hello");
     }
 }

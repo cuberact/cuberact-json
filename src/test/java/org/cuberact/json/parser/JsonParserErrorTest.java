@@ -17,9 +17,12 @@
 package org.cuberact.json.parser;
 
 import org.cuberact.json.JsonException;
+import org.cuberact.json.input.JsonInputCharArray;
+import org.cuberact.json.input.JsonInputReader;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,162 +31,164 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonParseErrorTest {
+public class JsonParserErrorTest {
 
     @Test
     public void testError01() {
         String errorJson = "a{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 1);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 1 - Expected { or [");
     }
 
     @Test
     public void testError02() {
         String errorJson = "{name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 2);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 2 - Expected \"");
     }
 
     @Test
     public void testError03() {
         String errorJson = "{\"name : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 11);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 11 - Expected :");
     }
 
     @Test
     public void testError04() {
         String errorJson = "{\"name\" \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 9);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 9 - Expected :");
     }
 
     @Test
     public void testError05() {
         String errorJson = "{\"name\" : jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 11);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 11 - Expected \" or number or boolean or null");
     }
 
     @Test
     public void testError06() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : 1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 32);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 32 - Expected \"");
     }
 
     @Test
     public void testError07() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1a, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 31);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 31 - Expected ] or ,");
     }
 
     @Test
     public void testError08() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 32);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 32 - Expected ] or ,");
     }
 
     @Test
     public void testError09() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.a34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 35);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 35 - Expected ] or ,");
     }
 
     @Test
     public void testError10() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34 \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 38);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 38 - Expected ] or ,");
     }
 
     @Test
     public void testError11() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", Null], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 47);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 47 - Expected \" or ] or number or boolean or null");
     }
 
     @Test
     public void testError12() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", nUll], \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 48);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 48 - Expected null");
     }
 
     @Test
     public void testError13() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null, \"enabled\" : true, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 63);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 63 - Expected ] or ,");
     }
 
     @Test
     public void testError14() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : tRue, \"disabled\" : false, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 67);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 67 - Expected true");
     }
 
     @Test
     public void testError15() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : falSe, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 88);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 88 - Expected false");
     }
 
     @Test
     public void testError16() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : falsea, \"house\" : null}";
-        expectedErrorOnPosition(errorJson, 90);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 90 - Expected } or ,");
     }
 
     @Test
     public void testError17() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : }";
-        expectedErrorOnPosition(errorJson, 102);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 102 - Expected \" or number or boolean or null");
     }
 
     @Test
     public void testError18() {
         String errorJson = "{\"name\" : \"jack\", \"array\" : [1, 2.34, \"text\", null], \"enabled\" : true, \"disabled\" : false, \"house\" : null ";
-        expectedErrorOnPosition(errorJson, 107);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 106 - Expected } or ,");
     }
 
     @Test
     public void testError19() {
         String errorJson = "{\"number\" : - 12}";
-        expectedErrorOnPosition(errorJson, 14);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 14 - Expected correct number");
     }
 
     @Test
     public void testError20() {
         String errorJson = "{\"number\" : +12}";
-        expectedErrorOnPosition(errorJson, 13);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 13 - Expected \" or number or boolean or null");
     }
 
     @Test
     public void testError21() {
         String errorJson = "{\"number\" : -12.23f+32}";
-        expectedErrorOnPosition(errorJson, 19);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 19 - Expected } or ,");
     }
 
     @Test
     public void testError22() {
         String errorJson = "{\"number";
-        expectedErrorOnPosition(errorJson, 9);
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 8 - Expected \"");
     }
 
-    private void expectedErrorOnPosition(String errorJson, int expectedErrorOnPos) {
+    @Test
+    public void testError23() {
+        String errorJson = "{\"num \\u012Z ber\":12}";
+        tryParseJsonAndCheckExceptionMessage(errorJson, "Parse error on position 12 - Expected 4 digits hex number");
+    }
+
+    private void tryParseJsonAndCheckExceptionMessage(String errorJson, String expectedExceptionMessage) {
         try {
-            useJsonInputCharSequence(errorJson);
+            new JsonParser().parse(errorJson);
             Assert.fail("Expected JsonException");
         } catch (JsonException e) {
-            assertErrorInJsonException(e, expectedErrorOnPos);
+            Assert.assertEquals(expectedExceptionMessage, e.getMessage());
         }
-    }
-
-    private void assertErrorInJsonException(JsonException jsonException, int expectedErrorOnPos) {
-        //System.out.println(jsonException.getMessage());
-        String prefix = "Parse error on position ";
-        Pattern p = Pattern.compile(prefix + "[0-9]+");
-        Matcher m = p.matcher(jsonException.getMessage());
-        if (!m.find()) {
-            Assert.fail("JsonException message doesn't contains expected text - " + prefix + expectedErrorOnPos);
+        try {
+            new JsonParser().parse(new JsonInputReader(new StringReader(errorJson)));
+            Assert.fail("Expected JsonException");
+        } catch (JsonException e) {
+            Assert.assertEquals(expectedExceptionMessage, e.getMessage());
         }
-        String text = m.group();
-        assertEquals(prefix + expectedErrorOnPos, text);
-    }
-
-    private void useJsonInputCharSequence(String jsonAsString) {
-        new JsonParser().parse(jsonAsString);
+        try {
+            new JsonParser().parse(new JsonInputCharArray(errorJson.toCharArray()));
+            Assert.fail("Expected JsonException");
+        } catch (JsonException e) {
+            Assert.assertEquals(expectedExceptionMessage, e.getMessage());
+        }
     }
 }

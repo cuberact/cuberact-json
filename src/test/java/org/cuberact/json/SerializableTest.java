@@ -40,15 +40,15 @@ public class SerializableTest {
         Json json = new JsonParser().parse(jsonAsString);
 
         //serialize
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        ByteArrayOutputStream serializedJson = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(serializedJson);
         oos.writeObject(json);
         oos.close();
 
         //deserialize
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        Json deserializeJson = (Json) ois.readObject();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serializedJson.toByteArray()));
+        Json deserializedJson = (Json) ois.readObject();
 
-        Assert.assertEquals(json.toString(), deserializeJson.toString());
+        Assert.assertEquals(json.toString(), deserializedJson.toString());
     }
 }
