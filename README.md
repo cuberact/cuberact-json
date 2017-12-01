@@ -170,6 +170,9 @@ compile 'org.cuberact:cuberact-json:1.2.0'
 </dependency>
 ```
 
+## Unit tests
+
+100% classes, 100% lines covered 
 
 ## Benchmark
 
