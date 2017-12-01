@@ -44,11 +44,7 @@ public class JsonObject extends Json {
     }
 
     public Object get(String attr) {
-        try {
-            return data.get(attr);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        return data.get(attr);
     }
 
     public JsonObject getObj(String attr) {
@@ -84,37 +80,21 @@ public class JsonObject extends Json {
     }
 
     public JsonObject add(String attr, Object value) {
-        try {
-            data.put(attr, value);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        data.put(attr, value);
         return this;
     }
 
     public JsonObject remove(String attr) {
-        try {
-            data.remove(attr);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        data.remove(attr);
         return this;
     }
 
     public boolean isNotNull(String attr) {
-        try {
-            return data.get(attr) != null;
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        return data.get(attr) != null;
     }
 
     public boolean contains(String attr) {
-        try {
-            return data.containsKey(attr);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        return data.containsKey(attr);
     }
 
     public int size() {
@@ -166,17 +146,13 @@ public class JsonObject extends Json {
 
     @SuppressWarnings("unchecked")
     private <E> E getInternal(String attr, Class<E> type) {
-        try {
-            Object value = data.get(attr);
-            if (value == null) {
-                return null;
-            }
-            if (!type.isAssignableFrom(value.getClass())) {
-                throw new JsonException("Wrong value type for attr \"" + attr + "\". Expected " + type.getName() + ", but is " + value.getClass().getName());
-            }
-            return (E) value;
-        } catch (Throwable t) {
-            throw new JsonException(t);
+        Object value = data.get(attr);
+        if (value == null) {
+            return null;
         }
+        if (!type.isAssignableFrom(value.getClass())) {
+            throw new JsonException("Wrong value type for attr \"" + attr + "\". Expected " + type.getName() + ", but is " + value.getClass().getName());
+        }
+        return (E) value;
     }
 }

@@ -81,11 +81,7 @@ public class JsonArray extends Json {
     }
 
     public JsonArray add(Object value) {
-        try {
-            data.add(value);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        data.add(value);
         return this;
     }
 
@@ -117,20 +113,12 @@ public class JsonArray extends Json {
     }
 
     public JsonArray remove(Object value) {
-        try {
-            data.remove(value);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        data.remove(value);
         return this;
     }
 
     public int indexOf(Object value) {
-        try {
-            return data.indexOf(value);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        return data.indexOf(value);
     }
 
     public boolean isNotNull(int index) {
@@ -138,11 +126,7 @@ public class JsonArray extends Json {
     }
 
     public boolean contains(Object value) {
-        try {
-            return data.contains(value);
-        } catch (Throwable t) {
-            throw new JsonException(t);
-        }
+        return data.contains(value);
     }
 
     public int size() {
