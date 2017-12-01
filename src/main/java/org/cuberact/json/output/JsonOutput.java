@@ -24,7 +24,7 @@ import org.cuberact.json.formatter.JsonFormatter;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public interface JsonOutput {
+public interface JsonOutput<RESULT> {
 
     /**
      * Write data to output
@@ -43,5 +43,5 @@ public interface JsonOutput {
     /**
      * @return output result
      */
-    Object result();
+    RESULT result();
 }

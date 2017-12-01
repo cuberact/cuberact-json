@@ -21,9 +21,9 @@ package org.cuberact.json.output;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonOutputStringBuilder implements JsonOutput {
+public class JsonOutputStringBuilder implements JsonOutput<StringBuilder> {
 
-    private final StringBuilder result = new StringBuilder();
+    protected final StringBuilder result = new StringBuilder();
 
     @Override
     public void write(CharSequence data) {
