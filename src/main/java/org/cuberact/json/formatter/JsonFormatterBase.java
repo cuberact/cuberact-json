@@ -87,9 +87,6 @@ public abstract class JsonFormatterBase implements JsonFormatter {
                             case 2:
                                 output.write("00");
                                 break;
-                            case 3:
-                                output.write("0");
-                                break;
                         }
                         output.write(hex);
                     } else {
