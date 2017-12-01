@@ -24,91 +24,91 @@ import org.cuberact.json.parser.JsonParser;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public interface JsonBuilder {
+public interface JsonBuilder<OBJECT, ARRAY> {
 
     /**
      * @return object representation
      */
-    Object createObject();
+    OBJECT createObject();
 
     /**
      * @return array representation
      */
-    Object createArray();
+    ARRAY createArray();
 
     /**
      * @param object    - json object representation created by {@link JsonBuilder#createObject()}
      * @param attr      - attribute
      * @param subObject - json object representation created by {@link JsonBuilder#createObject()}
      */
-    void addObjectToObject(Object object, String attr, Object subObject);
+    void addObjectToObject(OBJECT object, String attr, OBJECT subObject);
 
     /**
      * @param object   - json object representation created by {@link JsonBuilder#createObject()}
      * @param attr     - attribute
      * @param subArray - json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addArrayToObject(Object object, String attr, Object subArray);
+    void addArrayToObject(OBJECT object, String attr, ARRAY subArray);
 
     /**
      * @param object - json object representation created by {@link JsonBuilder#createObject()}
      * @param attr   - attribute
      * @param value  - value
      */
-    void addStringToObject(Object object, String attr, String value);
+    void addStringToObject(OBJECT object, String attr, String value);
 
     /**
      * @param object - json object representation created by {@link JsonBuilder#createObject()}
      * @param attr   - attribute
      * @param value  - value
      */
-    void addBooleanToObject(Object object, String attr, Boolean value);
+    void addBooleanToObject(OBJECT object, String attr, Boolean value);
 
     /**
      * @param object - json object representation created by {@link JsonBuilder#createObject()}
      * @param attr   - attribute
      */
-    void addNullToObject(Object object, String attr);
+    void addNullToObject(OBJECT object, String attr);
 
     /**
      * @param object - json object representation created by {@link JsonBuilder#createObject()}
      * @param attr   - attribute
      * @param value  - value
      */
-    void addNumberToObject(Object object, String attr, JsonNumber value);
+    void addNumberToObject(OBJECT object, String attr, JsonNumber value);
 
     /**
      * @param array     - json array representation created by {@link JsonBuilder#createArray()}
      * @param subObject - json object representation created by {@link JsonBuilder#createObject()}
      */
-    void addObjectToArray(Object array, Object subObject);
+    void addObjectToArray(ARRAY array, OBJECT subObject);
 
     /**
      * @param array    - json array representation created by {@link JsonBuilder#createArray()}
      * @param subArray - json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addArrayToArray(Object array, Object subArray);
+    void addArrayToArray(ARRAY array, ARRAY subArray);
 
     /**
      * @param array - json array representation created by {@link JsonBuilder#createArray()}
      * @param value - value
      */
-    void addStringToArray(Object array, String value);
+    void addStringToArray(ARRAY array, String value);
 
     /**
      * @param array - json array representation created by {@link JsonBuilder#createArray()}
      * @param value - value
      */
-    void addBooleanToArray(Object array, Boolean value);
+    void addBooleanToArray(ARRAY array, Boolean value);
 
     /**
      * @param array - json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addNullToArray(Object array);
+    void addNullToArray(ARRAY array);
 
     /**
      * @param array - json array representation created by {@link JsonBuilder#createArray()}
      * @param value - value
      */
-    void addNumberToArray(Object array, JsonNumber value);
+    void addNumberToArray(ARRAY array, JsonNumber value);
 }

@@ -29,7 +29,7 @@ import java.util.Objects;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonBuilderTree implements JsonBuilder {
+public class JsonBuilderTree implements JsonBuilder<JsonObject, JsonArray> {
 
     public static JsonBuilderTree DEFAULT = new JsonBuilderTree(JsonNumberConverterLongDouble.REF);
 
@@ -39,79 +39,73 @@ public class JsonBuilderTree implements JsonBuilder {
         this.jsonNumberConverter = Objects.requireNonNull(jsonNumberConverter, "JsonNumberConverter");
     }
 
-    /**
-     * @return JsonObject - {@link JsonObject}
-     */
     @Override
-    public Object createObject() {
+    public JsonObject createObject() {
         return new JsonObject();
     }
 
-    /**
-     * @return JsonArray - {@link JsonArray}
-     */
     @Override
-    public Object createArray() {
+    public JsonArray createArray() {
         return new JsonArray();
     }
 
     @Override
-    public void addObjectToObject(Object object, String attr, Object subObject) {
-        ((JsonObject) object).add(attr, subObject);
+    public void addObjectToObject(JsonObject object, String attr, JsonObject subObject) {
+        object.add(attr, subObject);
     }
 
     @Override
-    public void addArrayToObject(Object object, String attr, Object subArray) {
-        ((JsonObject) object).add(attr, subArray);
+    public void addArrayToObject(JsonObject object, String attr, JsonArray subArray) {
+        object.add(attr, subArray);
     }
 
     @Override
-    public void addStringToObject(Object object, String attr, String value) {
-        ((JsonObject) object).add(attr, value);
+    public void addStringToObject(JsonObject object, String attr, String value) {
+        object.add(attr, value);
     }
 
     @Override
-    public void addBooleanToObject(Object object, String attr, Boolean value) {
-        ((JsonObject) object).add(attr, value);
+    public void addBooleanToObject(JsonObject object, String attr, Boolean value) {
+        object.add(attr, value);
     }
 
     @Override
-    public void addNullToObject(Object object, String attr) {
-        ((JsonObject) object).add(attr, null);
+    public void addNullToObject(JsonObject object, String attr) {
+        object.add(attr, null);
     }
 
     @Override
-    public void addNumberToObject(Object object, String attr, JsonNumber value) {
-        ((JsonObject) object).add(attr, jsonNumberConverter.convert(value));
+    public void addNumberToObject(JsonObject object, String attr, JsonNumber value) {
+        object.add(attr, jsonNumberConverter.convert(value));
     }
 
     @Override
-    public void addObjectToArray(Object array, Object subObject) {
-        ((JsonArray) array).add(subObject);
+    public void addObjectToArray(JsonArray array, JsonObject subObject) {
+        array.add(subObject);
     }
 
     @Override
-    public void addArrayToArray(Object array, Object subArray) {
-        ((JsonArray) array).add(subArray);
+    public void addArrayToArray(JsonArray array, JsonArray subArray) {
+        array.add(subArray);
     }
 
     @Override
-    public void addStringToArray(Object array, String value) {
-        ((JsonArray) array).add(value);
+    public void addStringToArray(JsonArray array, String value) {
+        array.add(value);
     }
 
     @Override
-    public void addBooleanToArray(Object array, Boolean value) {
-        ((JsonArray) array).add(value);
+    public void addBooleanToArray(JsonArray array, Boolean value) {
+        array.add(value);
     }
 
     @Override
-    public void addNullToArray(Object array) {
-        ((JsonArray) array).add(null);
+    public void addNullToArray(JsonArray array) {
+        array.add(null);
     }
 
     @Override
-    public void addNumberToArray(Object array, JsonNumber value) {
-        ((JsonArray) array).add(jsonNumberConverter.convert(value));
+    public void addNumberToArray(JsonArray array, JsonNumber value) {
+        array.add(jsonNumberConverter.convert(value));
     }
 }
