@@ -23,7 +23,7 @@ import static org.cuberact.json.optimize.CharTable.toLong;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonNumberConverterLongDouble implements JsonNumberConverter {
+public final class JsonNumberConverterLongDouble implements JsonNumberConverter {
 
     public static final JsonNumberConverterLongDouble REF = new JsonNumberConverterLongDouble();
 

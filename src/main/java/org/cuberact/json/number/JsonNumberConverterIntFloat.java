@@ -23,7 +23,7 @@ import static org.cuberact.json.optimize.CharTable.toInt;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonNumberConverterIntFloat implements JsonNumberConverter {
+public final class JsonNumberConverterIntFloat implements JsonNumberConverter {
 
     public static final JsonNumberConverterIntFloat REF = new JsonNumberConverterIntFloat();
 
