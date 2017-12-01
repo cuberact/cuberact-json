@@ -19,6 +19,7 @@ package org.cuberact.json.parser;
 import org.cuberact.json.builder.JsonBuilder;
 import org.cuberact.json.builder.JsonBuilderTree;
 import org.cuberact.json.input.JsonInput;
+import org.cuberact.json.input.JsonInputCharArray;
 import org.cuberact.json.input.JsonInputCharSequence;
 import org.cuberact.json.input.JsonInputReader;
 
@@ -51,6 +52,15 @@ public final class JsonParser {
      */
     public <E> E parse(CharSequence input) {
         return parse(new JsonInputCharSequence(input));
+    }
+
+    /**
+     * @param input - char array
+     * @param <E>   - {@link JsonBuilder#createObject()} or {@link JsonBuilder#createArray()}
+     * @return JsonBuilder result - {@link JsonBuilder#createObject()} or {@link JsonBuilder#createArray()}
+     */
+    public <E> E parse(char[] input) {
+        return parse(new JsonInputCharArray(input));
     }
 
     /**
@@ -87,6 +97,7 @@ public final class JsonParser {
         return (E) root;
     }
 
+    @SuppressWarnings("unchecked")
     private void parseObject(JsonScanner scanner, Object object) {
         for (; ; ) {
             switch (scanner.nextImportantChar()) {
@@ -156,6 +167,7 @@ public final class JsonParser {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void parseArray(JsonScanner scanner, Object array) {
         for (; ; ) {
             switch (scanner.nextImportantChar()) {
