@@ -34,7 +34,9 @@ public final class JsonInputCharSequence implements JsonInput {
 
     public char nextChar() {
         try {
-            return input.charAt(position++);
+            char c = input.charAt(position);
+            position++;
+            return c;
         } catch (StringIndexOutOfBoundsException e) {
             return END_OF_INPUT;
         }
