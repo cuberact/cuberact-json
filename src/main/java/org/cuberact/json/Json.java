@@ -41,7 +41,7 @@ public abstract class Json implements Serializable {
     public final String toString(JsonFormatter formatter) {
         JsonOutputStringBuilder writer = new JsonOutputStringBuilder();
         toOutput(Objects.requireNonNull(formatter, "formatter"), writer);
-        return writer.result().toString();
+        return writer.getResult().toString();
     }
 
     public abstract void toOutput(JsonFormatter formatter, JsonOutput output);
