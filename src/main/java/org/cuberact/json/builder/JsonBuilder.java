@@ -20,11 +20,21 @@ import org.cuberact.json.number.JsonNumber;
 import org.cuberact.json.parser.JsonParser;
 
 /**
- * Used by {@link JsonParser#JsonParser(JsonBuilder)} for build Json tree
+ * Used by {@link JsonParser#JsonParser(JsonBuilder)}
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public interface JsonBuilder<OBJECT, ARRAY> {
+
+    /**
+     * Called on build start. Before json parsing. Only for special cases - for example if we need directly write to output and not build a DOM
+     */
+    void buildStart();
+
+    /**
+     * Called on build end. If error in json, this method will not be called. Only for special cases - for example if we need directly write to output and not build a DOM
+     */
+    void buildEnd();
 
     /**
      * @return object representation
@@ -37,18 +47,47 @@ public interface JsonBuilder<OBJECT, ARRAY> {
     ARRAY createArray();
 
     /**
-     * @param object    - json object representation created by {@link JsonBuilder#createObject()}
-     * @param attr      - attribute
-     * @param subObject - json object representation created by {@link JsonBuilder#createObject()}
+     * Called after finish OBJECT. Only for special cases - for example if we need directly write to output and not build a DOM
+     *
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
      */
-    void addObjectToObject(OBJECT object, String attr, OBJECT subObject);
+    void objectCompleted(OBJECT object);
 
     /**
-     * @param object   - json object representation created by {@link JsonBuilder#createObject()}
-     * @param attr     - attribute
-     * @param subArray - json array representation created by {@link JsonBuilder#createArray()}
+     * Called after finish OBJECT. Only for special cases - for example if we need directly write to output and not build a DOM
+     *
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addArrayToObject(OBJECT object, String attr, ARRAY subArray);
+    void arrayCompleted(ARRAY array);
+
+    /**
+     * Called before parse subObject or subArray. Only for special cases - for example if we need directly write to output and not build a DOM
+     *
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr   - attribute
+     */
+    void addObjectAttr(OBJECT object, String attr);
+
+    /**
+     * Called before parse subObject or subArray. Only for special cases - for example if we need directly write to output and not build a DOM
+     *
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
+     */
+    void addArrayComma(ARRAY array);
+
+    /**
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr   - attribute
+     * @param value  - finished json object representation created by {@link JsonBuilder#createObject()}
+     */
+    void addObjectToObject(OBJECT object, String attr, OBJECT value);
+
+    /**
+     * @param object - json object representation created by {@link JsonBuilder#createObject()}
+     * @param attr   - attribute
+     * @param value  - finished json array representation created by {@link JsonBuilder#createArray()}
+     */
+    void addArrayToObject(OBJECT object, String attr, ARRAY value);
 
     /**
      * @param object - json object representation created by {@link JsonBuilder#createObject()}
@@ -78,16 +117,16 @@ public interface JsonBuilder<OBJECT, ARRAY> {
     void addNumberToObject(OBJECT object, String attr, JsonNumber value);
 
     /**
-     * @param array     - json array representation created by {@link JsonBuilder#createArray()}
-     * @param subObject - json object representation created by {@link JsonBuilder#createObject()}
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
+     * @param value - finished json object representation created by {@link JsonBuilder#createObject()}
      */
-    void addObjectToArray(ARRAY array, OBJECT subObject);
+    void addObjectToArray(ARRAY array, OBJECT value);
 
     /**
-     * @param array    - json array representation created by {@link JsonBuilder#createArray()}
-     * @param subArray - json array representation created by {@link JsonBuilder#createArray()}
+     * @param array - json array representation created by {@link JsonBuilder#createArray()}
+     * @param value - finished json array representation created by {@link JsonBuilder#createArray()}
      */
-    void addArrayToArray(ARRAY array, ARRAY subArray);
+    void addArrayToArray(ARRAY array, ARRAY value);
 
     /**
      * @param array - json array representation created by {@link JsonBuilder#createArray()}
