@@ -23,7 +23,7 @@ package org.cuberact.json.output;
  */
 public class JsonOutputStringBuilder implements JsonOutput<StringBuilder> {
 
-    protected final StringBuilder result = new StringBuilder();
+    private final StringBuilder result = new StringBuilder();
 
     @Override
     public void write(CharSequence data) {
@@ -35,9 +35,13 @@ public class JsonOutputStringBuilder implements JsonOutput<StringBuilder> {
         result.append(data);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public StringBuilder result() {
+    public void flushBuffer() {
+        //nothing
+    }
+
+    @Override
+    public StringBuilder getResult() {
         return result;
     }
 }

@@ -40,8 +40,10 @@ public interface JsonOutput<RESULT> {
      */
     void write(char data);
 
+    void flushBuffer();
+
     /**
      * @return output result
      */
-    RESULT result();
+    RESULT getResult();
 }
