@@ -16,10 +16,10 @@
 
 package org.cuberact.json.parser;
 
+import org.cuberact.json.Json;
 import org.cuberact.json.formatter.JsonFormatter;
 import org.junit.Assert;
 import org.junit.Test;
-import org.cuberact.json.Json;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,28 +27,28 @@ import java.util.List;
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonParserMultithreadTest {
+public class JsonParserMultiThreadTest {
 
     @Test
-    public void multithreadTest() throws InterruptedException {
+    public void multiThread() throws InterruptedException {
         String longJson = prepareLongJson();
         String expected = ((Json) new JsonParser().parse(longJson)).toString(JsonFormatter.PACKED());
-        final JsonParser jsonParser = new JsonParser();
-        final List<Json> parsed = new ArrayList<>();
+        final JsonParser singleInstanceOfJsonParser = new JsonParser();
+        final List<String> parsed = new ArrayList<>();
         Runnable runnable = () -> {
-            Json json = jsonParser.parse(longJson);
-            parsed.add(json);
+            Json json = singleInstanceOfJsonParser.parse(longJson);
+            parsed.add(json.toString(JsonFormatter.PACKED()));
         };
         Thread[] threads = new Thread[10];
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new Thread(runnable);
             threads[i].start();
         }
-        for (int i = 0; i < threads.length; i++) {
-            threads[i].join();
+        for (Thread thread : threads) {
+            thread.join();
         }
-        for (Json json : parsed) {
-            Assert.assertEquals(expected, json.toString(JsonFormatter.PACKED()));
+        for (String json : parsed) {
+            Assert.assertEquals(expected, json);
         }
     }
 

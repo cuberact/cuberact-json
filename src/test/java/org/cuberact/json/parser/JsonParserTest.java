@@ -19,7 +19,7 @@ package org.cuberact.json.parser;
 import org.cuberact.json.Json;
 import org.cuberact.json.JsonArray;
 import org.cuberact.json.JsonObject;
-import org.cuberact.json.builder.JsonBuilderTree;
+import org.cuberact.json.builder.JsonBuilderDom;
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.number.JsonNumberConverter;
 import org.cuberact.json.number.JsonNumberConverterIntFloat;
@@ -48,8 +48,6 @@ public class JsonParserTest {
                 "  }\n" +
                 "}";
         jsonAsString = jsonAsString.replace('\'', '"');
-        System.out.println(jsonAsString);
-
         String expected = "{'rect':[486,'HelloWorld',{'data':'ěščřžýáíé'},-23.54],'perspectiveSelector':{'perspectives':[true,false],'selected':null,'some':[1,2,3.2]}}"
                 .replace('\'', '"');
 
@@ -199,7 +197,7 @@ public class JsonParserTest {
     @Test
     public void numberAsIntAndFloat() {
         String jsonAsString = "[1,2,3,1.1,2.2,3.3E-6]";
-        JsonParser jsonParser = new JsonParser(new JsonBuilderTree(JsonNumberConverterIntFloat.REF));
+        JsonParser jsonParser = new JsonParser(new JsonBuilderDom(JsonNumberConverterIntFloat.REF));
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
         assertEquals(1, jsonArray.get(0));
         assertEquals(2, jsonArray.get(1));
@@ -218,7 +216,7 @@ public class JsonParserTest {
             }
             return new BigInteger(number.toString());
         };
-        JsonParser jsonParser = new JsonParser(new JsonBuilderTree(jsonNumberConverter));
+        JsonParser jsonParser = new JsonParser(new JsonBuilderDom(jsonNumberConverter));
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
         assertEquals(new BigInteger("1"), jsonArray.get(0));
         assertEquals(new BigInteger("2"), jsonArray.get(1));

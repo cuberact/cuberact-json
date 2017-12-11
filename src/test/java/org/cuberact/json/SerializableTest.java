@@ -16,9 +16,9 @@
 
 package org.cuberact.json;
 
+import org.cuberact.json.parser.JsonParser;
 import org.junit.Assert;
 import org.junit.Test;
-import org.cuberact.json.parser.JsonParser;
 
 import java.io.*;
 

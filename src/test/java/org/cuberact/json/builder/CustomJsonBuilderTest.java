@@ -35,7 +35,7 @@ public class CustomJsonBuilderTest {
 
     @Test
     public void buildToMapAndList() {
-        JsonBuilder customJsonBuilder = new JsonBuilder<Map<String, Object>, List<Object>>() {
+        JsonBuilder customJsonBuilder = new JsonBuilderBase<Map<String, Object>, List<Object>>() {
 
             @Override
             public Map<String, Object> createObject() {
@@ -48,63 +48,18 @@ public class CustomJsonBuilderTest {
             }
 
             @Override
-            public void addObjectToObject(Map<String, Object> object, String attr, Map<String, Object> subObject) {
-                object.put(attr, subObject);
-            }
-
-            @Override
-            public void addArrayToObject(Map<String, Object> object, String attr, List<Object> subArray) {
-                object.put(attr, subArray);
-            }
-
-            @Override
-            public void addStringToObject(Map<String, Object> object, String attr, String value) {
+            protected void addToObject(Map<String, Object> object, String attr, Object value) {
                 object.put(attr, value);
             }
 
             @Override
-            public void addBooleanToObject(Map<String, Object> object, String attr, Boolean value) {
-                object.put(attr, value);
-            }
-
-            @Override
-            public void addNullToObject(Map<String, Object> object, String attr) {
-                object.put(attr, null);
-            }
-
-            @Override
-            public void addNumberToObject(Map<String, Object> object, String attr, JsonNumber value) {
-                object.put(attr, JsonNumberConverterIntFloat.REF.convert(value));
-            }
-
-            @Override
-            public void addObjectToArray(List<Object> array, Map<String, Object> subObject) {
-                array.add(subObject);
-            }
-
-            @Override
-            public void addArrayToArray(List<Object> array, List<Object> subArray) {
-                array.add(subArray);
-            }
-
-            @Override
-            public void addStringToArray(List<Object> array, String value) {
+            protected void addToArray(List<Object> array, Object value) {
                 array.add(value);
             }
 
             @Override
-            public void addBooleanToArray(List<Object> array, Boolean value) {
-                array.add(value);
-            }
-
-            @Override
-            public void addNullToArray(List<Object> array) {
-                array.add(null);
-            }
-
-            @Override
-            public void addNumberToArray(List<Object> array, JsonNumber value) {
-                array.add(JsonNumberConverterIntFloat.REF.convert(value));
+            protected Object convertJsonNumber(JsonNumber jsonNumber) {
+                return JsonNumberConverterIntFloat.REF.convert(jsonNumber);
             }
         };
 

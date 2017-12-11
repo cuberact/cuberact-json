@@ -23,12 +23,10 @@ import org.cuberact.json.parser.JsonParser;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 
 import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -78,7 +76,7 @@ public class JsonInputTest {
         readInputWithAsserts(new JsonInputReader(new StringReader("123")));
     }
 
-    private void readInputWithAsserts(JsonInput input){
+    private void readInputWithAsserts(JsonInput input) {
         assertEquals('1', input.nextChar());
         assertEquals(1, input.position());
         assertEquals('2', input.nextChar());
@@ -103,5 +101,4 @@ public class JsonInputTest {
         });
         input.nextChar();
     }
-
 }

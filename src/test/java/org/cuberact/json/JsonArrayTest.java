@@ -2,7 +2,6 @@ package org.cuberact.json;
 
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -122,7 +121,7 @@ public class JsonArrayTest {
     }
 
     @Test
-    public void iterDoubles() {
+    public void iterateDoubles() {
         JsonArray jsonArray = new JsonArray()
                 .add(1.0)
                 .add(2.0)
@@ -137,7 +136,7 @@ public class JsonArrayTest {
     }
 
     @Test
-    public void iterFloats() {
+    public void iterateFloats() {
         JsonArray jsonArray = new JsonArray()
                 .add(1.0f)
                 .add(2.0f)
@@ -152,15 +151,14 @@ public class JsonArrayTest {
     }
 
     @Test
-    public void iterStrings() {
+    public void iterateStrings() {
         JsonArray jsonArray = new JsonArray()
                 .add("1")
                 .add("2")
                 .add("3");
         List<String> expected = jsonArray.listOf(String.class);
         jsonArray.add(1.0);
-        List<String> result = new ArrayList<>();
-        result.addAll(jsonArray.listOf(String.class));
+        List<String> result = new ArrayList<>(jsonArray.listOf(String.class));
         assertEquals(expected, result);
     }
 
@@ -177,12 +175,12 @@ public class JsonArrayTest {
         root.add(true);
         root.add(1L);
         root.add(2.0);
-        root.add("ahoj");
+        root.add("hello");
         root.add(new JsonArray().add(1L).add(2L).add(3L));
         root.add(new JsonArray().add(1.0).add(2.0).add(3.0));
         root.add(new JsonArray().add("1").add("2").add("3"));
 
-        String expected = "[null,true,1,2.0,'ahoj',[1,2,3],[1.0,2.0,3.0],['1','2','3']]"
+        String expected = "[null,true,1,2.0,'hello',[1,2,3],[1.0,2.0,3.0],['1','2','3']]"
                 .replace('\'', '"');
 
         assertEquals(expected, root.toString(JsonFormatter.PACKED()));
@@ -211,14 +209,14 @@ public class JsonArrayTest {
     }
 
     @Test
-    public void getWrongTypeButIsNull(){
+    public void getWrongTypeButIsNull() {
         JsonArray jsonArray = new JsonArray();
         jsonArray.add(null);
         assertNull(jsonArray.getObj(0));
     }
 
     @Test(expected = JsonException.class)
-    public void getWrongType(){
+    public void getWrongType() {
         JsonArray jsonArray = new JsonArray();
         jsonArray.add("hello");
         jsonArray.getObj(0);

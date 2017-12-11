@@ -100,7 +100,7 @@ public class JsonObjectTest {
     }
 
     @Test
-    public void iter() {
+    public void iterate() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("str1", "one");
         jsonObject.add("str2", "two");
@@ -117,7 +117,7 @@ public class JsonObjectTest {
     }
 
     @Test
-    public void iterStrings() {
+    public void iterateStrings() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("str1", "one");
         jsonObject.add("str2", "two");
@@ -212,14 +212,14 @@ public class JsonObjectTest {
         child1.add("name", "max");
         child1.add("age", 15L);
         JsonObject child2 = new JsonObject();
-        child2.add("name", "neto");
+        child2.add("name", "jack");
         child2.add("age", 9L);
         children.add(child1);
         children.add(child2);
         person.add("children", children);
         root.add("person", person);
 
-        String expected = "{'attr':'value','person':{'name':'nkd','age':38,'pick':[1,2,3],'children':[{'name':'max','age':15},{'name':'neto','age':9}]}}"
+        String expected = "{'attr':'value','person':{'name':'nkd','age':38,'pick':[1,2,3],'children':[{'name':'max','age':15},{'name':'jack','age':9}]}}"
                 .replace('\'', '"');
 
         assertEquals(expected, root.toString(JsonFormatter.PACKED()));
@@ -229,13 +229,13 @@ public class JsonObjectTest {
     }
 
     @Test
-    public void getWrongTypeButIsNull(){
+    public void getWrongTypeButIsNull() {
         JsonObject jsonObject = new JsonObject();
         assertNull(jsonObject.getObj("attr"));
     }
 
     @Test(expected = JsonException.class)
-    public void getWrongType(){
+    public void getWrongType() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("hello", "world");
         jsonObject.getLong("hello");

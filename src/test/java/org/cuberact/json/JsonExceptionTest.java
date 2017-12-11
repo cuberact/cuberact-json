@@ -16,7 +16,6 @@
 
 package org.cuberact.json;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 public class JsonExceptionTest {
 
     @Test
-    public void constructor(){
+    public void constructor() {
         RuntimeException runtimeException = new RuntimeException("text1");
         JsonException jsonException = new JsonException("text2", runtimeException);
         assertEquals("text2", jsonException.getMessage());

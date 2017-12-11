@@ -20,9 +20,7 @@ import org.cuberact.json.JsonException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -30,56 +28,56 @@ import static org.junit.Assert.assertTrue;
 public class JsonNumberTest {
 
     @Test
-    public void equals(){
+    public void equals() {
         JsonNumber jsonNumber1 = new JsonNumber("12345.67E+13".toCharArray(), 12, true);
         JsonNumber jsonNumber2 = new JsonNumber("12345.67E+13".toCharArray(), 12, true);
         assertTrue(jsonNumber1.equals(jsonNumber2));
     }
 
     @Test
-    public void notEquals(){
+    public void notEquals() {
         JsonNumber jsonNumber1 = new JsonNumber("12345".toCharArray(), 5, true);
         JsonNumber jsonNumber2 = new JsonNumber("12345".toCharArray(), 5, false);
         Assert.assertFalse(jsonNumber1.equals(jsonNumber2));
     }
 
     @Test
-    public void hashCodeEquals(){
+    public void hashCodeEquals() {
         JsonNumber jsonNumber1 = new JsonNumber("12345.67E+13".toCharArray(), 12, true);
         JsonNumber jsonNumber2 = new JsonNumber("12345.67E+13".toCharArray(), 12, true);
         assertEquals(jsonNumber1.hashCode(), jsonNumber2.hashCode());
     }
 
     @Test
-    public void hashCodeNotEquals(){
+    public void hashCodeNotEquals() {
         JsonNumber jsonNumber1 = new JsonNumber("12345".toCharArray(), 5, true);
         JsonNumber jsonNumber2 = new JsonNumber("12345".toCharArray(), 5, false);
         assertNotEquals(jsonNumber1.hashCode(), jsonNumber2.hashCode());
     }
 
     @Test
-    public void subSequence(){
+    public void subSequence() {
         JsonNumber jsonNumber = new JsonNumber("12345".toCharArray(), 5, true);
-        CharSequence subSequence = jsonNumber.subSequence(1,3);
+        CharSequence subSequence = jsonNumber.subSequence(1, 3);
         assertEquals("23", subSequence.toString());
-        assertEquals("12345".subSequence(1,3), subSequence);
+        assertEquals("12345".subSequence(1, 3), subSequence);
     }
 
     @Test(expected = JsonException.class)
-    public void subSequenceError1(){
+    public void subSequenceError1() {
         JsonNumber jsonNumber = new JsonNumber("12345".toCharArray(), 5, true);
-        jsonNumber.subSequence(-1,3);
+        jsonNumber.subSequence(-1, 3);
     }
 
     @Test(expected = JsonException.class)
-    public void subSequenceError2(){
+    public void subSequenceError2() {
         JsonNumber jsonNumber = new JsonNumber("12345".toCharArray(), 5, true);
-        jsonNumber.subSequence(0,99);
+        jsonNumber.subSequence(0, 99);
     }
 
     @Test(expected = JsonException.class)
-    public void subSequenceError3(){
+    public void subSequenceError3() {
         JsonNumber jsonNumber = new JsonNumber("12345".toCharArray(), 5, true);
-        jsonNumber.subSequence(3,1);
+        jsonNumber.subSequence(3, 1);
     }
 }

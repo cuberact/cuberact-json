@@ -23,10 +23,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.StringReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
