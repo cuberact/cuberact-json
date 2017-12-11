@@ -17,7 +17,7 @@
 package org.cuberact.json.parser;
 
 import org.cuberact.json.builder.JsonBuilder;
-import org.cuberact.json.builder.JsonBuilderTree;
+import org.cuberact.json.builder.JsonBuilderDom;
 import org.cuberact.json.input.JsonInput;
 import org.cuberact.json.input.JsonInputCharArray;
 import org.cuberact.json.input.JsonInputCharSequence;
@@ -29,7 +29,7 @@ import java.util.Objects;
 /**
  * Parse {@link JsonInput} and build result with {@link JsonBuilder}
  * <p>
- * JsonParser is thread-safe with {@link JsonBuilderTree}
+ * JsonParser is thread-safe with default {@link JsonBuilderDom}
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
@@ -38,7 +38,7 @@ public final class JsonParser {
     private final JsonBuilder builder;
 
     public JsonParser() {
-        this(JsonBuilderTree.DEFAULT);
+        this(JsonBuilderDom.DEFAULT);
     }
 
     public JsonParser(JsonBuilder builder) {
@@ -80,6 +80,7 @@ public final class JsonParser {
     @SuppressWarnings("unchecked")
     public <E> E parse(JsonInput input) {
         JsonScanner scanner = new JsonScanner(input);
+        builder.buildStart();
         Object root;
         scanner.nextImportantChar();
         switch (scanner.lastReadChar) {
@@ -94,6 +95,7 @@ public final class JsonParser {
             default:
                 throw scanner.jsonException("Expected { or [");
         }
+        builder.buildEnd();
         return (E) root;
     }
 
@@ -111,12 +113,14 @@ public final class JsonParser {
                             builder.addStringToObject(object, attr, scanner.consumeString());
                             break;
                         case '{':
+                            builder.addObjectAttr(object, attr);
                             final Object subObject = builder.createObject();
                             parseObject(scanner, subObject);
                             builder.addObjectToObject(object, attr, subObject);
                             scanner.nextImportantChar();
                             break;
                         case '[':
+                            builder.addObjectAttr(object, attr);
                             final Object subArray = builder.createArray();
                             parseArray(scanner, subArray);
                             builder.addArrayToObject(object, attr, subArray);
@@ -152,6 +156,7 @@ public final class JsonParser {
                     }
                     break;
                 case '}':
+                    builder.objectCompleted(object);
                     return;
                 default:
                     throw scanner.jsonException("Expected \"");
@@ -160,6 +165,7 @@ public final class JsonParser {
                 case ',':
                     continue;
                 case '}':
+                    builder.objectCompleted(object);
                     return;
                 default:
                     throw scanner.jsonException("Expected } or ,");
@@ -175,12 +181,14 @@ public final class JsonParser {
                     builder.addStringToArray(array, scanner.consumeString());
                     break;
                 case '{':
+                    builder.addArrayComma(array);
                     final Object subObject = builder.createObject();
                     parseObject(scanner, subObject);
                     builder.addObjectToArray(array, subObject);
                     scanner.nextImportantChar();
                     break;
                 case '[':
+                    builder.addArrayComma(array);
                     final Object jsonSubArray = builder.createArray();
                     parseArray(scanner, jsonSubArray);
                     builder.addArrayToArray(array, jsonSubArray);
@@ -212,6 +220,7 @@ public final class JsonParser {
                     builder.addNumberToArray(array, scanner.consumeNumber());
                     break;
                 case ']':
+                    builder.arrayCompleted(array);
                     return;
                 default:
                     throw scanner.jsonException("Expected \" or ] or number or boolean or null");
@@ -220,6 +229,7 @@ public final class JsonParser {
                 case ',':
                     continue;
                 case ']':
+                    builder.arrayCompleted(array);
                     return;
                 default:
                     throw scanner.jsonException("Expected ] or ,");
