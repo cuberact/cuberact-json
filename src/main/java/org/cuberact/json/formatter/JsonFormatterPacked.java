@@ -35,21 +35,6 @@ public final class JsonFormatterPacked extends JsonFormatterBase {
     }
 
     @Override
-    public void writeObjectEnd(JsonOutput output) {
-        output.write("}");
-    }
-
-    @Override
-    public void writeArrayStart(JsonOutput output) {
-        output.write("[");
-    }
-
-    @Override
-    public void writeArrayEnd(JsonOutput output) {
-        output.write("]");
-    }
-
-    @Override
     public void writeObjectColon(JsonOutput output) {
         output.write(":");
     }
@@ -60,7 +45,22 @@ public final class JsonFormatterPacked extends JsonFormatterBase {
     }
 
     @Override
+    public void writeObjectEnd(JsonOutput output) {
+        output.write("}");
+    }
+
+    @Override
+    public void writeArrayStart(JsonOutput output) {
+        output.write("[");
+    }
+
+    @Override
     public void writeArrayComma(JsonOutput output) {
         output.write(",");
+    }
+
+    @Override
+    public void writeArrayEnd(JsonOutput output) {
+        output.write("]");
     }
 }

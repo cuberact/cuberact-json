@@ -16,6 +16,7 @@
 
 package org.cuberact.json.formatter;
 
+import org.cuberact.json.JsonException;
 import org.cuberact.json.output.JsonOutput;
 
 /**
@@ -23,60 +24,112 @@ import org.cuberact.json.output.JsonOutput;
  */
 public class JsonFormatterPretty extends JsonFormatterBase {
 
-    protected String actualIndent;
-    protected String indent;
+    public static final Config DEFAULT_CONFIG = new Config();
+
+    private final Config cfg;
+    private String indent = "";
+    private boolean objectStarted = false;
 
     public JsonFormatterPretty() {
-        this("", "    ");
+        this(DEFAULT_CONFIG);
     }
 
-    public JsonFormatterPretty(String startIndent, String indent) {
-        this.actualIndent = startIndent;
-        this.indent = indent;
+    public JsonFormatterPretty(Config cfg) {
+        this.cfg = cfg.copy();
     }
 
     @Override
     public void writeObjectStart(JsonOutput output) {
-        output.write("{\n");
-        actualIndent += indent;
-        output.write(actualIndent);
+        output.write(cfg.objectStart);
+        objectStarted = true;
     }
 
     @Override
-    public void writeObjectEnd(JsonOutput output) {
-        if (actualIndent.length() <= indent.length()) {
-            actualIndent = "";
-        } else {
-            actualIndent = actualIndent.substring(0, actualIndent.length() - indent.length());
+    public void writeObjectAttr(CharSequence attr, JsonOutput output) {
+        if (objectStarted) {
+            output.write(cfg.lineBreak);
+            incIndent();
+            output.write(indent);
+            objectStarted = false;
         }
-        output.write("\n");
-        output.write(actualIndent);
-        output.write("}");
-    }
-
-    @Override
-    public void writeArrayStart(JsonOutput output) {
-        output.write("[");
-    }
-
-    @Override
-    public void writeArrayEnd(JsonOutput output) {
-        output.write("]");
+        super.writeObjectAttr(attr, output);
     }
 
     @Override
     public void writeObjectColon(JsonOutput output) {
-        output.write(" : ");
+        output.write(cfg.objectColon);
+    }
+
+    protected void writeString(CharSequence value, JsonOutput output) {
+        output.write(cfg.quotationMark);
+        escape(value, output);
+        output.write(cfg.quotationMark);
     }
 
     @Override
     public void writeObjectComma(JsonOutput output) {
-        output.write(",\n");
-        output.write(actualIndent);
+        output.write(cfg.objectComma);
+        output.write(cfg.lineBreak);
+        output.write(indent);
+    }
+
+    @Override
+    public void writeObjectEnd(JsonOutput output) {
+        if (!objectStarted) {
+            decIndent();
+            output.write(cfg.lineBreak);
+            output.write(indent);
+        }
+        objectStarted = false;
+        output.write(cfg.objectEnd);
+    }
+
+    @Override
+    public void writeArrayStart(JsonOutput output) {
+        output.write(cfg.arrayStart);
     }
 
     @Override
     public void writeArrayComma(JsonOutput output) {
-        output.write(", ");
+        output.write(cfg.arrayComma);
+    }
+
+    @Override
+    public void writeArrayEnd(JsonOutput output) {
+        output.write(cfg.arrayEnd);
+    }
+
+    private void incIndent() {
+        indent += cfg.indent;
+    }
+
+    private void decIndent() {
+        int size = indent.length() - cfg.indent.length();
+        if (size > 0) {
+            indent = indent.substring(0, size);
+        } else {
+            indent = "";
+        }
+    }
+
+    public static class Config implements Cloneable {
+        public String indent = "    ";
+        public String objectStart = "{";
+        public String objectEnd = "}";
+        public String arrayStart = "[";
+        public String arrayEnd = "]";
+        public String objectColon = " : ";
+        public String objectComma = ",";
+        public String arrayComma = ", ";
+        public String quotationMark = "\"";
+        public String lineBreak = "\n";
+
+        Config copy() {
+            try {
+                return (Config) this.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new JsonException(e);
+            }
+        }
     }
 }

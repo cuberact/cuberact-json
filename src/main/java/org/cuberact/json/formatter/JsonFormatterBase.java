@@ -17,6 +17,7 @@
 package org.cuberact.json.formatter;
 
 import org.cuberact.json.Json;
+import org.cuberact.json.number.JsonNumber;
 import org.cuberact.json.output.JsonOutput;
 
 /**
@@ -26,24 +27,28 @@ public abstract class JsonFormatterBase implements JsonFormatter {
 
     @Override
     public void writeObjectAttr(CharSequence attr, JsonOutput output) {
-        output.write("\"");
-        escape(attr, output);
-        output.write("\"");
+        writeString(attr, output);
     }
 
     @Override
     public void writeObjectValue(Object value, JsonOutput output) {
         if (value instanceof Json) {
             ((Json) value).toOutput(this, output);
+        } else if (value instanceof JsonNumber) {
+            output.write(value.toString());
         } else if (value instanceof CharSequence) {
-            output.write("\"");
-            escape((CharSequence) value, output);
-            output.write("\"");
+            writeString((CharSequence) value, output);
         } else if (value instanceof Double || value instanceof Float) {
             output.write(String.valueOf(value).replace(',', '.'));
         } else {
             output.write(String.valueOf(value));
         }
+    }
+
+    protected void writeString(CharSequence value, JsonOutput output) {
+        output.write("\"");
+        escape(value, output);
+        output.write("\"");
     }
 
     @Override

@@ -36,21 +36,21 @@ public interface JsonFormatter {
 
     void writeObjectStart(JsonOutput output);
 
+    void writeObjectAttr(CharSequence attr, JsonOutput output);
+
+    void writeObjectColon(JsonOutput output);
+
+    void writeObjectValue(Object value, JsonOutput output);
+
+    void writeObjectComma(JsonOutput output);
+
     void writeObjectEnd(JsonOutput output);
 
     void writeArrayStart(JsonOutput output);
 
-    void writeArrayEnd(JsonOutput output);
-
-    void writeObjectColon(JsonOutput output);
-
-    void writeObjectComma(JsonOutput output);
+    void writeArrayValue(Object value, JsonOutput output);
 
     void writeArrayComma(JsonOutput output);
 
-    void writeObjectAttr(CharSequence attr, JsonOutput output);
-
-    void writeObjectValue(Object value, JsonOutput output);
-
-    void writeArrayValue(Object value, JsonOutput output);
+    void writeArrayEnd(JsonOutput output);
 }
