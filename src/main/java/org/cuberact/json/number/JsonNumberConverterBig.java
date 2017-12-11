@@ -16,40 +16,27 @@
 
 package org.cuberact.json.number;
 
-import static org.cuberact.json.optimize.CharTable.toInt;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
- * JsonNumber converter to Integer or Float
+ * JsonNumber converter to BigInteger or BigDecimal
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public final class JsonNumberConverterIntFloat implements JsonNumberConverter {
+public final class JsonNumberConverterBig implements JsonNumberConverter {
 
-    public static final JsonNumberConverterIntFloat REF = new JsonNumberConverterIntFloat();
+    public static final JsonNumberConverterBig REF = new JsonNumberConverterBig();
 
-    private JsonNumberConverterIntFloat() {
+    private JsonNumberConverterBig() {
         //use REF instead
     }
 
     /**
-     * @return JsonNumber as Integer or Float
+     * @return JsonNumber as BigInteger or BigDecimal
      */
     @Override
     public Number convert(JsonNumber jsonNumber) {
-        if (jsonNumber.isFloatingNumber()) {
-            return Float.parseFloat(jsonNumber.toString());
-        }
-        int result = 0;
-        int sign = 1;
-        char c = jsonNumber.charAt(0);
-        if (c == '-') {
-            sign = -1;
-        } else {
-            result = toInt(c);
-        }
-        for (int i = 1; i < jsonNumber.length(); i++) {
-            result = result * 10 + toInt(jsonNumber.charAt(i));
-        }
-        return sign * result;
+        return jsonNumber.isFloatingNumber() ? new BigDecimal(jsonNumber.toString()) : new BigInteger(jsonNumber.toString());
     }
 }

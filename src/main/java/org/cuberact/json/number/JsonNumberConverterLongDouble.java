@@ -19,7 +19,7 @@ package org.cuberact.json.number;
 import static org.cuberact.json.optimize.CharTable.toLong;
 
 /**
- * Number converter to Long and Double
+ * JsonNumber converter to Long or Double
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
