@@ -6,130 +6,52 @@ Fast JSON parser with highly customizable input, output and builder.
 
 - fully support [__rfc4627__](https://www.ietf.org/rfc/rfc4627.txt)
 - fast json parse
-- highly customizable (__input__, __builder__, __formatter__, __output__) 
-- thread-safe (with default JsonBuilderTree)
+- highly customizable (__input__, __output__, __builder__) 
+- thread-safe (with default JsonBuilderDom)
 - __JsonObject__ and __JsonArray__ are serializable
 - working as __OSGi bundle__
 - highly readable code
-- small jar
+- small jar (<50kB)
+- no dependencies on third party code
 - Java 8
 
 ## Examples
 
-##### Parse to JsonObject and JsonArray
+##### Parse to DOM
 
 ```java
 JsonParser jsonParser = new JsonParser(); // this instance is thread-safe
 
-JsonArray jsonArray = jsonParser.parse("[1,2,3,4]");
-JsonObject jsonObject = jsonParser.parse("{\"name\" : \"John\", \"age\" : 19}");
+Json json = jsonParser.parse("[1,2,3,4]");  //json is JsonArray
+Json json = jsonParser.parse("{\"name\" : \"John\", \"age\" : 19}"); //json is JsonObject
 Json json = jsonParser.parse(inputAsStream);
 
-String prettyString = jsonArray.toString(JsonFormatter.PRETTY());
-String packedString = jsonObject.toString(JsonFormatter.PACKED());
+String prettyJsonAsString = jsonArray.toString(JsonFormatter.PRETTY());
+String packedJsonAsString = jsonObject.toString(JsonFormatter.PACKED());
 ```
 
-##### Parse from many types - JsonInput
+##### Parse inputs
 
 ```java
 JsonParser parser = new JsonParser();
 
-//as string - JsonInputCharSequence
+//String - JsonInputCharSequence will be used
 Json json1 = parser.parse("[1]");
 
-//as string builder - JsonInputCharSequence
+//StringBuilder - JsonInputCharSequence will be used
 Json json2 = parser.parse(new StringBuilder("[1]"));
 
-//as char buffer - JsonInputCharSequence
+//CharBuffer - JsonInputCharSequence will be used
 Json json3 = parser.parse(CharBuffer.wrap("[1]"));
 
-//as input stream - JsonInputReader
+//InputStream - JsonInputReader will be used
 Json json4 = parser.parse(new StringReader("[1]"));
 
-//as char array - custom JsonInputCharArray
+//char[] - JsonInputCharArray will be used
 Json json5 = parser.parse("[1]".toCharArray());
 ```
 
-##### Custom JsonBuilder - parse to java.util.Map and java.util.List
-```java
-JsonBuilder customJsonBuilder = new JsonBuilder<Map<String, Object>, List<Object>>() {
-
-    @Override
-    public Map<String, Object> createObject() {
-        return new LinkedHashMap<>();
-    }
-
-    @Override
-    public List<Object> createArray() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public void addObjectToObject(Map<String, Object> object, String attr, Map<String, Object> subObject) {
-        object.put(attr, subObject);
-    }
-
-    @Override
-    public void addArrayToObject(Map<String, Object> object, String attr, List<Object> subArray) {
-        object.put(attr, subArray);
-    }
-
-    @Override
-    public void addStringToObject(Map<String, Object> object, String attr, String value) {
-        object.put(attr, value);
-    }
-
-    @Override
-    public void addBooleanToObject(Map<String, Object> object, String attr, Boolean value) {
-        object.put(attr, value);
-    }
-
-    @Override
-    public void addNullToObject(Map<String, Object> object, String attr) {
-        object.put(attr, null);
-    }
-
-    @Override
-    public void addNumberToObject(Map<String, Object> object, String attr, JsonNumber value) {
-        object.put(attr, JsonNumberConverterIntFloat.REF.convert(value));
-    }
-
-    @Override
-    public void addObjectToArray(List<Object> array, Map<String, Object> subObject) {
-        array.add(subObject);
-    }
-
-    @Override
-    public void addArrayToArray(List<Object> array, List<Object> subArray) {
-        array.add(subArray);
-    }
-
-    @Override
-    public void addStringToArray(List<Object> array, String value) {
-        array.add(value);
-    }
-
-    @Override
-    public void addBooleanToArray(List<Object> array, Boolean value) {
-        array.add(value);
-    }
-
-    @Override
-    public void addNullToArray(List<Object> array) {
-        array.add(null);
-    }
-
-    @Override
-    public void addNumberToArray(List<Object> array, JsonNumber value) {
-        array.add(JsonNumberConverterIntFloat.REF.convert(value));
-    }
-};
-
-JsonParser jsonParser = new JsonParser(customJsonBuilder);
-Map<String, Object> map = jsonParser.parse("{ \"array\" : [1,2,3] }");
-```
-
-##### JsonOutput and JsonFormatter
+##### Output and formatter
 
 ```java
 JsonParser jsonParser = new JsonParser(); // this instance is thread-safe
@@ -141,7 +63,7 @@ String jsonAsString3 = json.toString(JsonFormatter.PACKED());
 
 JsonOutput output = new JsonOutputStringBuilder();
 json.toOutput(JsonFormatter.PRETTY(), output);
-StringBuilder jsonAsStringBuilder = output.result();
+StringBuilder jsonAsStringBuilder = output.getResult();
 ```
 
 ## Configuration
@@ -152,20 +74,20 @@ StringBuilder jsonAsStringBuilder = output.result();
 <dependency>
   <groupId>org.cuberact</groupId>
   <artifactId>cuberact-json</artifactId>
-  <version>1.2.0</version>
+  <version>1.3.0</version>
 </dependency>
 ```
 
 ##### Gradle
 
 ```groovy
-compile 'org.cuberact:cuberact-json:1.2.0'
+compile 'org.cuberact:cuberact-json:1.3.0'
 ```
 
 ##### Ivy
 
 ```xml
-<dependency org="org.cuberact" name="cuberact-json" rev="1.2.0">
+<dependency org="org.cuberact" name="cuberact-json" rev="1.3.0">
   <artifact name="cuberact-json" type="jar" />
 </dependency>
 ```
@@ -180,7 +102,7 @@ from [cuberact-json-benchmark](https://github.com/cuberact/cuberact-json-benchma
 
 ```
 
-   CUBERACT_JSON - org.cuberact:cuberact-json:1.2.0
+   CUBERACT_JSON - org.cuberact:cuberact-json:1.3.0
        FAST_JSON - com.alibaba:fastjson:1.2.38
 JACKSON_DATABIND - com.fasterxml.jackson.core:jackson-databind:2.9.1
             GSON - com.google.code.gson:gson:2.8.2
@@ -190,69 +112,69 @@ BENCHMARK - JSON DESERIALIZATION FROM STRING
 --------------------------------------------
 Warm up:
 INPUT: JSON as String - data type: RANDOM, size: 1812474 chars
-       CUBERACT_JSON - 0.012589924 sec [143.962 MegaChar/s] min/avg/max = 0.008140000 / 0.012590600 / 0.049663000 sec
-           FAST_JSON - 0.018723549 sec [ 96.802 MegaChar/s] min/avg/max = 0.010384000 / 0.018723600 / 0.128447000 sec
-    JACKSON_DATABIND - 0.018185014 sec [ 99.669 MegaChar/s] min/avg/max = 0.012872000 / 0.018183733 / 0.076671000 sec
-                GSON - 0.019798526 sec [ 91.546 MegaChar/s] min/avg/max = 0.014816000 / 0.019798133 / 0.067647000 sec
+       CUBERACT_JSON - 0.010620712 sec [170.655 MegaChar/s] min/avg/max = 0.008120000 / 0.010620600 / 0.033439000 sec
+           FAST_JSON - 0.016158347 sec [112.170 MegaChar/s] min/avg/max = 0.010520000 / 0.016159467 / 0.107519000 sec
+    JACKSON_DATABIND - 0.017382380 sec [104.271 MegaChar/s] min/avg/max = 0.012312000 / 0.017381867 / 0.069055000 sec
+                GSON - 0.018951908 sec [ 95.635 MegaChar/s] min/avg/max = 0.014576000 / 0.018951467 / 0.067391000 sec
 
 System.gc() and sleep for 5 sec
 
 BENCHMARK - iteration 1/1 ************************************************************
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: FROM RESOURCE /small-real-data.json, size: 14572 chars
-       CUBERACT_JSON - 0.000371144 sec [ 39.262 MegaChar/s] min/avg/max = 0.000088000 / 0.000370680 / 0.002837000 sec
-           FAST_JSON - 0.000587461 sec [ 24.805 MegaChar/s] min/avg/max = 0.000118000 / 0.000586990 / 0.008287000 sec
-    JACKSON_DATABIND - 0.000405503 sec [ 35.936 MegaChar/s] min/avg/max = 0.000107000 / 0.000405040 / 0.004747000 sec
-                GSON - 0.000474259 sec [ 30.726 MegaChar/s] min/avg/max = 0.000199000 / 0.000473740 / 0.001601000 sec
+       CUBERACT_JSON - 0.000240367 sec [ 60.624 MegaChar/s] min/avg/max = 0.000081000 / 0.000239900 / 0.001224000 sec
+           FAST_JSON - 0.000348077 sec [ 41.864 MegaChar/s] min/avg/max = 0.000111000 / 0.000347630 / 0.003821000 sec
+    JACKSON_DATABIND - 0.000271419 sec [ 53.688 MegaChar/s] min/avg/max = 0.000136000 / 0.000270940 / 0.001485000 sec
+                GSON - 0.000293293 sec [ 49.684 MegaChar/s] min/avg/max = 0.000118000 / 0.000292810 / 0.000850000 sec
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: FROM RESOURCE /middle-real-data.json, size: 169076 chars
-       CUBERACT_JSON - 0.002286637 sec [ 73.941 MegaChar/s] min/avg/max = 0.000617000 / 0.002286560 / 0.003069000 sec
-           FAST_JSON - 0.003363936 sec [ 50.261 MegaChar/s] min/avg/max = 0.001503000 / 0.003363970 / 0.004139000 sec
-    JACKSON_DATABIND - 0.002269286 sec [ 74.506 MegaChar/s] min/avg/max = 0.000621000 / 0.002269270 / 0.002905000 sec
-                GSON - 0.003581370 sec [ 47.210 MegaChar/s] min/avg/max = 0.001815000 / 0.003581290 / 0.004115000 sec
+       CUBERACT_JSON - 0.001137122 sec [148.688 MegaChar/s] min/avg/max = 0.000577000 / 0.001136670 / 0.004675000 sec
+           FAST_JSON - 0.001731583 sec [ 97.642 MegaChar/s] min/avg/max = 0.000716000 / 0.001731170 / 0.005339000 sec
+    JACKSON_DATABIND - 0.001116286 sec [151.463 MegaChar/s] min/avg/max = 0.000555000 / 0.001115820 / 0.002657000 sec
+                GSON - 0.001756006 sec [ 96.284 MegaChar/s] min/avg/max = 0.001180000 / 0.001755580 / 0.004295000 sec
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: FROM RESOURCE /big-real-data.json, size: 1861784 chars
-       CUBERACT_JSON - 0.008477870 sec [219.605 MegaChar/s] min/avg/max = 0.006064000 / 0.008477680 / 0.025167000 sec
-           FAST_JSON - 0.011212709 sec [166.042 MegaChar/s] min/avg/max = 0.008100000 / 0.011212380 / 0.031647000 sec
-    JACKSON_DATABIND - 0.008776398 sec [212.135 MegaChar/s] min/avg/max = 0.005804000 / 0.008776280 / 0.021807000 sec
-                GSON - 0.010682445 sec [174.284 MegaChar/s] min/avg/max = 0.008208000 / 0.010682560 / 0.031103000 sec
+       CUBERACT_JSON - 0.006664650 sec [279.352 MegaChar/s] min/avg/max = 0.005668000 / 0.006664660 / 0.018479000 sec
+           FAST_JSON - 0.009360177 sec [198.905 MegaChar/s] min/avg/max = 0.007028000 / 0.009360200 / 0.036095000 sec
+    JACKSON_DATABIND - 0.006629972 sec [280.813 MegaChar/s] min/avg/max = 0.005260000 / 0.006629660 / 0.023503000 sec
+                GSON - 0.009993983 sec [186.290 MegaChar/s] min/avg/max = 0.008864000 / 0.009994040 / 0.025775000 sec
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: RANDOM, size: 118 chars
-       CUBERACT_JSON - 0.000033453 sec [  3.527 MegaChar/s] min/avg/max = 0.000011000 / 0.000032950 / 0.000091000 sec
-           FAST_JSON - 0.000049809 sec [  2.369 MegaChar/s] min/avg/max = 0.000010000 / 0.000049250 / 0.000164000 sec
-    JACKSON_DATABIND - 0.000113331 sec [  1.041 MegaChar/s] min/avg/max = 0.000036000 / 0.000112780 / 0.000259000 sec
-                GSON - 0.000054996 sec [  2.146 MegaChar/s] min/avg/max = 0.000022000 / 0.000054570 / 0.000450000 sec
+       CUBERACT_JSON - 0.000031869 sec [  3.703 MegaChar/s] min/avg/max = 0.000006000 / 0.000031360 / 0.000097000 sec
+           FAST_JSON - 0.000032414 sec [  3.640 MegaChar/s] min/avg/max = 0.000008000 / 0.000031920 / 0.000213000 sec
+    JACKSON_DATABIND - 0.000102147 sec [  1.155 MegaChar/s] min/avg/max = 0.000041000 / 0.000101680 / 0.000197000 sec
+                GSON - 0.000045289 sec [  2.605 MegaChar/s] min/avg/max = 0.000018000 / 0.000044840 / 0.000128000 sec
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: RANDOM, size: 2002 chars
-       CUBERACT_JSON - 0.000078550 sec [ 25.487 MegaChar/s] min/avg/max = 0.000030000 / 0.000078050 / 0.000184000 sec
-           FAST_JSON - 0.000120039 sec [ 16.678 MegaChar/s] min/avg/max = 0.000084000 / 0.000119490 / 0.000283000 sec
-    JACKSON_DATABIND - 0.000194682 sec [ 10.283 MegaChar/s] min/avg/max = 0.000102000 / 0.000194230 / 0.000477000 sec
-                GSON - 0.000128877 sec [ 15.534 MegaChar/s] min/avg/max = 0.000048000 / 0.000128390 / 0.000309000 sec
+       CUBERACT_JSON - 0.000068768 sec [ 29.112 MegaChar/s] min/avg/max = 0.000020000 / 0.000068240 / 0.000173000 sec
+           FAST_JSON - 0.000098263 sec [ 20.374 MegaChar/s] min/avg/max = 0.000036000 / 0.000097730 / 0.000246000 sec
+    JACKSON_DATABIND - 0.000142123 sec [ 14.086 MegaChar/s] min/avg/max = 0.000054000 / 0.000141640 / 0.000497000 sec
+                GSON - 0.000099535 sec [ 20.114 MegaChar/s] min/avg/max = 0.000044000 / 0.000099080 / 0.000146000 sec
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: RANDOM, size: 14595 chars
-       CUBERACT_JSON - 0.000301602 sec [ 48.392 MegaChar/s] min/avg/max = 0.000160000 / 0.000301100 / 0.000451000 sec
-           FAST_JSON - 0.000434465 sec [ 33.593 MegaChar/s] min/avg/max = 0.000232000 / 0.000433950 / 0.000563000 sec
-    JACKSON_DATABIND - 0.000522994 sec [ 27.907 MegaChar/s] min/avg/max = 0.000295000 / 0.000522510 / 0.001057000 sec
-                GSON - 0.000597080 sec [ 24.444 MegaChar/s] min/avg/max = 0.000304000 / 0.000596570 / 0.004279000 sec
+       CUBERACT_JSON - 0.000199683 sec [ 73.091 MegaChar/s] min/avg/max = 0.000117000 / 0.000199190 / 0.000457000 sec
+           FAST_JSON - 0.000341835 sec [ 42.696 MegaChar/s] min/avg/max = 0.000145000 / 0.000341340 / 0.000561000 sec
+    JACKSON_DATABIND - 0.000304217 sec [ 47.976 MegaChar/s] min/avg/max = 0.000134000 / 0.000303730 / 0.001131000 sec
+                GSON - 0.000427626 sec [ 34.130 MegaChar/s] min/avg/max = 0.000297000 / 0.000427080 / 0.000777000 sec
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: RANDOM, size: 1488247 chars
-       CUBERACT_JSON - 0.009662127 sec [154.029 MegaChar/s] min/avg/max = 0.006552000 / 0.009662320 / 0.027615000 sec
-           FAST_JSON - 0.010298010 sec [144.518 MegaChar/s] min/avg/max = 0.008776000 / 0.010298120 / 0.028655000 sec
-    JACKSON_DATABIND - 0.013591926 sec [109.495 MegaChar/s] min/avg/max = 0.008616000 / 0.013591760 / 0.034975000 sec
-                GSON - 0.016073377 sec [ 92.591 MegaChar/s] min/avg/max = 0.011448000 / 0.016073680 / 0.036799000 sec
+       CUBERACT_JSON - 0.007698602 sec [193.314 MegaChar/s] min/avg/max = 0.006248000 / 0.007698660 / 0.025807000 sec
+           FAST_JSON - 0.010835532 sec [137.349 MegaChar/s] min/avg/max = 0.008440000 / 0.010835760 / 0.031855000 sec
+    JACKSON_DATABIND - 0.010372973 sec [143.474 MegaChar/s] min/avg/max = 0.008744000 / 0.010372600 / 0.029423000 sec
+                GSON - 0.013286424 sec [112.013 MegaChar/s] min/avg/max = 0.011104000 / 0.013287000 / 0.032399000 sec
 -------------------------------------------------------------------------------------
 INPUT: JSON as String - data type: RANDOM, size: 14464760 chars
-       CUBERACT_JSON - 0.069896075 sec [206.947 MegaChar/s] min/avg/max = 0.064192000 / 0.069898080 / 0.115967000 sec
-           FAST_JSON - 0.093160949 sec [155.266 MegaChar/s] min/avg/max = 0.088000000 / 0.093162880 / 0.116991000 sec
-    JACKSON_DATABIND - 0.112016577 sec [129.131 MegaChar/s] min/avg/max = 0.104768000 / 0.112014400 / 0.143231000 sec
-                GSON - 0.126488492 sec [114.356 MegaChar/s] min/avg/max = 0.117248000 / 0.126489920 / 0.149887000 sec
+       CUBERACT_JSON - 0.067420139 sec [214.547 MegaChar/s] min/avg/max = 0.063552000 / 0.067422400 / 0.090623000 sec
+           FAST_JSON - 0.089333917 sec [161.918 MegaChar/s] min/avg/max = 0.084160000 / 0.089333120 / 0.119871000 sec
+    JACKSON_DATABIND - 0.112141875 sec [128.986 MegaChar/s] min/avg/max = 0.105792000 / 0.112144640 / 0.132735000 sec
+                GSON - 0.124362672 sec [116.311 MegaChar/s] min/avg/max = 0.119424000 / 0.124362880 / 0.147199000 sec
 
 RESULT: *****************************************************************************
 
-1. [wins: 7]          CUBERACT_JSON - 0.091107458 sec [197.735 MegaChar/s] 
-2. [wins: 0]              FAST_JSON - 0.119227378 sec [151.099 MegaChar/s] 
-3. [wins: 1]       JACKSON_DATABIND - 0.137890697 sec [130.648 MegaChar/s] 
-4. [wins: 0]                   GSON - 0.158080896 sec [113.962 MegaChar/s]
+1. [wins: 6]          CUBERACT_JSON - 0.083461200 sec [215.851 MegaChar/s]
+2. [wins: 0]              FAST_JSON - 0.112081798 sec [160.732 MegaChar/s]
+3. [wins: 2]       JACKSON_DATABIND - 0.131081012 sec [137.435 MegaChar/s]
+4. [wins: 0]                   GSON - 0.150264828 sec [119.889 MegaChar/s]
 ```
 
 ## License
