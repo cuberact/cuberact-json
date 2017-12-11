@@ -62,18 +62,25 @@ final class JsonScanner {
                 return token.toString();
             } else if (lastReadChar == '\\') {
                 nextChar();
-                if (lastReadChar == 'b') {
-                    lastReadChar = '\b';
-                } else if (lastReadChar == 'f') {
-                    lastReadChar = '\f';
-                } else if (lastReadChar == 'n') {
-                    lastReadChar = '\n';
-                } else if (lastReadChar == 'r') {
-                    lastReadChar = '\r';
-                } else if (lastReadChar == 't') {
-                    lastReadChar = '\t';
-                } else if (lastReadChar == 'u') {
-                    lastReadChar = consumeUnicodeChar();
+                switch (lastReadChar) {
+                    case 'b':
+                        lastReadChar = '\b';
+                        break;
+                    case 'f':
+                        lastReadChar = '\f';
+                        break;
+                    case 'n':
+                        lastReadChar = '\n';
+                        break;
+                    case 'r':
+                        lastReadChar = '\r';
+                        break;
+                    case 't':
+                        lastReadChar = '\t';
+                        break;
+                    case 'u':
+                        lastReadChar = consumeUnicodeChar();
+                        break;
                 }
             } else if (lastReadChar == END_OF_INPUT) {
                 break;
