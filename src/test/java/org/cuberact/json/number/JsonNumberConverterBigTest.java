@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonNumberConverterBigTest {
 

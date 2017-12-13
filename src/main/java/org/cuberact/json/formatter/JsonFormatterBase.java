@@ -20,6 +20,8 @@ import org.cuberact.json.Json;
 import org.cuberact.json.number.JsonNumber;
 import org.cuberact.json.output.JsonOutput;
 
+import static org.cuberact.json.optimize.JsonEscape.escape;
+
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
@@ -54,50 +56,5 @@ public abstract class JsonFormatterBase implements JsonFormatter {
     @Override
     public void writeArrayValue(Object value, JsonOutput output) {
         writeObjectValue(value, output);
-    }
-
-    public static void escape(CharSequence input, JsonOutput output) {
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            switch (c) {
-                case '\\':
-                case '/':
-                case '"':
-                    output.write('\\');
-                    output.write(c);
-                    break;
-                case '\b':
-                    output.write("\\b");
-                    break;
-                case '\f':
-                    output.write("\\f");
-                    break;
-                case '\n':
-                    output.write("\\n");
-                    break;
-                case '\r':
-                    output.write("\\r");
-                    break;
-                case '\t':
-                    output.write("\\t");
-                    break;
-                default:
-                    if (c < ' ') {
-                        String hex = Integer.toHexString(c);
-                        output.write("\\u");
-                        switch (hex.length()) {
-                            case 1:
-                                output.write("000");
-                                break;
-                            case 2:
-                                output.write("00");
-                                break;
-                        }
-                        output.write(hex);
-                    } else {
-                        output.write(c);
-                    }
-            }
-        }
     }
 }

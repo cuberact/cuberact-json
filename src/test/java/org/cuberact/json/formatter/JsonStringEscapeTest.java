@@ -17,6 +17,7 @@
 package org.cuberact.json.formatter;
 
 import org.cuberact.json.Json;
+import org.cuberact.json.optimize.JsonEscape;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 import org.cuberact.json.parser.JsonParser;
 import org.junit.Assert;
@@ -50,7 +51,7 @@ public class JsonStringEscapeTest {
     public void escapeExample1() {
         String value = "\"\\\\hello\b\r\n\f\"/";
         String result = escapeByFormatter(value);
-        assertEquals("\\\"\\\\\\\\hello\\b\\r\\n\\f\\\"\\/", result);
+        assertEquals("\\\"\\\\\\\\hello\\b\\r\\n\\f\\\"/", result);
     }
 
     @Test
@@ -69,7 +70,7 @@ public class JsonStringEscapeTest {
 
     private String escapeByFormatter(String value) {
         JsonOutputStringBuilder output = new JsonOutputStringBuilder();
-        JsonFormatterBase.escape(value, output);
+        JsonEscape.escape(value, output);
         return output.getResult().toString();
     }
 }

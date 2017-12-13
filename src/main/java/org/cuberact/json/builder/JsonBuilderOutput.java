@@ -25,35 +25,29 @@ import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *  Builder which not building DOM but directly write input to output.
- *  Suitable for input formatting, for example.
+ * Builder which not building DOM but directly write input to output.
+ * Suitable for input formatting, for example.
  *
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonBuilderOutput<E> extends JsonBuilderBase<E, E> {
+public class JsonBuilderOutput extends JsonBuilderBase<JsonOutput, JsonOutput> {
 
     private static final String OBJ = "OBJ";
     private static final String ARR = "ARR";
 
-    private final JsonOutput<E> output;
+    private final JsonOutput output;
     private final JsonFormatter formatter;
 
-    private final ThreadLocal<Stack<String>> stackTypes = ThreadLocal.withInitial(Stack::new);
-    private final ThreadLocal<Stack<AtomicInteger>> stackComma = ThreadLocal.withInitial(Stack::new);
+    private final Stack<String> stackTypes = new Stack<>();
+    private final Stack<AtomicInteger> stackComma = new Stack<>();
 
-    public JsonBuilderOutput(JsonOutput<E> output) {
+    public JsonBuilderOutput(JsonOutput output) {
         this(output, JsonFormatter.PRETTY());
     }
 
-    public JsonBuilderOutput(JsonOutput<E> output, JsonFormatter formatter) {
+    public JsonBuilderOutput(JsonOutput output, JsonFormatter formatter) {
         this.output = output;
         this.formatter = formatter;
-    }
-
-    @Override
-    public void buildStart() {
-        stackTypes.get().clear();
-        stackComma.get().clear();
     }
 
     @Override
@@ -62,49 +56,49 @@ public class JsonBuilderOutput<E> extends JsonBuilderBase<E, E> {
     }
 
     @Override
-    public E createObject() {
+    public JsonOutput createObject() {
         formatter.writeObjectStart(output);
-        stackTypes.get().push(OBJ);
-        stackComma.get().push(new AtomicInteger(0));
-        return output.getResult();
+        stackTypes.push(OBJ);
+        stackComma.push(new AtomicInteger(0));
+        return output;
     }
 
     @Override
-    public E createArray() {
+    public JsonOutput createArray() {
         formatter.writeArrayStart(output);
-        stackTypes.get().push(ARR);
-        stackComma.get().push(new AtomicInteger(0));
-        return output.getResult();
+        stackTypes.push(ARR);
+        stackComma.push(new AtomicInteger(0));
+        return output;
     }
 
     @Override
-    public void objectCompleted(E object) {
+    public void objectCompleted(JsonOutput object) {
         formatter.writeObjectEnd(output);
-        stackTypes.get().pop();
-        stackComma.get().pop();
+        stackTypes.pop();
+        stackComma.pop();
     }
 
     @Override
-    public void arrayCompleted(E array) {
+    public void arrayCompleted(JsonOutput array) {
         formatter.writeArrayEnd(output);
-        stackTypes.get().pop();
-        stackComma.get().pop();
+        stackTypes.pop();
+        stackComma.pop();
     }
 
     @Override
-    public void addObjectAttr(E object, String attr) {
+    public void addObjectAttr(JsonOutput object, String attr) {
         writeComma();
         formatter.writeObjectAttr(attr, output);
         formatter.writeObjectColon(output);
     }
 
     @Override
-    public void addArrayComma(E array) {
+    public void addArrayComma(JsonOutput array) {
         writeComma();
     }
 
     @Override
-    protected void addToObject(E object, String attr, Object value) {
+    protected void addToObject(JsonOutput object, String attr, Object value) {
         writeComma();
         formatter.writeObjectAttr(attr, output);
         formatter.writeObjectColon(output);
@@ -112,9 +106,19 @@ public class JsonBuilderOutput<E> extends JsonBuilderBase<E, E> {
     }
 
     @Override
-    protected void addToArray(E o, Object value) {
+    protected void addToArray(JsonOutput o, Object value) {
         writeComma();
         formatter.writeArrayValue(value, output);
+    }
+
+    @Override
+    public void addNumberToObject(JsonOutput object, String attr, JsonNumber value) {
+        addToObject(object, attr, value);
+    }
+
+    @Override
+    public void addNumberToArray(JsonOutput output, JsonNumber value) {
+        addToArray(output, value);
     }
 
     @Override
@@ -123,8 +127,8 @@ public class JsonBuilderOutput<E> extends JsonBuilderBase<E, E> {
     }
 
     private void writeComma() {
-        if (!stackComma.get().isEmpty() && stackComma.get().peek().getAndIncrement() > 0) {
-            if (Objects.equals(OBJ, stackTypes.get().peek())) {
+        if (stackComma.peek().getAndIncrement() > 0) {
+            if (Objects.equals(OBJ, stackTypes.peek())) {
                 formatter.writeObjectComma(output);
             } else {
                 formatter.writeArrayComma(output);
@@ -133,22 +137,22 @@ public class JsonBuilderOutput<E> extends JsonBuilderBase<E, E> {
     }
 
     @Override
-    public void addObjectToObject(E object, String attr, E value) {
+    public void addObjectToObject(JsonOutput object, String attr, JsonOutput value) {
         //do nothing
     }
 
     @Override
-    public void addArrayToObject(E object, String attr, E value) {
+    public void addArrayToObject(JsonOutput object, String attr, JsonOutput value) {
         //do nothing
     }
 
     @Override
-    public void addArrayToArray(E array, E value) {
+    public void addArrayToArray(JsonOutput array, JsonOutput value) {
         //do nothing
     }
 
     @Override
-    public void addObjectToArray(E array, E value) {
+    public void addObjectToArray(JsonOutput array, JsonOutput value) {
         //do nothing
     }
 }

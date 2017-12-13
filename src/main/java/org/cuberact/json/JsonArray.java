@@ -162,13 +162,11 @@ public class JsonArray extends Json {
     @Override
     public void toOutput(JsonFormatter formatter, JsonOutput output) {
         formatter.writeArrayStart(output);
-        boolean addComma = false;
-        for (Object value : data) {
-            if (addComma) {
+        for (int i = 0, len = data.size(); i < len; i++) {
+            if (i != 0) {
                 formatter.writeArrayComma(output);
             }
-            addComma = true;
-            formatter.writeArrayValue(value, output);
+            formatter.writeArrayValue(data.get(i), output);
         }
         formatter.writeArrayEnd(output);
     }

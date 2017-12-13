@@ -18,13 +18,14 @@ package org.cuberact.json.builder;
 
 import org.cuberact.json.Json;
 import org.cuberact.json.formatter.JsonFormatter;
+import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 import org.cuberact.json.parser.JsonParser;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonBuilderOutputTest {
 
@@ -87,10 +88,10 @@ public class JsonBuilderOutputTest {
         String jsonAsString = "{'1':{'2':{'3':{'4':{'5':{'6':{'7':{'8':{'9':{'name':'jack'}}}}},'age':15}}}}}"
                 .replace('\'', '"');
 
-        String json1 = new JsonParser(new JsonBuilderOutput<>(new JsonOutputStringBuilder())).parse(jsonAsString).toString();
-        String json2 = new JsonParser(new JsonBuilderOutput<>(new JsonOutputStringBuilder(), JsonFormatter.PRETTY())).parse(jsonAsString).toString();
+        JsonOutput jsonOutput1 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder())).parse(jsonAsString);
+        JsonOutput jsonOutput2 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder(), JsonFormatter.PRETTY())).parse(jsonAsString);
 
-        Assert.assertEquals(json1, json2);
+        Assert.assertEquals(jsonOutput1.getResult().toString(), jsonOutput2.getResult().toString());
     }
 
     private void assertEqualsDomAndBuilder(String input, JsonFormatter formatter) {
@@ -105,8 +106,8 @@ public class JsonBuilderOutputTest {
     }
 
     private String formattedByBuilder(String input, JsonFormatter formatter) {
-        JsonBuilder builder = new JsonBuilderOutput<>(new JsonOutputStringBuilder(), formatter);
-        StringBuilder outputResult = new JsonParser(builder).parse(input);
-        return outputResult.toString();
+        JsonBuilder builder = new JsonBuilderOutput(new JsonOutputStringBuilder(), formatter);
+        JsonOutput jsonOutput = new JsonParser(builder).parse(input);
+        return jsonOutput.getResult().toString();
     }
 }

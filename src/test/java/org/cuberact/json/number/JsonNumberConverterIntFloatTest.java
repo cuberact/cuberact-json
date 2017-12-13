@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonNumberConverterIntFloatTest {
 

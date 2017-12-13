@@ -19,13 +19,14 @@ package org.cuberact.json.formatter;
 import org.cuberact.json.Json;
 import org.cuberact.json.JsonException;
 import org.cuberact.json.builder.JsonBuilderOutput;
+import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 import org.cuberact.json.parser.JsonParser;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonFormatterPrettyTest {
 
@@ -51,10 +52,10 @@ public class JsonFormatterPrettyTest {
 
         Assert.assertEquals(expected, json.toString(new JsonFormatterPretty(cfg))); //from dom
         Assert.assertEquals(expected, new JsonParser(
-                new JsonBuilderOutput<>(
+                new JsonBuilderOutput(
                         new JsonOutputStringBuilder(),
                         new JsonFormatterPretty(cfg)))
-                .parse(jsonAsString).toString()); //directly from input to string
+                .<JsonOutput>parse(jsonAsString).getResult().toString()); //directly from input to string
     }
 
     @Test(expected = JsonException.class)

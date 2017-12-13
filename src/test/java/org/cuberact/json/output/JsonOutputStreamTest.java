@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonOutputStreamTest {
 

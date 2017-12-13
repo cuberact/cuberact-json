@@ -30,11 +30,10 @@ import java.util.Objects;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonOutputStream<E extends OutputStream> implements JsonOutput<E> {
+public class JsonOutputStream<E extends OutputStream> extends JsonOutputBase<E> {
 
     private final OutputStream stream;
     private final Charset charset;
-    private final CharBuffer buffer = CharBuffer.allocate(1024);
 
     public JsonOutputStream(E stream) {
         this(stream, StandardCharsets.UTF_8);
@@ -46,32 +45,13 @@ public class JsonOutputStream<E extends OutputStream> implements JsonOutput<E> {
     }
 
     @Override
-    public void write(CharSequence data) {
-        for (int i = 0; i < data.length(); i++) {
-            write(data.charAt(i));
+    protected void writeChars(char[] chars, int len) {
+        ByteBuffer encode = charset.encode(CharBuffer.wrap(chars, 0, len));
+        try {
+            stream.write(encode.array(), 0, encode.remaining());
+        } catch (Throwable e) {
+            throw new JsonException(e);
         }
-    }
-
-    @Override
-    public void write(char data) {
-        buffer.put(data);
-        if (!buffer.hasRemaining()) {
-            flushBuffer();
-        }
-    }
-
-    @Override
-    public void flushBuffer() {
-        buffer.flip();
-        if (buffer.hasRemaining()) {
-            ByteBuffer encode = charset.encode(buffer);
-            try {
-                stream.write(encode.array(), 0, encode.remaining());
-            } catch (Throwable e) {
-                throw new JsonException(e);
-            }
-        }
-        buffer.clear();
     }
 
     @SuppressWarnings("unchecked")

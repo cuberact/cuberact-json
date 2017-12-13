@@ -30,7 +30,7 @@ import static org.cuberact.json.optimize.CharTable.toInt;
 final class JsonScanner {
 
     private final JsonInput input;
-    private final char[] buffer = new char[1024];
+    private final char[] buffer = new char[4096];
     char lastReadChar;
 
     JsonScanner(JsonInput input) {
@@ -86,10 +86,10 @@ final class JsonScanner {
                 break;
             }
             buffer[count++] = lastReadChar;
-            if (count == 1024) {
+            if (count == 4096) {
                 count = 0;
                 if (token == null) {
-                    token = new StringBuilder(2064);
+                    token = new StringBuilder(8000);
                 }
                 token.append(buffer);
             }

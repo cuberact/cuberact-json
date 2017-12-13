@@ -17,22 +17,37 @@
 package org.cuberact.json.output;
 
 /**
- * Output with StringBuilder
- *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonOutputStringBuilder extends JsonOutputBase<StringBuilder> {
+public abstract class JsonOutputBase<E> implements JsonOutput<E> {
 
-    private final StringBuilder result = new StringBuilder();
+    private final int bufferSize = 4096;
+    private final char[] buffer = new char[bufferSize];
+    private int position;
 
     @Override
-    protected void writeChars(char[] chars, int len) {
-        result.append(chars, 0, len);
+    public final void write(CharSequence data) {
+        for (int i = 0; i < data.length(); i++) {
+            write(data.charAt(i));
+        }
     }
 
     @Override
-    public StringBuilder getResult() {
-        flushBuffer();
-        return result;
+    public final void write(char data) {
+        buffer[position++] = data;
+        if (position == bufferSize) flushBuffer();
     }
+
+    @Override
+    public void flushBuffer() {
+        if (position != 0) {
+            writeChars(buffer, position);
+            position = 0;
+        }
+    }
+
+    protected abstract void writeChars(char[] chars, int len);
+
+    @Override
+    public abstract E getResult();
 }

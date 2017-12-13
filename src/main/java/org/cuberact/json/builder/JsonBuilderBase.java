@@ -19,7 +19,7 @@ package org.cuberact.json.builder;
 import org.cuberact.json.number.JsonNumber;
 
 /**
- * @author Michal Nikodim (michal.nikodim@topmonks.com)
+ * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public abstract class JsonBuilderBase<OBJECT, ARRAY> implements JsonBuilder<OBJECT, ARRAY> {
     @Override

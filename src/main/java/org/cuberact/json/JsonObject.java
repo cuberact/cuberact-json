@@ -135,8 +135,9 @@ public class JsonObject extends Json {
         for (Entry<String, Object> entry : data.entrySet()) {
             if (addComma) {
                 formatter.writeObjectComma(output);
+            } else {
+                addComma = true;
             }
-            addComma = true;
             formatter.writeObjectAttr(entry.getKey(), output);
             formatter.writeObjectColon(output);
             formatter.writeObjectValue(entry.getValue(), output);

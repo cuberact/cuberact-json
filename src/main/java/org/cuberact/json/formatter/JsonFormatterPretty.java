@@ -19,6 +19,8 @@ package org.cuberact.json.formatter;
 import org.cuberact.json.JsonException;
 import org.cuberact.json.output.JsonOutput;
 
+import static org.cuberact.json.optimize.JsonEscape.escape;
+
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
@@ -27,7 +29,7 @@ public class JsonFormatterPretty extends JsonFormatterBase {
     public static final Config DEFAULT_CONFIG = new Config();
 
     private final Config cfg;
-    private String indent = "";
+    private int indentsCount;
     private boolean objectStarted = false;
 
     public JsonFormatterPretty() {
@@ -48,11 +50,31 @@ public class JsonFormatterPretty extends JsonFormatterBase {
     public void writeObjectAttr(CharSequence attr, JsonOutput output) {
         if (objectStarted) {
             output.write(cfg.lineBreak);
-            incIndent();
-            output.write(indent);
+            indentsCount++;
+            writeIndent(output);
             objectStarted = false;
         }
         super.writeObjectAttr(attr, output);
+    }
+
+    private void writeIndent(JsonOutput output) {
+        switch (indentsCount) {
+            case 0:
+                break;
+            case 4:
+                output.write(cfg.indent);
+            case 3:
+                output.write(cfg.indent);
+            case 2:
+                output.write(cfg.indent);
+            case 1:
+                output.write(cfg.indent);
+                break;
+            default:
+                for (int i = 0; i < indentsCount; i++) {
+                    output.write(cfg.indent);
+                }
+        }
     }
 
     @Override
@@ -70,15 +92,15 @@ public class JsonFormatterPretty extends JsonFormatterBase {
     public void writeObjectComma(JsonOutput output) {
         output.write(cfg.objectComma);
         output.write(cfg.lineBreak);
-        output.write(indent);
+        writeIndent(output);
     }
 
     @Override
     public void writeObjectEnd(JsonOutput output) {
         if (!objectStarted) {
-            decIndent();
             output.write(cfg.lineBreak);
-            output.write(indent);
+            indentsCount--;
+            writeIndent(output);
         }
         objectStarted = false;
         output.write(cfg.objectEnd);
@@ -97,19 +119,6 @@ public class JsonFormatterPretty extends JsonFormatterBase {
     @Override
     public void writeArrayEnd(JsonOutput output) {
         output.write(cfg.arrayEnd);
-    }
-
-    private void incIndent() {
-        indent += cfg.indent;
-    }
-
-    private void decIndent() {
-        int size = indent.length() - cfg.indent.length();
-        if (size > 0) {
-            indent = indent.substring(0, size);
-        } else {
-            indent = "";
-        }
     }
 
     public static class Config implements Cloneable {
