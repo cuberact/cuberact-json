@@ -74,20 +74,20 @@ StringBuilder jsonAsStringBuilder = output.getResult();
 <dependency>
   <groupId>org.cuberact</groupId>
   <artifactId>cuberact-json</artifactId>
-  <version>1.3.0</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
 ##### Gradle
 
 ```groovy
-compile 'org.cuberact:cuberact-json:1.3.0'
+compile 'org.cuberact:cuberact-json:1.4.0'
 ```
 
 ##### Ivy
 
 ```xml
-<dependency org="org.cuberact" name="cuberact-json" rev="1.3.0">
+<dependency org="org.cuberact" name="cuberact-json" rev="1.4.0">
   <artifact name="cuberact-json" type="jar" />
 </dependency>
 ```
