@@ -112,16 +112,6 @@ public class JsonBuilderOutput extends JsonBuilderBase<JsonOutput, JsonOutput> {
     }
 
     @Override
-    public void addNumberToObject(JsonOutput object, String attr, JsonNumber value) {
-        addToObject(object, attr, value);
-    }
-
-    @Override
-    public void addNumberToArray(JsonOutput output, JsonNumber value) {
-        addToArray(output, value);
-    }
-
-    @Override
     protected Object convertJsonNumber(JsonNumber jsonNumber) {
         return jsonNumber; //don't convert
     }
