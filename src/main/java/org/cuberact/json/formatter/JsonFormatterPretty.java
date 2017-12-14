@@ -19,6 +19,8 @@ package org.cuberact.json.formatter;
 import org.cuberact.json.JsonException;
 import org.cuberact.json.output.JsonOutput;
 
+import java.util.Objects;
+
 import static org.cuberact.json.optimize.JsonEscape.escape;
 
 /**
@@ -37,7 +39,7 @@ public class JsonFormatterPretty extends JsonFormatterBase {
     }
 
     public JsonFormatterPretty(Config cfg) {
-        this.cfg = cfg.copy();
+        this.cfg = Objects.requireNonNull(cfg, "Config").copy();
     }
 
     @Override

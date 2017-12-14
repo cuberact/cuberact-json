@@ -46,8 +46,8 @@ public class JsonBuilderOutput extends JsonBuilderBase<JsonOutput, JsonOutput> {
     }
 
     public JsonBuilderOutput(JsonOutput output, JsonFormatter formatter) {
-        this.output = output;
-        this.formatter = formatter;
+        this.output = Objects.requireNonNull(output, "output");
+        this.formatter = Objects.requireNonNull(formatter, "formatter");
     }
 
     @Override
