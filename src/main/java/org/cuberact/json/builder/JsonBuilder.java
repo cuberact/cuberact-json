@@ -16,7 +16,7 @@
 
 package org.cuberact.json.builder;
 
-import org.cuberact.json.number.JsonNumber;
+import org.cuberact.json.JsonNumber;
 import org.cuberact.json.parser.JsonParser;
 
 /**

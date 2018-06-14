@@ -17,8 +17,8 @@
 package org.cuberact.json.parser;
 
 import org.cuberact.json.JsonException;
+import org.cuberact.json.JsonNumber;
 import org.cuberact.json.input.JsonInput;
-import org.cuberact.json.number.JsonNumber;
 
 import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
 import static org.cuberact.json.optimize.CharTable.hexBitShift;

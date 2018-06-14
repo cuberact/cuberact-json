@@ -19,6 +19,8 @@ package org.cuberact.json;
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.output.JsonOutput;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,6 +76,14 @@ public class JsonArray extends Json {
 
     public Double getDouble(int index) {
         return getInternal(index, Double.class);
+    }
+
+    public BigInteger getBigInt(int index) {
+        return getInternal(index, BigInteger.class);
+    }
+
+    public BigDecimal getBigDecimal(int index) {
+        return getInternal(index, BigDecimal.class);
     }
 
     public Boolean getBoolean(int index) {
@@ -175,13 +185,7 @@ public class JsonArray extends Json {
     private <E> E getInternal(int index, Class<E> type) {
         try {
             Object value = data.get(index);
-            if (value == null) {
-                return null;
-            }
-            if (!type.isAssignableFrom(value.getClass())) {
-                throw new JsonException("Wrong value[" + index + "] type. Expected " + type.getName() + ", but is " + value.getClass().getName());
-            }
-            return (E) value;
+            return getValueAsType(value, type);
         } catch (Throwable t) {
             throw new JsonException(t);
         }

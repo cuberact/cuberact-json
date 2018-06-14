@@ -17,7 +17,6 @@
 package org.cuberact.json.builder;
 
 import org.cuberact.json.formatter.JsonFormatter;
-import org.cuberact.json.number.JsonNumber;
 import org.cuberact.json.output.JsonOutput;
 
 import java.util.Objects;
@@ -109,11 +108,6 @@ public class JsonBuilderOutput extends JsonBuilderBase<JsonOutput, JsonOutput> {
     protected void addToArray(JsonOutput o, Object value) {
         writeComma();
         formatter.writeArrayValue(value, output);
-    }
-
-    @Override
-    protected Object convertJsonNumber(JsonNumber jsonNumber) {
-        return jsonNumber; //don't convert
     }
 
     private void writeComma() {

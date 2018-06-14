@@ -21,7 +21,9 @@ import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Parent of {@link JsonObject} and {@link JsonArray}
@@ -45,4 +47,42 @@ public abstract class Json implements Serializable {
     }
 
     public abstract void toOutput(JsonFormatter formatter, JsonOutput output);
+
+
+    public final void convertJsonNumbers(Function<JsonNumber, Object> converter, boolean callOnChildren) {
+        if (this instanceof JsonObject) {
+            JsonObject jo = (JsonObject) this;
+            for (Map.Entry<String, Object> entry : jo.iterable()) {
+                if (entry.getValue() instanceof JsonNumber) {
+                    entry.setValue(converter.apply((JsonNumber) entry.getValue()));
+                } else if (callOnChildren && entry.getValue() instanceof Json) {
+                    ((Json) entry.getValue()).convertJsonNumbers(converter, true);
+                }
+            }
+        } else {
+            JsonArray ja = (JsonArray) this;
+            for (int i = 0; i < ja.size(); i++) {
+                Object o = ja.get(i);
+                if (o instanceof JsonNumber) {
+                    ja.set(i, converter.apply((JsonNumber) o));
+                } else if (callOnChildren && o instanceof Json) {
+                    ((Json) o).convertJsonNumbers(converter, true);
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    <E> E getValueAsType(Object value, Class<E> type) {
+        if (value == null) {
+            return null;
+        }
+        if (type.isAssignableFrom(value.getClass())) {
+            return (E) value;
+        }
+        if (value instanceof JsonNumber) {
+            return (E) ((JsonNumber) value).asNumber((Class<Number>) type);
+        }
+        throw new JsonException("Wrong value type. Expected " + type.getName() + ", but actual is " + value.getClass().getName());
+    }
 }

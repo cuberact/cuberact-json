@@ -38,7 +38,7 @@ public final class JsonParser {
     private final JsonBuilder builder;
 
     public JsonParser() {
-        this(JsonBuilderDom.DEFAULT);
+        this(JsonBuilderDom.REF);
     }
 
     public JsonParser(JsonBuilder builder) {
@@ -82,8 +82,7 @@ public final class JsonParser {
         JsonScanner scanner = new JsonScanner(input);
         builder.buildStart();
         Object root;
-        scanner.nextImportantChar();
-        switch (scanner.lastReadChar) {
+        switch (scanner.nextImportantChar()) {
             case '{':
                 root = builder.createObject();
                 parseObject(scanner, root);

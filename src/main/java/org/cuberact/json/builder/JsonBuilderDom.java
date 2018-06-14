@@ -19,11 +19,6 @@ package org.cuberact.json.builder;
 import org.cuberact.json.Json;
 import org.cuberact.json.JsonArray;
 import org.cuberact.json.JsonObject;
-import org.cuberact.json.number.JsonNumber;
-import org.cuberact.json.number.JsonNumberConverter;
-import org.cuberact.json.number.JsonNumberConverterLongDouble;
-
-import java.util.Objects;
 
 /**
  * Default builder for Json DOM - {@link Json} - {@link JsonObject} and {@link JsonArray}
@@ -32,13 +27,7 @@ import java.util.Objects;
  */
 public class JsonBuilderDom extends JsonBuilderBase<JsonObject, JsonArray> {
 
-    public static JsonBuilderDom DEFAULT = new JsonBuilderDom(JsonNumberConverterLongDouble.REF);
-
-    private final JsonNumberConverter converter;
-
-    public JsonBuilderDom(JsonNumberConverter converter) {
-        this.converter = Objects.requireNonNull(converter, "converter");
-    }
+    public static final JsonBuilderDom REF = new JsonBuilderDom();
 
     @Override
     public JsonObject createObject() {
@@ -48,11 +37,6 @@ public class JsonBuilderDom extends JsonBuilderBase<JsonObject, JsonArray> {
     @Override
     public JsonArray createArray() {
         return new JsonArray();
-    }
-
-    @Override
-    protected Object convertJsonNumber(JsonNumber jsonNumber) {
-        return converter.convert(jsonNumber);
     }
 
     @Override

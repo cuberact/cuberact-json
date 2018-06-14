@@ -17,7 +17,7 @@
 package org.cuberact.json.formatter;
 
 import org.cuberact.json.Json;
-import org.cuberact.json.number.JsonNumber;
+import org.cuberact.json.JsonNumber;
 import org.cuberact.json.output.JsonOutput;
 
 import static org.cuberact.json.optimize.JsonEscape.escape;

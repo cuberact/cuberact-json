@@ -17,7 +17,7 @@
 package org.cuberact.json;
 
 /**
- * Iterface for POJOs
+ * Interface for POJOs
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */

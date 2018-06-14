@@ -19,6 +19,8 @@ package org.cuberact.json;
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.output.JsonOutput;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -73,6 +75,14 @@ public class JsonObject extends Json {
 
     public Double getDouble(String attr) {
         return getInternal(attr, Double.class);
+    }
+
+    public BigInteger getBigInt(String attr) {
+        return getInternal(attr, BigInteger.class);
+    }
+
+    public BigDecimal getBigDecimal(String attr) {
+        return getInternal(attr, BigDecimal.class);
     }
 
     public Boolean getBoolean(String attr) {
@@ -148,12 +158,6 @@ public class JsonObject extends Json {
     @SuppressWarnings("unchecked")
     private <E> E getInternal(String attr, Class<E> type) {
         Object value = data.get(attr);
-        if (value == null) {
-            return null;
-        }
-        if (!type.isAssignableFrom(value.getClass())) {
-            throw new JsonException("Wrong value type for attr \"" + attr + "\". Expected " + type.getName() + ", but is " + value.getClass().getName());
-        }
-        return (E) value;
+        return getValueAsType(value, type);
     }
 }

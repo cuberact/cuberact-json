@@ -16,7 +16,7 @@
 
 package org.cuberact.json.builder;
 
-import org.cuberact.json.number.JsonNumber;
+import org.cuberact.json.JsonNumber;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -31,8 +31,6 @@ public abstract class JsonBuilderBase<OBJECT, ARRAY> implements JsonBuilder<OBJE
     protected abstract void addToObject(OBJECT object, String attr, Object value);
 
     protected abstract void addToArray(ARRAY array, Object value);
-
-    protected abstract Object convertJsonNumber(JsonNumber jsonNumber);
 
     @Override
     public void buildStart() {
@@ -90,7 +88,7 @@ public abstract class JsonBuilderBase<OBJECT, ARRAY> implements JsonBuilder<OBJE
 
     @Override
     public void addNumberToObject(OBJECT object, String attr, JsonNumber value) {
-        addToObject(object, attr, convertJsonNumber(value));
+        addToObject(object, attr, value);
     }
 
     @Override
@@ -120,6 +118,6 @@ public abstract class JsonBuilderBase<OBJECT, ARRAY> implements JsonBuilder<OBJE
 
     @Override
     public void addNumberToArray(ARRAY array, JsonNumber value) {
-        addToArray(array, convertJsonNumber(value));
+        addToArray(array, value);
     }
 }

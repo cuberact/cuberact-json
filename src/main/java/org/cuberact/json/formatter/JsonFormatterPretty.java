@@ -63,6 +63,8 @@ public class JsonFormatterPretty extends JsonFormatterBase {
         switch (indentsCount) {
             case 0:
                 break;
+            case 5:
+                output.write(cfg.indent);
             case 4:
                 output.write(cfg.indent);
             case 3:
