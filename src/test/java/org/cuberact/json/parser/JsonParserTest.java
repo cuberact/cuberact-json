@@ -18,11 +18,10 @@ package org.cuberact.json.parser;
 
 import org.cuberact.json.Json;
 import org.cuberact.json.JsonArray;
+import org.cuberact.json.JsonNumber;
 import org.cuberact.json.JsonObject;
 import org.cuberact.json.builder.JsonBuilderDom;
 import org.cuberact.json.formatter.JsonFormatter;
-import org.cuberact.json.number.JsonNumberConverter;
-import org.cuberact.json.number.JsonNumberConverterIntFloat;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -50,7 +49,6 @@ public class JsonParserTest {
         jsonAsString = jsonAsString.replace('\'', '"');
         String expected = "{'rect':[486,'HelloWorld',{'data':'ěščřžýáíé'},-23.54],'perspectiveSelector':{'perspectives':[true,false],'selected':null,'some':[1,2,3.2]}}"
                 .replace('\'', '"');
-
         Json json = new JsonParser().parse(jsonAsString);
         assertEquals(expected, json.toString(JsonFormatter.PACKED()));
     }
@@ -71,10 +69,8 @@ public class JsonParserTest {
                 "\t'clientIpEnforced' : false\n" +
                 "}";
         jsonAsString = jsonAsString.replace('\'', '"');
-
         String expected = "{'id':'abcdef1234567890','apiKey':'abcdef-ghijkl','name':'Main_key','validFrom':1505858400000,'softQuota':10000000,'hardQuota':10.12345,'useSignature':null,'state':'ENABLED','mocking':true,'clientIpUsed':false,'clientIpEnforced':false}"
                 .replace('\'', '"');
-
         Json json = new JsonParser().parse(jsonAsString);
         assertEquals(expected, json.toString(JsonFormatter.PACKED()));
     }
@@ -112,13 +108,9 @@ public class JsonParserTest {
 
     @Test
     public void parseExample6() {
-        String jsonAsString = "[1.1, -1.1, " +
-                "2.2e10, 2.2E10, -2.2e10, -2.2E-10, 2.2e-10, 2.2E-10, -2.2e-10, -2.2E-10, " +
-                "12345.12345e8, 12345.12345e-8, -12345.12345e8, -12345.12345e-8" +
-                "]";
-        String expected = "[1.1,-1.1,2.2E10,2.2E10,-2.2E10,-2.2E-10,2.2E-10,2.2E-10,-2.2E-10,-2.2E-10,1.234512345E12,1.234512345E-4,-1.234512345E12,-1.234512345E-4]";
+        String jsonAsString = "[1.1,-1.1,2.2e10,2.2e10,-2.2e10,-2.2e-10,2.2e-10,2.2e-10,-2.2e-10,-2.2e-10,12345.12345e8,12345.12345e-8,-12345.12345e8,-12345.12345e-8]";
         Json json = new JsonParser().parse(jsonAsString);
-        assertEquals(expected, json.toString(JsonFormatter.PACKED()));
+        assertEquals(jsonAsString, json.toString(JsonFormatter.PACKED()));
     }
 
     @Test
@@ -156,12 +148,11 @@ public class JsonParserTest {
     public void testArray() {
         String jsonAsString = "{'arr':[1,2,3,4,2147483647,-2147483648]}"
                 .replace('\'', '"');
-
         JsonObject json = new JsonParser().parse(jsonAsString);
         assertEquals(JsonArray.class, json.getArr("arr").getClass());
         JsonArray jsonArray = json.getArr("arr");
         for (Object o : jsonArray.iterable()) {
-            assertEquals(Long.class, o.getClass());
+            assertEquals(JsonNumber.class, o.getClass());
         }
         assertEquals(jsonAsString, json.toString(JsonFormatter.PACKED()));
     }
@@ -173,11 +164,11 @@ public class JsonParserTest {
         JsonObject json = new JsonParser().parse(JsonAsString);
         assertEquals(JsonArray.class, json.getArr("arr").getClass());
         JsonArray jsonArray = json.getArr("arr");
-        assertEquals(Double.class, jsonArray.get(0).getClass());
-        assertEquals(String.class, jsonArray.get(1).getClass());
-        assertEquals(Boolean.class, jsonArray.get(2).getClass());
+        assertEquals(Double.class, jsonArray.getDouble(0).getClass());
+        assertEquals(String.class, jsonArray.getString(1).getClass());
+        assertEquals(Boolean.class, jsonArray.getBoolean(2).getClass());
         assertNull(jsonArray.get(3));
-        assertEquals(Long.class, jsonArray.get(4).getClass());
+        assertEquals(Long.class, jsonArray.getLong(4).getClass());
         assertEquals(JsonAsString, json.toString(JsonFormatter.PACKED()));
     }
 
@@ -186,43 +177,37 @@ public class JsonParserTest {
         String jsonAsString = "[1,2,3,1.1,2.2,3.3E-6]";
         JsonParser jsonParser = new JsonParser();
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
-        assertEquals(1L, jsonArray.get(0));
-        assertEquals(2L, jsonArray.get(1));
-        assertEquals(3L, jsonArray.get(2));
-        assertEquals(1.1D, jsonArray.get(3));
-        assertEquals(2.2D, jsonArray.get(4));
-        assertEquals(3.3E-6D, jsonArray.get(5));
+        assertEquals(new Long(1L), jsonArray.getLong(0));
+        assertEquals(new Long(2L), jsonArray.getLong(1));
+        assertEquals(new Long(3L), jsonArray.getLong(2));
+        assertEquals(new Double(1.1D), jsonArray.getDouble(3));
+        assertEquals(new Double(2.2D), jsonArray.getDouble(4));
+        assertEquals(new Double(3.3E-6D), jsonArray.getDouble(5));
     }
 
     @Test
     public void numberAsIntAndFloat() {
         String jsonAsString = "[1,2,3,1.1,2.2,3.3E-6]";
-        JsonParser jsonParser = new JsonParser(new JsonBuilderDom(JsonNumberConverterIntFloat.REF));
+        JsonParser jsonParser = new JsonParser();
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
-        assertEquals(1, jsonArray.get(0));
-        assertEquals(2, jsonArray.get(1));
-        assertEquals(3, jsonArray.get(2));
-        assertEquals(1.1f, jsonArray.get(3));
-        assertEquals(2.2f, jsonArray.get(4));
-        assertEquals(3.3E-6f, jsonArray.get(5));
+        assertEquals(new Integer(1), jsonArray.getInt(0));
+        assertEquals(new Integer(2), jsonArray.getInt(1));
+        assertEquals(new Integer(3), jsonArray.getInt(2));
+        assertEquals(new Float(1.1f), jsonArray.getFloat(3));
+        assertEquals(new Float(2.2f), jsonArray.getFloat(4));
+        assertEquals(new Float(3.3E-6f), jsonArray.getFloat(5));
     }
 
     @Test
     public void numberAsBigIntegerAndBigDecimal() {
         String jsonAsString = "[1,2,3,1.1,2.2,3.3E-6]";
-        JsonNumberConverter jsonNumberConverter = number -> {
-            if (number.isFloatingNumber()) {
-                return new BigDecimal(number.toString());
-            }
-            return new BigInteger(number.toString());
-        };
-        JsonParser jsonParser = new JsonParser(new JsonBuilderDom(jsonNumberConverter));
+        JsonParser jsonParser = new JsonParser(new JsonBuilderDom());
         JsonArray jsonArray = jsonParser.parse(jsonAsString);
-        assertEquals(new BigInteger("1"), jsonArray.get(0));
-        assertEquals(new BigInteger("2"), jsonArray.get(1));
-        assertEquals(new BigInteger("3"), jsonArray.get(2));
-        assertEquals(new BigDecimal("1.1"), jsonArray.get(3));
-        assertEquals(new BigDecimal("2.2"), jsonArray.get(4));
-        assertEquals(new BigDecimal("3.3E-6"), jsonArray.get(5));
+        assertEquals(new BigInteger("1"), jsonArray.getBigInt(0));
+        assertEquals(new BigInteger("2"), jsonArray.getBigInt(1));
+        assertEquals(new BigInteger("3"), jsonArray.getBigInt(2));
+        assertEquals(new BigDecimal("1.1"), jsonArray.getBigDecimal(3));
+        assertEquals(new BigDecimal("2.2"), jsonArray.getBigDecimal(4));
+        assertEquals(new BigDecimal("3.3E-6"), jsonArray.getBigDecimal(5));
     }
 }

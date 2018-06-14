@@ -35,7 +35,6 @@ public class JsonFormatterPrettyTest {
         String jsonAsString = "{'one':[1,2,3,{'two':2},[[]],{}],'three':null}"
                 .replace('\'', '"');
         Json json = new JsonParser().parse(jsonAsString);
-
         JsonFormatterPretty.Config cfg = new JsonFormatterPretty.Config();
         cfg.indent = "[indent]";
         cfg.objectStart = "[obj_start]";
@@ -47,9 +46,7 @@ public class JsonFormatterPrettyTest {
         cfg.arrayComma = "[arr_comma]";
         cfg.quotationMark = "[qm]";
         cfg.lineBreak = "[line_break]";
-
         String expected = "[obj_start][line_break][indent][qm]one[qm][obj_colon][arr_start]1[arr_comma]2[arr_comma]3[arr_comma][obj_start][line_break][indent][indent][qm]two[qm][obj_colon]2[line_break][indent][obj_end][arr_comma][arr_start][arr_start][arr_end][arr_end][arr_comma][obj_start][obj_end][arr_end][obj_comma][line_break][indent][qm]three[qm][obj_colon]null[line_break][obj_end]";
-
         Assert.assertEquals(expected, json.toString(new JsonFormatterPretty(cfg))); //from dom
         Assert.assertEquals(expected, new JsonParser(
                 new JsonBuilderOutput(

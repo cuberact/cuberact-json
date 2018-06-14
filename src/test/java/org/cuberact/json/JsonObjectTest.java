@@ -20,6 +20,8 @@ import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.parser.JsonParser;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,9 +35,7 @@ public class JsonObjectTest {
     @Test
     public void api() {
         JsonObject json = new JsonObject();
-
         assertEquals(JsonType.OBJECT, json.type());
-
         json.add("obj", new JsonObject());
         json.add("arr", new JsonArray());
         json.add("string", "hello");
@@ -43,11 +43,11 @@ public class JsonObjectTest {
         json.add("long", 12L);
         json.add("float", 3.4f);
         json.add("double", 1.2d);
+        json.add("bigint", new BigInteger("1234567890"));
+        json.add("bigDecimal", new BigDecimal("123.4567890"));
         json.add("boolean", true);
         json.add("null", null);
-
-        assertEquals(9, json.size());
-
+        assertEquals(11, json.size());
         assertEquals(JsonObject.class, json.getObj("obj").getClass());
         assertEquals(JsonArray.class, json.getArr("arr").getClass());
         assertEquals("hello", json.getString("string"));
@@ -55,10 +55,11 @@ public class JsonObjectTest {
         assertEquals(new Long(12L), json.getLong("long"));
         assertEquals(new Float(3.4f), json.getFloat("float"));
         assertEquals(new Double(1.2d), json.getDouble("double"));
+        assertEquals(new BigInteger("1234567890"), json.getBigInt("bigint"));
+        assertEquals(new BigDecimal("123.4567890"), json.getBigDecimal("bigDecimal"));
         assertEquals(Boolean.TRUE, json.getBoolean("boolean"));
         assertTrue(json.contains("null"));
         assertNull(json.get("null"));
-
         assertTrue(json.contains("obj"));
         assertTrue(json.isNotNull("obj"));
         json.remove("obj");
@@ -172,12 +173,9 @@ public class JsonObjectTest {
         root.add("intArray", new JsonArray().add(1L).add(2L).add(3L));
         root.add("floatArray", new JsonArray().add(1.0).add(2.0).add(3.0));
         root.add("stringArray", new JsonArray().add("1").add("2").add("3"));
-
         String expected = "{'empty':null,'boolean':true,'double':1.0,'string':'hello','intArray':[1,2,3],'floatArray':[1.0,2.0,3.0],'stringArray':['1','2','3']}"
                 .replace('\'', '"');
-
         assertEquals(expected, root.toString(JsonFormatter.PACKED()));
-
         Json parsed = new JsonParser().parse(expected);
         assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
     }
@@ -189,12 +187,9 @@ public class JsonObjectTest {
         JsonObject nested = new JsonObject();
         nested.add("value", true);
         root.add("nested", nested);
-
         String expected = "{'string':'hello','nested':{'value':true}}"
                 .replace('\'', '"');
-
         assertEquals(expected, root.toString(JsonFormatter.PACKED()));
-
         Json parsed = new JsonParser().parse(expected);
         assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
     }
@@ -218,12 +213,9 @@ public class JsonObjectTest {
         children.add(child2);
         person.add("children", children);
         root.add("person", person);
-
         String expected = "{'attr':'value','person':{'name':'nkd','age':38,'pick':[1,2,3],'children':[{'name':'max','age':15},{'name':'jack','age':9}]}}"
                 .replace('\'', '"');
-
         assertEquals(expected, root.toString(JsonFormatter.PACKED()));
-
         Json parsed = new JsonParser().parse(expected);
         assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
     }

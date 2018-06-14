@@ -92,15 +92,11 @@ public class CustomJsonFormatter {
                 output.write("#");
             }
         };
-
         String jsonAsString = "{'name':'Bob', 'age':15, 'marks':[1,2,{'hello':'world'}]}"
                 .replace('\'', '"');
         Json json = new JsonParser().parse(jsonAsString);
-
         String notJsonString = json.toString(customJsonFormatter);
-
         String expected = "OBJ (-name- = :Bob: | -age- = :15: | -marks- = :ARR <#1# / #2# / #OBJ (-hello- = :world:)#>:)";
-
         Assert.assertEquals(expected, notJsonString);
     }
 }

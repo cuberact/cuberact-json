@@ -19,9 +19,7 @@ public class JsonArrayTest {
     @Test
     public void api() {
         JsonArray json = new JsonArray();
-
         assertEquals(JsonType.ARRAY, json.type());
-
         json.add(new JsonObject());
         json.add(new JsonArray());
         json.add("hello");
@@ -31,9 +29,7 @@ public class JsonArrayTest {
         json.add(1.2d);
         json.add(true);
         json.add(null);
-
         assertEquals(9, json.size());
-
         assertEquals(JsonObject.class, json.getObj(0).getClass());
         assertEquals(JsonArray.class, json.getArr(1).getClass());
         assertEquals("hello", json.getString(2));
@@ -43,11 +39,9 @@ public class JsonArrayTest {
         assertEquals(new Double(1.2d), json.getDouble(6));
         assertEquals(Boolean.TRUE, json.getBoolean(7));
         assertNull(json.get(8));
-
         assertTrue(json.contains("hello"));
         json.remove("hello");
         assertFalse(json.contains("hello"));
-
         assertTrue(json.contains(12L));
         json.remove(3);
         assertFalse(json.contains(12L));
@@ -63,7 +57,6 @@ public class JsonArrayTest {
         assertEquals(Arrays.toString(new int[]{0, 1, 2, 3}), Arrays.toString(jsonArray.list().toArray()));
         jsonArray.set(0, -1);
         assertEquals(Arrays.toString(new int[]{-1, 1, 2, 3}), Arrays.toString(jsonArray.list().toArray()));
-
         assertTrue(jsonArray.isNotNull(2));
         assertEquals(2, jsonArray.indexOf(2));
     }
@@ -179,12 +172,9 @@ public class JsonArrayTest {
         root.add(new JsonArray().add(1L).add(2L).add(3L));
         root.add(new JsonArray().add(1.0).add(2.0).add(3.0));
         root.add(new JsonArray().add("1").add("2").add("3"));
-
         String expected = "[null,true,1,2.0,'hello',[1,2,3],[1.0,2.0,3.0],['1','2','3']]"
                 .replace('\'', '"');
-
         assertEquals(expected, root.toString(JsonFormatter.PACKED()));
-
         Json parsed = new JsonParser().parse(expected);
         assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
     }
@@ -199,11 +189,8 @@ public class JsonArrayTest {
         nested.add(4L);
         nested.add(new JsonArray().add(5L).add(6L).add(7L));
         root.add(nested);
-
         String expected = "[1,[2,3,4,[5,6,7]]]";
-
         assertEquals(expected, root.toString(JsonFormatter.PACKED()));
-
         Json parsed = new JsonParser().parse(expected);
         assertEquals(expected, parsed.toString(JsonFormatter.PACKED()));
     }

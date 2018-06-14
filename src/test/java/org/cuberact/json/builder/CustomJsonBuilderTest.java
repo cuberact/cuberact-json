@@ -16,8 +16,7 @@
 
 package org.cuberact.json.builder;
 
-import org.cuberact.json.number.JsonNumber;
-import org.cuberact.json.number.JsonNumberConverterIntFloat;
+import org.cuberact.json.JsonNumber;
 import org.cuberact.json.parser.JsonParser;
 import org.junit.Test;
 
@@ -54,12 +53,11 @@ public class CustomJsonBuilderTest {
 
             @Override
             protected void addToArray(List<Object> array, Object value) {
-                array.add(value);
-            }
-
-            @Override
-            protected Object convertJsonNumber(JsonNumber jsonNumber) {
-                return JsonNumberConverterIntFloat.REF.convert(jsonNumber);
+                if (value instanceof JsonNumber) {
+                    array.add(((JsonNumber) value).asInt());
+                } else {
+                    array.add(value);
+                }
             }
         };
 

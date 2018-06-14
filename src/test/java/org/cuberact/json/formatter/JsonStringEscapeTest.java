@@ -34,7 +34,6 @@ public class JsonStringEscapeTest {
     public void jsonWithEscapedChars() {
         String jsonAsString = "{\"\\\"\b\r\f\n\t\\\\\":\"\\\"\b\r\f\n\\\\\"}";
         Json json = new JsonParser().parse(jsonAsString);
-
         String expected = "{\"\\\"\\b\\r\\f\\n\\t\\\\\":\"\\\"\\b\\r\\f\\n\\\\\"}";
         Assert.assertEquals(expected, json.toString(JsonFormatter.PACKED()));
     }

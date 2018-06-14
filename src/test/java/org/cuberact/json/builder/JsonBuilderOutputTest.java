@@ -33,7 +33,6 @@ public class JsonBuilderOutputTest {
     public void example1() {
         String jsonAsString = "{'rect':[486,'HelloWorld',{'data':'ěščřžýáíé'},-23.54],'perspectiveSelector':{'perspectives':[true,false],'selected':null,'some':[1,2,3.2]}}"
                 .replace('\'', '"');
-
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PRETTY());
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PACKED());
     }
@@ -87,10 +86,8 @@ public class JsonBuilderOutputTest {
     public void constructorsTest() {
         String jsonAsString = "{'1':{'2':{'3':{'4':{'5':{'6':{'7':{'8':{'9':{'name':'jack'}}}}},'age':15}}}}}"
                 .replace('\'', '"');
-
         JsonOutput jsonOutput1 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder())).parse(jsonAsString);
         JsonOutput jsonOutput2 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder(), JsonFormatter.PRETTY())).parse(jsonAsString);
-
         Assert.assertEquals(jsonOutput1.getResult().toString(), jsonOutput2.getResult().toString());
     }
 
