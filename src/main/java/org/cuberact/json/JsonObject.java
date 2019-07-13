@@ -89,6 +89,56 @@ public class JsonObject extends Json {
         return getInternal(attr, Boolean.class);
     }
 
+    public JsonObject getObj(String attr, JsonObject ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, JsonObject.class);
+    }
+
+    public JsonArray getArr(String attr, JsonArray ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, JsonArray.class);
+    }
+
+    public String getString(String attr, String ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, String.class);
+    }
+
+    public Integer getInt(String attr, Integer ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, Integer.class);
+    }
+
+    public Long getLong(String attr, Long ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, Long.class);
+    }
+
+    public Float getFloat(String attr, Float ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, Float.class);
+    }
+
+    public Double getDouble(String attr, Double ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, Double.class);
+    }
+
+    public BigInteger getBigInt(String attr, BigInteger ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, BigInteger.class);
+    }
+
+    public BigDecimal getBigDecimal(String attr, BigDecimal ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, BigDecimal.class);
+    }
+
+    public Boolean getBoolean(String attr, Boolean ifNotExists) {
+        if (!data.containsKey(attr)) return ifNotExists;
+        return getInternal(attr, Boolean.class);
+    }
+    
     public JsonObject add(String attr, Object value) {
         data.put(attr, value);
         return this;

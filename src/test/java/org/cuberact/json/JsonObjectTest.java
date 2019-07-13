@@ -25,7 +25,11 @@ import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -62,6 +66,34 @@ public class JsonObjectTest {
         assertNull(json.get("null"));
         assertTrue(json.contains("obj"));
         assertTrue(json.isNotNull("obj"));
+
+        JsonObject jo1 = new JsonObject();
+        jo1.add("1", "2");
+        JsonArray ja1 = new JsonArray();
+        ja1.add("1");
+
+        assertEquals(jo1, json.getObj("unexisted", jo1));
+        assertEquals(ja1, json.getArr("unexisted", ja1));
+        assertEquals("abc", json.getString("unexisted", "abc"));
+        assertEquals(new Integer(123), json.getInt("unexisted", 123));
+        assertEquals(new Long(123), json.getLong("unexisted", 123L));
+        assertEquals(Boolean.TRUE, json.getBoolean("unexisted", true));
+        assertEquals(new Double(1.543), json.getDouble("unexisted", 1.543));
+        assertEquals(new BigInteger("123"), json.getBigInt("unexisted", new BigInteger("123")));
+        assertEquals(new BigDecimal("123.123"), json.getBigDecimal("unexisted", new BigDecimal("123.123")));
+
+        assertNotEquals(jo1, json.getObj("obj", jo1));
+        assertNotEquals(ja1, json.getArr("arr", ja1));
+        assertEquals("hello", json.getString("string", "abc"));
+        assertEquals(new Integer(45), json.getInt("int", 123));
+        assertEquals(new Long(12L), json.getLong("long", 123L));
+        assertEquals(new Float(3.4f), json.getFloat("float", 7.2f));
+        assertEquals(new Double(1.2d), json.getDouble("double", 5.5));
+        assertEquals(new BigInteger("1234567890"), json.getBigInt("bigint", new BigInteger("123")));
+        assertEquals(new BigDecimal("123.4567890"), json.getBigDecimal("bigDecimal", new BigDecimal("555.555")));
+        assertEquals(Boolean.TRUE, json.getBoolean("boolean", false));
+
+
         json.remove("obj");
         assertFalse(json.contains("obj"));
         assertFalse(json.isNotNull("obj"));
