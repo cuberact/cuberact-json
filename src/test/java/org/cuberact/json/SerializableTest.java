@@ -17,10 +17,11 @@
 package org.cuberact.json;
 
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -49,6 +50,6 @@ public class SerializableTest {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serializedJson.toByteArray()));
         Json deserializedJson = (Json) ois.readObject();
 
-        Assert.assertEquals(json.toString(), deserializedJson.toString());
+        assertEquals(json.toString(), deserializedJson.toString());
     }
 }

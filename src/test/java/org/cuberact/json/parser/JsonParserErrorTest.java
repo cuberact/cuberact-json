@@ -19,10 +19,12 @@ package org.cuberact.json.parser;
 import org.cuberact.json.JsonException;
 import org.cuberact.json.input.JsonInputCharArray;
 import org.cuberact.json.input.JsonInputReader;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -170,21 +172,21 @@ public class JsonParserErrorTest {
     private void tryParseJsonAndCheckExceptionMessage(String errorJson, String expectedExceptionMessage) {
         try {
             new JsonParser().parse(errorJson);
-            Assert.fail("Expected JsonException");
+            fail("Expected JsonException");
         } catch (JsonException e) {
-            Assert.assertEquals(expectedExceptionMessage, e.getMessage());
+            assertEquals(expectedExceptionMessage, e.getMessage());
         }
         try {
             new JsonParser().parse(new JsonInputReader(new StringReader(errorJson)));
-            Assert.fail("Expected JsonException");
+            fail("Expected JsonException");
         } catch (JsonException e) {
-            Assert.assertEquals(expectedExceptionMessage, e.getMessage());
+            assertEquals(expectedExceptionMessage, e.getMessage());
         }
         try {
             new JsonParser().parse(new JsonInputCharArray(errorJson.toCharArray()));
-            Assert.fail("Expected JsonException");
+            fail("Expected JsonException");
         } catch (JsonException e) {
-            Assert.assertEquals(expectedExceptionMessage, e.getMessage());
+            assertEquals(expectedExceptionMessage, e.getMessage());
         }
     }
 }

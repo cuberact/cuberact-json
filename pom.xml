@@ -6,13 +6,12 @@
 
     <parent>
         <groupId>org.cuberact</groupId>
-        <artifactId>cuberact-parent</artifactId>
-        <version>1.0.1</version>
-        <relativePath>../cuberact-parent/pom.xml</relativePath>
+        <artifactId>cuberact-parent-kotlin</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>cuberact-json</artifactId>
-    <version>1.6.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>cuberact-json</name>
@@ -30,14 +29,6 @@
         <system>GitHub</system>
         <url>https://github.com/cuberact/cuberact-json/issues</url>
     </issueManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
@@ -86,6 +77,33 @@
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.0.0.RC1</version>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jvmVersion>14</jvmVersion>
+                            <module>
+                                <moduleInfo>
+                                    <name>cuberact.json</name>
+                                    <exports>*;</exports>
+                                </moduleInfo>
+                            </module>
+                            <jdepsExtraArgs>
+                                <arg>--multi-release</arg>
+                                <arg>14</arg>
+                            </jdepsExtraArgs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -20,10 +20,10 @@ import org.cuberact.json.Json;
 import org.cuberact.json.optimize.JsonEscape;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -35,7 +35,7 @@ public class JsonStringEscapeTest {
         String jsonAsString = "{\"\\\"\b\r\f\n\t\\\\\":\"\\\"\b\r\f\n\\\\\"}";
         Json json = new JsonParser().parse(jsonAsString);
         String expected = "{\"\\\"\\b\\r\\f\\n\\t\\\\\":\"\\\"\\b\\r\\f\\n\\\\\"}";
-        Assert.assertEquals(expected, json.toString(JsonFormatter.PACKED()));
+        assertEquals(expected, json.toString(JsonFormatter.PACKED()));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class JsonStringEscapeTest {
         String jsonAsString = "{\"\\u000e\\u0010\":\"\\u000f\"}";
         Json json = new JsonParser().parse(jsonAsString);
         String expected = "{\"\\u000e\\u0010\":\"\\u000f\"}";
-        Assert.assertEquals(expected, json.toString(JsonFormatter.PACKED()));
+        assertEquals(expected, json.toString(JsonFormatter.PACKED()));
     }
 
     @Test

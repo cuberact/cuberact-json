@@ -18,18 +18,15 @@ package org.cuberact.json;
 
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -258,10 +255,12 @@ public class JsonObjectTest {
         assertNull(jsonObject.getObj("attr"));
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void getWrongType() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("hello", "world");
-        jsonObject.getLong("hello");
+        assertThrows(JsonException.class, () -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add("hello", "world");
+            jsonObject.getLong("hello");
+        });
     }
 }

@@ -18,11 +18,12 @@ package org.cuberact.json.parser;
 
 import org.cuberact.json.Json;
 import org.cuberact.json.formatter.JsonFormatter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -48,7 +49,7 @@ public class JsonParserMultiThreadTest {
             thread.join();
         }
         for (String json : parsed) {
-            Assert.assertEquals(expected, json);
+            assertEquals(expected, json);
         }
     }
 

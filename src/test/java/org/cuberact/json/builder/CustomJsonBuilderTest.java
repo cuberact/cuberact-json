@@ -18,14 +18,15 @@ package org.cuberact.json.builder;
 
 import org.cuberact.json.JsonNumber;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)

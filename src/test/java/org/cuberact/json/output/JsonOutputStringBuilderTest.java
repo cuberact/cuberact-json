@@ -16,8 +16,10 @@
 
 package org.cuberact.json.output;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -34,7 +36,7 @@ public class JsonOutputStringBuilderTest {
         jsonOutputStream.write('l');
         jsonOutputStream.write('d');
         jsonOutputStream.write(" !!!");
-        Assert.assertEquals("hello world !!!", jsonOutputStream.getResult().toString());
+        assertEquals("hello world !!!", jsonOutputStream.getResult().toString());
     }
 
     @Test
@@ -47,6 +49,6 @@ public class JsonOutputStringBuilderTest {
             jsonOutputStream.write('-');
             expected.append('-');
         }
-        Assert.assertEquals(expected.toString(), jsonOutputStream.getResult().toString());
+        assertEquals(expected.toString(), jsonOutputStream.getResult().toString());
     }
 }

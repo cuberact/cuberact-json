@@ -20,13 +20,15 @@ import org.cuberact.json.Json;
 import org.cuberact.json.JsonException;
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 
 import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -91,14 +93,16 @@ public class JsonInputTest {
         assertEquals(3, input.position());
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void jsonInputReaderException() {
-        JsonInput input = new JsonInputReader(new StringReader("123") {
-            @Override
-            public int read() throws IOException {
-                throw new IOException("simulated exception");
-            }
+        assertThrows(JsonException.class, () -> {
+            JsonInput input = new JsonInputReader(new StringReader("123") {
+                @Override
+                public int read() throws IOException {
+                    throw new IOException("simulated exception");
+                }
+            });
+            input.nextChar();
         });
-        input.nextChar();
     }
 }

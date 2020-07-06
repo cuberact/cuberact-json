@@ -17,12 +17,14 @@
 package org.cuberact.json.output;
 
 import org.cuberact.json.JsonException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -39,7 +41,7 @@ public class JsonOutputStreamTest {
         jsonOutputStream.write('l');
         jsonOutputStream.write('d');
         jsonOutputStream.write(" !!!");
-        Assert.assertEquals("hello world !!!", new String(jsonOutputStream.getResult().toByteArray()));
+        assertEquals("hello world !!!", new String(jsonOutputStream.getResult().toByteArray()));
     }
 
     @Test
@@ -52,19 +54,21 @@ public class JsonOutputStreamTest {
             jsonOutputStream.write('-');
             expected.append('-');
         }
-        Assert.assertEquals(expected.toString(), new String(jsonOutputStream.getResult().toByteArray()));
+        assertEquals(expected.toString(), new String(jsonOutputStream.getResult().toByteArray()));
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void streamWithSimulatedException() {
-        OutputStream stream = new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-                throw new IOException("simulated exception");
-            }
-        };
-        JsonOutputStream jsonOutputStream = new JsonOutputStream<>(stream);
-        jsonOutputStream.write("write to buffer");
-        jsonOutputStream.flushBuffer(); // write from buffer to stream -> cause simulated exception
+        assertThrows(JsonException.class, () -> {
+            OutputStream stream = new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                    throw new IOException("simulated exception");
+                }
+            };
+            JsonOutputStream jsonOutputStream = new JsonOutputStream<>(stream);
+            jsonOutputStream.write("write to buffer");
+            jsonOutputStream.flushBuffer(); // write from buffer to stream -> cause simulated exception
+        });
     }
 }

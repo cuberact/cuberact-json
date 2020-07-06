@@ -17,15 +17,13 @@
 package org.cuberact.json;
 
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -43,7 +41,7 @@ public class JsonNumberTest {
     public void notEquals() {
         JsonNumber jsonNumber1 = new JsonNumber("12345".toCharArray(), 5, true);
         JsonNumber jsonNumber2 = new JsonNumber("12345".toCharArray(), 5, false);
-        Assert.assertNotEquals(jsonNumber1, jsonNumber2);
+        assertNotEquals(jsonNumber1, jsonNumber2);
     }
 
     @Test
@@ -113,10 +111,12 @@ public class JsonNumberTest {
         assertEquals(new BigDecimal(".45"), jsonNumber.asBigDecimal());
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void convertException() {
-        JsonNumber jsonNumber = new JsonNumber("12345".toCharArray(), 5, false);
-        jsonNumber.asNumber(AtomicLong.class);
+        assertThrows(JsonException.class, () -> {
+            JsonNumber jsonNumber = new JsonNumber("12345".toCharArray(), 5, false);
+            jsonNumber.asNumber(AtomicLong.class);
+        });
     }
 
     @Test

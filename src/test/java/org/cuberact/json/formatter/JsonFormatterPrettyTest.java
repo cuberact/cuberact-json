@@ -22,8 +22,11 @@ import org.cuberact.json.builder.JsonBuilderOutput;
 import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -47,22 +50,24 @@ public class JsonFormatterPrettyTest {
         cfg.quotationMark = "[qm]";
         cfg.lineBreak = "[line_break]";
         String expected = "[obj_start][line_break][indent][qm]one[qm][obj_colon][arr_start]1[arr_comma]2[arr_comma]3[arr_comma][obj_start][line_break][indent][indent][qm]two[qm][obj_colon]2[line_break][indent][obj_end][arr_comma][arr_start][arr_start][arr_end][arr_end][arr_comma][obj_start][obj_end][arr_end][obj_comma][line_break][indent][qm]three[qm][obj_colon]null[line_break][obj_end]";
-        Assert.assertEquals(expected, json.toString(new JsonFormatterPretty(cfg))); //from dom
-        Assert.assertEquals(expected, new JsonParser(
+        assertEquals(expected, json.toString(new JsonFormatterPretty(cfg))); //from dom
+        assertEquals(expected, new JsonParser(
                 new JsonBuilderOutput(
                         new JsonOutputStringBuilder(),
                         new JsonFormatterPretty(cfg)))
                 .<JsonOutput>parse(jsonAsString).getResult().toString()); //directly from input to string
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void cloneException() {
-        JsonFormatterPretty.Config cfg = new JsonFormatterPretty.Config() {
-            @Override
-            protected Object clone() throws CloneNotSupportedException {
-                throw new CloneNotSupportedException("simulated exception");
-            }
-        };
-        cfg.copy();
+        assertThrows(JsonException.class, () -> {
+            JsonFormatterPretty.Config cfg = new JsonFormatterPretty.Config() {
+                @Override
+                protected Object clone() throws CloneNotSupportedException {
+                    throw new CloneNotSupportedException("simulated exception");
+                }
+            };
+            cfg.copy();
+        });
     }
 }

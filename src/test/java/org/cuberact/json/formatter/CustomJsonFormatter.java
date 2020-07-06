@@ -19,8 +19,9 @@ package org.cuberact.json.formatter;
 import org.cuberact.json.Json;
 import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -97,6 +98,6 @@ public class CustomJsonFormatter {
         Json json = new JsonParser().parse(jsonAsString);
         String notJsonString = json.toString(customJsonFormatter);
         String expected = "OBJ (-name- = :Bob: | -age- = :15: | -marks- = :ARR <#1# / #2# / #OBJ (-hello- = :world:)#>:)";
-        Assert.assertEquals(expected, notJsonString);
+        assertEquals(expected, notJsonString);
     }
 }

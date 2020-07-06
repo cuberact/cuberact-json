@@ -2,14 +2,14 @@ package org.cuberact.json;
 
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -202,45 +202,57 @@ public class JsonArrayTest {
         assertNull(jsonArray.getObj(0));
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void getWrongType() {
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add("hello");
-        jsonArray.getObj(0);
+        assertThrows(JsonException.class, () -> {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add("hello");
+            jsonArray.getObj(0);
+        });
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void getOutOfBound() {
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add(1L);
-        jsonArray.get(99);
+        assertThrows(JsonException.class, () -> {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(1L);
+            jsonArray.get(99);
+        });
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void getWithTypeOutOfBound() {
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add(1L);
-        jsonArray.getObj(99);
+        assertThrows(JsonException.class, () -> {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(1L);
+            jsonArray.getObj(99);
+        });
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void addOutOfBound() {
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add(1L);
-        jsonArray.add(99, 2L);
+        assertThrows(JsonException.class, () -> {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(1L);
+            jsonArray.add(99, 2L);
+        });
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void setOutOfBound() {
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add(1L);
-        jsonArray.set(99, 2L);
+        assertThrows(JsonException.class, () -> {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(1L);
+            jsonArray.set(99, 2L);
+        });
     }
 
-    @Test(expected = JsonException.class)
+    @Test
     public void removeOutOfBound() {
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add(1L);
-        jsonArray.remove(99);
+        assertThrows(JsonException.class, () -> {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(1L);
+            jsonArray.remove(99);
+        });
     }
 }

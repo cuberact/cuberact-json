@@ -21,8 +21,10 @@ import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -62,8 +64,8 @@ public class JsonBuilderOutputTest {
     @Test
     public void example5() {
         String jsonAsString = "[1.1, -1.1, 2.2e10, 2.2E10, -2.2e10, -2.2E-10, 2.2e-10, 2.2E-10, -2.2e-10, -2.2E-10, 12345.12345e8, 12345.12345e-8, -12345.12345e8, -12345.12345e-8]";
-        Assert.assertEquals(jsonAsString.replace('E', 'e'), formattedByBuilder(jsonAsString, JsonFormatter.PRETTY()));
-        Assert.assertEquals(jsonAsString.replace('E', 'e').replaceAll(" ", ""), formattedByBuilder(jsonAsString, JsonFormatter.PACKED()));
+        assertEquals(jsonAsString.replace('E', 'e'), formattedByBuilder(jsonAsString, JsonFormatter.PRETTY()));
+        assertEquals(jsonAsString.replace('E', 'e').replaceAll(" ", ""), formattedByBuilder(jsonAsString, JsonFormatter.PACKED()));
     }
 
     @Test
@@ -88,13 +90,13 @@ public class JsonBuilderOutputTest {
                 .replace('\'', '"');
         JsonOutput jsonOutput1 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder())).parse(jsonAsString);
         JsonOutput jsonOutput2 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder(), JsonFormatter.PRETTY())).parse(jsonAsString);
-        Assert.assertEquals(jsonOutput1.getResult().toString(), jsonOutput2.getResult().toString());
+        assertEquals(jsonOutput1.getResult().toString(), jsonOutput2.getResult().toString());
     }
 
     private void assertEqualsDomAndBuilder(String input, JsonFormatter formatter) {
         String jsonFormattedByDom = formattedByDom(input, formatter);
         String jsonFormattedByBuilder = formattedByBuilder(input, formatter);
-        Assert.assertEquals(jsonFormattedByDom, jsonFormattedByBuilder);
+        assertEquals(jsonFormattedByDom, jsonFormattedByBuilder);
     }
 
     private String formattedByDom(String input, JsonFormatter formatter) {
