@@ -1,15 +1,19 @@
 package org.cuberact.json;
 
-import org.cuberact.json.formatter.JsonFormatter;
-import org.cuberact.json.parser.JsonParser;
-import org.junit.jupiter.api.Test;
-
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.cuberact.json.formatter.JsonFormatter;
+import org.cuberact.json.parser.JsonParser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -33,11 +37,12 @@ public class JsonArrayTest {
         assertEquals(JsonObject.class, json.getObj(0).getClass());
         assertEquals(JsonArray.class, json.getArr(1).getClass());
         assertEquals("hello", json.getString(2));
-        assertEquals(new Integer(45), json.getInt(3));
-        assertEquals(new Long(12L), json.getLong(4));
-        assertEquals(new Float(3.4f), json.getFloat(5));
-        assertEquals(new Double(1.2d), json.getDouble(6));
-        assertEquals(Boolean.TRUE, json.getBoolean(7));
+        assertEquals("hello", json.getString(2,"def"));
+        assertEquals(new Integer(45), json.getInt(3,12));
+        assertEquals(new Long(12L), json.getLong(4,22L));
+        assertEquals(new Float(3.4f), json.getFloat(5, 4.3f));
+        assertEquals(new Double(1.2d), json.getDouble(6,123.5d));
+        assertEquals(Boolean.TRUE, json.getBoolean(7, false));
         assertNull(json.get(8));
         assertTrue(json.contains("hello"));
         json.remove("hello");
@@ -45,6 +50,26 @@ public class JsonArrayTest {
         assertTrue(json.contains(12L));
         json.remove(3);
         assertFalse(json.contains(12L));
+    }
+
+    @Test
+    public void ifNotExists() {
+        JsonArray json = new JsonArray();
+        JsonObject jo = new JsonObject();
+        JsonArray ja = new JsonArray();
+        BigInteger bi = new BigInteger("12", 10);
+        BigDecimal bd = new BigDecimal("1.2");
+        assertEquals(jo, json.getObj(1, jo));
+        assertEquals(ja, json.getArr(1, ja));
+        assertEquals("DEF", json.getString(1, "DEF"));
+        assertEquals(12, json.getInt(1, 12));
+        assertEquals(12L, json.getLong(1, 12L));
+        assertEquals(1.2, json.getDouble(1, 1.2));
+        assertEquals(1.2f, json.getFloat(1, 1.2f));
+        assertEquals(true, json.getBoolean(1, true));
+        assertEquals(true, json.getBoolean(1, true));
+        assertEquals(bi, json.getBigInt(1, bi));
+        assertEquals(bd, json.getBigDecimal(1, bd));
     }
 
     @Test

@@ -16,15 +16,14 @@
 
 package org.cuberact.json;
 
-import org.cuberact.json.formatter.JsonFormatter;
-import org.cuberact.json.output.JsonOutput;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.cuberact.json.formatter.JsonFormatter;
+import org.cuberact.json.output.JsonOutput;
 
 /**
  * Json array
@@ -87,6 +86,60 @@ public class JsonArray extends Json {
     }
 
     public Boolean getBoolean(int index) {
+        return getInternal(index, Boolean.class);
+    }
+
+    private boolean outOfRange(int index){
+        return index < 0 || index > data.size()-1;
+    }
+
+    public JsonObject getObj(int index, JsonObject ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, JsonObject.class);
+    }
+
+    public JsonArray getArr(int index, JsonArray ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, JsonArray.class);
+    }
+
+    public String getString(int index, String ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, String.class);
+    }
+
+    public Integer getInt(int index, Integer ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, Integer.class);
+    }
+
+    public Long getLong(int index, Long ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, Long.class);
+    }
+
+    public Float getFloat(int index, Float ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, Float.class);
+    }
+
+    public Double getDouble(int index, Double ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, Double.class);
+    }
+
+    public BigInteger getBigInt(int index, BigInteger ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, BigInteger.class);
+    }
+
+    public BigDecimal getBigDecimal(int index, BigDecimal ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
+        return getInternal(index, BigDecimal.class);
+    }
+
+    public Boolean getBoolean(int index, Boolean ifNotExists) {
+        if (outOfRange(index)) return ifNotExists;
         return getInternal(index, Boolean.class);
     }
 
