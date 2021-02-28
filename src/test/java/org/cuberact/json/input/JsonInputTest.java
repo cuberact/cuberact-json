@@ -19,15 +19,14 @@ package org.cuberact.json.input;
 import org.cuberact.json.Json;
 import org.cuberact.json.JsonException;
 import org.cuberact.json.formatter.JsonFormatter;
+import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
 import org.cuberact.json.parser.JsonParser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
-
-import static org.cuberact.json.input.JsonInput.END_OF_INPUT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 /**

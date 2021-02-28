@@ -16,22 +16,25 @@
 
 package org.cuberact.json;
 
+import static org.cuberact.json.optimize.CharTable.toInt;
+import static org.cuberact.json.optimize.CharTable.toLong;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static org.cuberact.json.optimize.CharTable.toInt;
-import static org.cuberact.json.optimize.CharTable.toLong;
-
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public final class JsonNumber implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
+    @SuppressWarnings("RedundantIfStatement")
     public static final Function<JsonNumber, Object> CONVERTER_DYNAMIC = jsonNumber -> {
         if (jsonNumber.isFloatingNumber()) {
             double doubleValue = jsonNumber.asDouble();

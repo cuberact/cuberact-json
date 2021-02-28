@@ -22,13 +22,12 @@ import org.cuberact.json.JsonNumber;
 import org.cuberact.json.JsonObject;
 import org.cuberact.json.builder.JsonBuilderDom;
 import org.cuberact.json.formatter.JsonFormatter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)

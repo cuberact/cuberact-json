@@ -18,12 +18,11 @@ package org.cuberact.json.parser;
 
 import org.cuberact.json.Json;
 import org.cuberact.json.formatter.JsonFormatter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)

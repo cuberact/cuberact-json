@@ -16,6 +16,9 @@
 
 package org.cuberact.json;
 
+import org.cuberact.json.formatter.JsonFormatter;
+import org.cuberact.json.output.JsonOutput;
+
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.cuberact.json.formatter.JsonFormatter;
-import org.cuberact.json.output.JsonOutput;
 
 /**
  * Json array

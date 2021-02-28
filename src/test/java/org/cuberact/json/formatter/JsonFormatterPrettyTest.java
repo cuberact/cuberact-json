@@ -17,15 +17,9 @@
 package org.cuberact.json.formatter;
 
 import org.cuberact.json.Json;
-import org.cuberact.json.JsonException;
-import org.cuberact.json.builder.JsonBuilderOutput;
-import org.cuberact.json.output.JsonOutput;
-import org.cuberact.json.output.JsonOutputStringBuilder;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 
 /**

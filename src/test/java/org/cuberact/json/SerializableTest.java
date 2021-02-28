@@ -17,11 +17,14 @@
 package org.cuberact.json;
 
 import org.cuberact.json.parser.JsonParser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)

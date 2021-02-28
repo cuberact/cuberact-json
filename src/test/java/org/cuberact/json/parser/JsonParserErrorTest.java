@@ -19,12 +19,11 @@ package org.cuberact.json.parser;
 import org.cuberact.json.JsonException;
 import org.cuberact.json.input.JsonInputCharArray;
 import org.cuberact.json.input.JsonInputReader;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
