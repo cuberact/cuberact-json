@@ -16,6 +16,8 @@
 
 package org.cuberact.json.formatter;
 
+import org.cuberact.json.JsonArray;
+import org.cuberact.json.JsonObject;
 import org.cuberact.json.output.JsonOutput;
 
 /**
@@ -30,37 +32,54 @@ public final class JsonFormatterPacked extends JsonFormatterBase {
     }
 
     @Override
-    public void writeObjectStart(JsonOutput output) {
-        output.write("{");
+    public boolean writeObjectStart(JsonObject json, JsonOutput<?> output) {
+        output.write(getObjectStart());
+        return true;
     }
 
     @Override
-    public void writeObjectColon(JsonOutput output) {
-        output.write(":");
+    public void writeObjectAttr(CharSequence attr, JsonObject json, JsonOutput<?> output) {
+        writeString(attr, output);
     }
 
     @Override
-    public void writeObjectComma(JsonOutput output) {
-        output.write(",");
+    public void writeObjectColon(JsonObject json, JsonOutput<?> output) {
+        output.write(getObjectColon());
     }
 
     @Override
-    public void writeObjectEnd(JsonOutput output) {
-        output.write("}");
+    public void writeObjectValue(Object value, JsonObject json, JsonOutput<?> output) {
+        writeValue(value, output);
     }
 
     @Override
-    public void writeArrayStart(JsonOutput output) {
-        output.write("[");
+    public void writeObjectComma(JsonObject json, JsonOutput<?> output) {
+        output.write(getObjectComma());
     }
 
     @Override
-    public void writeArrayComma(JsonOutput output) {
-        output.write(",");
+    public void writeObjectEnd(JsonObject json, JsonOutput<?> output) {
+        output.write(getObjectEnd());
     }
 
     @Override
-    public void writeArrayEnd(JsonOutput output) {
-        output.write("]");
+    public boolean writeArrayStart(JsonArray json, JsonOutput<?> output) {
+        output.write(getArrayStart());
+        return true;
+    }
+
+    @Override
+    public void writeArrayValue(Object value, JsonArray json, JsonOutput<?> output) {
+        writeValue(value, output);
+    }
+
+    @Override
+    public void writeArrayComma(JsonArray json, JsonOutput<?> output) {
+        output.write(getArrayComma());
+    }
+
+    @Override
+    public void writeArrayEnd(JsonArray json, JsonOutput<?> output) {
+        output.write(getArrayEnd());
     }
 }

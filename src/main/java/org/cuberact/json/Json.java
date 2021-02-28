@@ -20,6 +20,7 @@ import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.output.JsonOutputStringBuilder;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +33,7 @@ import java.util.function.Function;
  */
 public abstract class Json implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public abstract JsonType type();
@@ -46,7 +48,7 @@ public abstract class Json implements Serializable {
         return writer.getResult().toString();
     }
 
-    public abstract void toOutput(JsonFormatter formatter, JsonOutput output);
+    public abstract void toOutput(JsonFormatter formatter, JsonOutput<?> output);
 
 
     public final void convertJsonNumbers(Function<JsonNumber, Object> converter, boolean callOnChildren) {

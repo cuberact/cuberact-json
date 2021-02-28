@@ -17,11 +17,12 @@
 package org.cuberact.json.formatter;
 
 import org.cuberact.json.Json;
+import org.cuberact.json.JsonArray;
+import org.cuberact.json.JsonObject;
 import org.cuberact.json.output.JsonOutput;
 import org.cuberact.json.parser.JsonParser;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -32,47 +33,49 @@ public class CustomJsonFormatter {
     public void formatter() {
         JsonFormatter customJsonFormatter = new JsonFormatter() {
             @Override
-            public void writeObjectStart(JsonOutput output) {
+            public boolean writeObjectStart(JsonObject json, JsonOutput<?> output) {
                 output.write("OBJ (");
+                return true;
             }
 
             @Override
-            public void writeObjectEnd(JsonOutput output) {
+            public void writeObjectEnd(JsonObject json, JsonOutput<?> output) {
                 output.write(")");
             }
 
             @Override
-            public void writeArrayStart(JsonOutput output) {
+            public boolean writeArrayStart(JsonArray json, JsonOutput<?> output) {
                 output.write("ARR <");
+                return true;
             }
 
             @Override
-            public void writeArrayEnd(JsonOutput output) {
+            public void writeArrayEnd(JsonArray json, JsonOutput<?> output) {
                 output.write(">");
             }
 
             @Override
-            public void writeObjectColon(JsonOutput output) {
+            public void writeObjectColon(JsonObject json, JsonOutput<?> output) {
                 output.write(" = ");
             }
 
             @Override
-            public void writeObjectComma(JsonOutput output) {
+            public void writeObjectComma(JsonObject json, JsonOutput<?> output) {
                 output.write(" | ");
             }
 
             @Override
-            public void writeArrayComma(JsonOutput output) {
+            public void writeArrayComma(JsonArray json, JsonOutput<?> output) {
                 output.write(" / ");
             }
 
             @Override
-            public void writeObjectAttr(CharSequence attr, JsonOutput output) {
+            public void writeObjectAttr(CharSequence attr, JsonObject json, JsonOutput<?> output) {
                 output.write("-" + attr + "-");
             }
 
             @Override
-            public void writeObjectValue(Object value, JsonOutput output) {
+            public void writeObjectValue(Object value, JsonObject json, JsonOutput<?> output) {
                 output.write(":");
                 if (value instanceof Json) {
                     ((Json) value).toOutput(this, output);
@@ -83,7 +86,7 @@ public class CustomJsonFormatter {
             }
 
             @Override
-            public void writeArrayValue(Object value, JsonOutput output) {
+            public void writeArrayValue(Object value, JsonArray json, JsonOutput<?> output) {
                 output.write("#");
                 if (value instanceof Json) {
                     ((Json) value).toOutput(this, output);

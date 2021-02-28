@@ -17,6 +17,8 @@
 package org.cuberact.json.formatter;
 
 import org.cuberact.json.Json;
+import org.cuberact.json.JsonArray;
+import org.cuberact.json.JsonObject;
 import org.cuberact.json.output.JsonOutput;
 
 /**
@@ -34,23 +36,23 @@ public interface JsonFormatter {
         return new JsonFormatterPretty();
     }
 
-    void writeObjectStart(JsonOutput output);
+    boolean writeObjectStart(JsonObject json, JsonOutput<?> output);
 
-    void writeObjectAttr(CharSequence attr, JsonOutput output);
+    void writeObjectAttr(CharSequence attr, JsonObject json, JsonOutput<?> output);
 
-    void writeObjectColon(JsonOutput output);
+    void writeObjectColon(JsonObject json, JsonOutput<?> output);
 
-    void writeObjectValue(Object value, JsonOutput output);
+    void writeObjectValue(Object value,JsonObject json, JsonOutput<?> output);
 
-    void writeObjectComma(JsonOutput output);
+    void writeObjectComma(JsonObject json, JsonOutput<?> output);
 
-    void writeObjectEnd(JsonOutput output);
+    void writeObjectEnd(JsonObject json, JsonOutput<?> output);
 
-    void writeArrayStart(JsonOutput output);
+    boolean writeArrayStart(JsonArray json, JsonOutput<?> output);
 
-    void writeArrayValue(Object value, JsonOutput output);
+    void writeArrayValue(Object value, JsonArray json, JsonOutput<?> output);
 
-    void writeArrayComma(JsonOutput output);
+    void writeArrayComma(JsonArray json, JsonOutput<?> output);
 
-    void writeArrayEnd(JsonOutput output);
+    void writeArrayEnd(JsonArray json, JsonOutput<?> output);
 }

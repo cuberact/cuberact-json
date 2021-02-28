@@ -43,14 +43,18 @@ public class JsonEscape {
         CHAR_ESC['\t'] = "\\t";
     }
 
-    public static void escape(CharSequence input, JsonOutput output) {
-        for (int i = 0, len = input.length(); i < len; i++) {
+    public static int write(CharSequence input, JsonOutput<?> output) {
+        int len = 0;
+        for (int i = 0, inputLen = input.length(); i < inputLen; i++) {
             char c = input.charAt(i);
             if (c < 128 && CHAR_ESC[c] != null) {
+                len += CHAR_ESC[c].length();
                 output.write(CHAR_ESC[c]);
             } else {
+                len++;
                 output.write(c);
             }
         }
+        return len;
     }
 }

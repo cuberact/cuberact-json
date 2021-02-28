@@ -29,22 +29,22 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
-public class JsonBuilderOutput extends JsonBuilderBase<JsonOutput, JsonOutput> {
+public class JsonBuilderOutput extends JsonBuilderBase<JsonOutput<?>, JsonOutput<?>> {
 
     private static final String OBJ = "OBJ";
     private static final String ARR = "ARR";
 
-    private final JsonOutput output;
+    private final JsonOutput<?> output;
     private final JsonFormatter formatter;
 
     private final Stack<String> stackTypes = new Stack<>();
     private final Stack<AtomicInteger> stackComma = new Stack<>();
 
-    public JsonBuilderOutput(JsonOutput output) {
+    public JsonBuilderOutput(JsonOutput<?> output) {
         this(output, JsonFormatter.PRETTY());
     }
 
-    public JsonBuilderOutput(JsonOutput output, JsonFormatter formatter) {
+    public JsonBuilderOutput(JsonOutput<?> output, JsonFormatter formatter) {
         this.output = Objects.requireNonNull(output, "output");
         this.formatter = Objects.requireNonNull(formatter, "formatter");
     }
@@ -55,88 +55,88 @@ public class JsonBuilderOutput extends JsonBuilderBase<JsonOutput, JsonOutput> {
     }
 
     @Override
-    public JsonOutput createObject() {
-        formatter.writeObjectStart(output);
+    public JsonOutput<?> createObject() {
+        formatter.writeObjectStart(null, output);
         stackTypes.push(OBJ);
         stackComma.push(new AtomicInteger(0));
         return output;
     }
 
     @Override
-    public JsonOutput createArray() {
-        formatter.writeArrayStart(output);
+    public JsonOutput<?> createArray() {
+        formatter.writeArrayStart(null, output);
         stackTypes.push(ARR);
         stackComma.push(new AtomicInteger(0));
         return output;
     }
 
     @Override
-    public void objectCompleted(JsonOutput object) {
-        formatter.writeObjectEnd(output);
+    public void objectCompleted(JsonOutput<?> object) {
+        formatter.writeObjectEnd(null, output);
         stackTypes.pop();
         stackComma.pop();
     }
 
     @Override
-    public void arrayCompleted(JsonOutput array) {
-        formatter.writeArrayEnd(output);
+    public void arrayCompleted(JsonOutput<?> array) {
+        formatter.writeArrayEnd(null, output);
         stackTypes.pop();
         stackComma.pop();
     }
 
     @Override
-    public void addObjectAttr(JsonOutput object, String attr) {
+    public void addObjectAttr(JsonOutput<?> object, String attr) {
         writeComma();
-        formatter.writeObjectAttr(attr, output);
-        formatter.writeObjectColon(output);
+        formatter.writeObjectAttr(attr, null, output);
+        formatter.writeObjectColon(null, output);
     }
 
     @Override
-    public void addArrayComma(JsonOutput array) {
+    public void addArrayComma(JsonOutput<?> array) {
         writeComma();
     }
 
     @Override
-    protected void addToObject(JsonOutput object, String attr, Object value) {
+    protected void addToObject(JsonOutput<?> object, String attr, Object value) {
         writeComma();
-        formatter.writeObjectAttr(attr, output);
-        formatter.writeObjectColon(output);
-        formatter.writeObjectValue(value, output);
+        formatter.writeObjectAttr(attr, null, output);
+        formatter.writeObjectColon(null, output);
+        formatter.writeObjectValue(value, null, output);
     }
 
     @Override
-    protected void addToArray(JsonOutput o, Object value) {
+    protected void addToArray(JsonOutput<?> o, Object value) {
         writeComma();
-        formatter.writeArrayValue(value, output);
+        formatter.writeArrayValue(value, null, output);
     }
 
     private void writeComma() {
         if (stackComma.peek().getAndIncrement() > 0) {
             if (Objects.equals(OBJ, stackTypes.peek())) {
-                formatter.writeObjectComma(output);
+                formatter.writeObjectComma(null, output);
             } else {
-                formatter.writeArrayComma(output);
+                formatter.writeArrayComma(null, output);
             }
         }
     }
 
     @Override
-    public void addObjectToObject(JsonOutput object, String attr, JsonOutput value) {
+    public void addObjectToObject(JsonOutput<?> object, String attr, JsonOutput<?> value) {
         //do nothing
     }
 
     @Override
-    public void addArrayToObject(JsonOutput object, String attr, JsonOutput value) {
+    public void addArrayToObject(JsonOutput<?> object, String attr, JsonOutput<?> value) {
         //do nothing
     }
 
     @Override
-    public void addArrayToArray(JsonOutput array, JsonOutput value) {
+    public void addArrayToArray(JsonOutput<?> array, JsonOutput<?> value) {
         //do nothing
     }
 
     @Override
-    public void addObjectToArray(JsonOutput array, JsonOutput value) {
+    public void addObjectToArray(JsonOutput<?> array, JsonOutput<?> value) {
         //do nothing
     }
 }

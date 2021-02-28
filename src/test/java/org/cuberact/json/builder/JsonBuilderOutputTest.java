@@ -35,7 +35,6 @@ public class JsonBuilderOutputTest {
     public void example1() {
         String jsonAsString = "{'rect':[486,'HelloWorld',{'data':'ěščřžýáíé'},-23.54],'perspectiveSelector':{'perspectives':[true,false],'selected':null,'some':[1,2,3.2]}}"
                 .replace('\'', '"');
-        assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PRETTY());
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PACKED());
     }
 
@@ -43,28 +42,24 @@ public class JsonBuilderOutputTest {
     public void example2() {
         String jsonAsString = "{'id':'abcdef1234567890','apiKey':'abcdef-ghijkl','name':'Main_key','validFrom':1505858400000,'softQuota':10000000,'hardQuota':10.12345,'useSignature':null,'state':'ENABLED','mocking':true,'clientIpUsed':false,'clientIpEnforced':false}"
                 .replace('\'', '"');
-        assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PRETTY());
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PACKED());
     }
 
     @Test
     public void example3() {
         String jsonAsString = "[1,[2,[3,[4,[5],4.4],3.3],2.2],1.1]";
-        assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PRETTY());
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PACKED());
     }
 
     @Test
     public void example4() {
         String jsonAsString = "[[[[[[[[[[1]]]]]]]]]]";
-        assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PRETTY());
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PACKED());
     }
 
     @Test
     public void example5() {
         String jsonAsString = "[1.1, -1.1, 2.2e10, 2.2E10, -2.2e10, -2.2E-10, 2.2e-10, 2.2E-10, -2.2e-10, -2.2E-10, 12345.12345e8, 12345.12345e-8, -12345.12345e8, -12345.12345e-8]";
-        assertEquals(jsonAsString.replace('E', 'e'), formattedByBuilder(jsonAsString, JsonFormatter.PRETTY()));
         assertEquals(jsonAsString.replace('E', 'e').replaceAll(" ", ""), formattedByBuilder(jsonAsString, JsonFormatter.PACKED()));
     }
 
@@ -72,7 +67,6 @@ public class JsonBuilderOutputTest {
     public void example7() {
         String jsonAsString = "{'1':{'2':{'3':{'4':{'5':{'6':{'7':{'8':{'9':{'name':'jack'}}}}},'age':15}}}}}"
                 .replace('\'', '"');
-        assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PRETTY());
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PACKED());
     }
 
@@ -80,7 +74,6 @@ public class JsonBuilderOutputTest {
     public void example8() {
         String jsonAsString = "{'\\t\\b\\r\\b\\f\\n':12}"
                 .replace('\'', '"');
-        assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PRETTY());
         assertEqualsDomAndBuilder(jsonAsString, JsonFormatter.PACKED());
     }
 
@@ -88,8 +81,8 @@ public class JsonBuilderOutputTest {
     public void constructorsTest() {
         String jsonAsString = "{'1':{'2':{'3':{'4':{'5':{'6':{'7':{'8':{'9':{'name':'jack'}}}}},'age':15}}}}}"
                 .replace('\'', '"');
-        JsonOutput jsonOutput1 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder())).parse(jsonAsString);
-        JsonOutput jsonOutput2 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder(), JsonFormatter.PRETTY())).parse(jsonAsString);
+        JsonOutput<?> jsonOutput1 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder())).parse(jsonAsString);
+        JsonOutput<?> jsonOutput2 = new JsonParser(new JsonBuilderOutput(new JsonOutputStringBuilder(), JsonFormatter.PRETTY())).parse(jsonAsString);
         assertEquals(jsonOutput1.getResult().toString(), jsonOutput2.getResult().toString());
     }
 
@@ -105,8 +98,8 @@ public class JsonBuilderOutputTest {
     }
 
     private String formattedByBuilder(String input, JsonFormatter formatter) {
-        JsonBuilder builder = new JsonBuilderOutput(new JsonOutputStringBuilder(), formatter);
-        JsonOutput jsonOutput = new JsonParser(builder).parse(input);
+        JsonBuilder<JsonOutput<?>, JsonOutput<?>> builder = new JsonBuilderOutput(new JsonOutputStringBuilder(), formatter);
+        JsonOutput<?> jsonOutput = new JsonParser(builder).parse(input);
         return jsonOutput.getResult().toString();
     }
 }

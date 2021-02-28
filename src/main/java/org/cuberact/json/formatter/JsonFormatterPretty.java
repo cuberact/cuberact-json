@@ -16,133 +16,215 @@
 
 package org.cuberact.json.formatter;
 
-import org.cuberact.json.JsonException;
+import org.cuberact.json.JsonArray;
+import org.cuberact.json.JsonNumber;
+import org.cuberact.json.JsonObject;
 import org.cuberact.json.output.JsonOutput;
-
-import java.util.Objects;
-
-import static org.cuberact.json.optimize.JsonEscape.escape;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public class JsonFormatterPretty extends JsonFormatterBase {
 
-    public static final Config DEFAULT_CONFIG = new Config();
-
-    private final Config cfg;
-    private int indentsCount;
-    private boolean objectStarted = false;
-
-    public JsonFormatterPretty() {
-        this(DEFAULT_CONFIG);
-    }
-
-    public JsonFormatterPretty(Config cfg) {
-        this.cfg = Objects.requireNonNull(cfg, "Config").copy();
-    }
+    protected int indentCount = 0;
 
     @Override
-    public void writeObjectStart(JsonOutput output) {
-        output.write(cfg.objectStart);
-        objectStarted = true;
-    }
-
-    @Override
-    public void writeObjectAttr(CharSequence attr, JsonOutput output) {
-        if (objectStarted) {
-            output.write(cfg.lineBreak);
-            indentsCount++;
-            writeIndent(output);
-            objectStarted = false;
+    public boolean writeObjectStart(JsonObject json, JsonOutput<?> output) {
+        if (flat() && isFlat(json)) {
+            output.write(getObjectStart());
+            output.write(getObjectEnd());
+            return false;
         }
-        super.writeObjectAttr(attr, output);
-    }
-
-    private void writeIndent(JsonOutput output) {
-        switch (indentsCount) {
-            case 0:
-                break;
-            case 5:
-                output.write(cfg.indent);
-            case 4:
-                output.write(cfg.indent);
-            case 3:
-                output.write(cfg.indent);
-            case 2:
-                output.write(cfg.indent);
-            case 1:
-                output.write(cfg.indent);
-                break;
-            default:
-                for (int i = 0; i < indentsCount; i++) {
-                    output.write(cfg.indent);
-                }
-        }
+        output.write(getObjectStart());
+        indentCount++;
+        return true;
     }
 
     @Override
-    public void writeObjectColon(JsonOutput output) {
-        output.write(cfg.objectColon);
-    }
-
-    protected void writeString(CharSequence value, JsonOutput output) {
-        output.write(cfg.quotationMark);
-        escape(value, output);
-        output.write(cfg.quotationMark);
-    }
-
-    @Override
-    public void writeObjectComma(JsonOutput output) {
-        output.write(cfg.objectComma);
-        output.write(cfg.lineBreak);
+    public void writeObjectAttr(CharSequence attr, JsonObject json, JsonOutput<?> output) {
+        output.write(getLineBreak());
         writeIndent(output);
+        writeString(attr, output);
     }
 
     @Override
-    public void writeObjectEnd(JsonOutput output) {
-        if (!objectStarted) {
-            output.write(cfg.lineBreak);
-            indentsCount--;
-            writeIndent(output);
-        }
-        objectStarted = false;
-        output.write(cfg.objectEnd);
+    public void writeObjectColon(JsonObject json, JsonOutput<?> output) {
+        output.write(getObjectColon());
     }
 
     @Override
-    public void writeArrayStart(JsonOutput output) {
-        output.write(cfg.arrayStart);
+    public void writeObjectValue(Object value, JsonObject json, JsonOutput<?> output) {
+        writeValue(value, output);
     }
 
     @Override
-    public void writeArrayComma(JsonOutput output) {
-        output.write(cfg.arrayComma);
+    public void writeObjectComma(JsonObject json, JsonOutput<?> output) {
+        output.write(getObjectComma());
     }
 
     @Override
-    public void writeArrayEnd(JsonOutput output) {
-        output.write(cfg.arrayEnd);
+    public void writeObjectEnd(JsonObject json, JsonOutput<?> output) {
+        output.write(getLineBreak());
+        indentCount--;
+        writeIndent(output);
+        output.write(getObjectEnd());
     }
 
-    public static class Config implements Cloneable {
-        public String indent = "    ";
-        public String objectStart = "{";
-        public String objectEnd = "}";
-        public String arrayStart = "[";
-        public String arrayEnd = "]";
-        public String objectColon = " : ";
-        public String objectComma = ",";
-        public String arrayComma = ", ";
-        public String quotationMark = "\"";
-        public String lineBreak = "\n";
-
-        Config copy() {
-            try {
-                return (Config) this.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new JsonException(e);
+    @Override
+    public boolean writeArrayStart(JsonArray json, JsonOutput<?> output) {
+        if (flat() && isFlat(json)) {
+            output.write(getArrayStart());
+            int len = getArrayStart().length();
+            int arrayLen = json.size();
+            for (int i = 0; i < arrayLen; i++) {
+                if (i != 0) {
+                    output.write(getFlatArrayComma());
+                    len += getFlatArrayComma().length();
+                    if (len > getFlatArrayLineLength()) {
+                        len = getFlatArrayIndent().length();
+                        output.write(getLineBreak());
+                        writeIndent(output);
+                        output.write(getFlatArrayIndent());
+                    }
+                }
+                len += writeFlatValue(json.get(i), output);
             }
+            output.write(getArrayEnd());
+            return false;
         }
+        output.write(getArrayStart());
+        indentCount++;
+        return true;
+    }
+
+    @Override
+    public void writeArrayValue(Object value, JsonArray json, JsonOutput<?> output) {
+        output.write(getLineBreak());
+        writeIndent(output);
+        writeValue(value, output);
+    }
+
+    @Override
+    public void writeArrayComma(JsonArray json, JsonOutput<?> output) {
+        output.write(getArrayComma());
+    }
+
+    @Override
+    public void writeArrayEnd(JsonArray json, JsonOutput<?> output) {
+        output.write(getLineBreak());
+        indentCount--;
+        writeIndent(output);
+        output.write(getArrayEnd());
+    }
+
+    protected void writeIndent(JsonOutput<?> output) {
+        for (int i = 0; i < indentCount; i++) {
+            output.write(getIndent());
+        }
+    }
+
+    protected boolean isFlat(JsonObject json) {
+        if (json == null) {
+            return false;
+        }
+        return json.size() == 0;
+    }
+
+    protected boolean isFlat(JsonArray json) {
+        if (json == null) {
+            return false;
+        }
+        for (Object value : json.iterable()) {
+            if (value instanceof CharSequence) {
+                continue;
+            }
+            if (value instanceof JsonNumber) {
+                continue;
+            }
+            if (value instanceof Integer) {
+                continue;
+            }
+            if (value instanceof Long) {
+                continue;
+            }
+            if (value instanceof Double) {
+                continue;
+            }
+            if (value instanceof Float) {
+                continue;
+            }
+            if (value instanceof Boolean) {
+                continue;
+            }
+            if (value instanceof JsonArray && ((JsonArray) value).size() == 0) {
+                continue;
+            }
+            if (value instanceof JsonObject && ((JsonObject) value).size() == 0) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    protected int writeFlatValue(Object value, JsonOutput<?> output) {
+        int len = 0;
+        if (value instanceof JsonNumber) {
+            String str = value.toString();
+            output.write(str);
+            len += str.length();
+        } else if (value instanceof CharSequence) {
+            len += writeString((CharSequence) value, output);
+        } else if (value instanceof Boolean) {
+            String str = ((Boolean) value) ? getBooleanTrue() : getBooleanFalse();
+            output.write(str);
+            len += str.length();
+        } else if (value instanceof Double || value instanceof Float) {
+            String str = String.valueOf(value).replace(',', '.');
+            output.write(str);
+            len += str.length();
+        } else if (value instanceof JsonArray) {
+            String str = getArrayStart() + getArrayEnd();
+            output.write(str);
+            len += str.length();
+        } else if (value instanceof JsonObject) {
+            String str = getObjectStart() + getObjectEnd();
+            output.write(str);
+            len += str.length();
+        } else {
+            String str = value.toString();
+            output.write(str);
+            len += str.length();
+        }
+        return len;
+    }
+
+    @Override
+    protected String getObjectColon() {
+        return ": ";
+    }
+
+    protected String getIndent() {
+        return "  ";
+    }
+
+    protected String getLineBreak() {
+        return "\n";
+    }
+
+    protected boolean flat() {
+        return true;
+    }
+
+    protected String getFlatArrayComma() {
+        return ", ";
+    }
+
+    protected String getFlatArrayIndent() {
+        return " ";
+    }
+
+    protected int getFlatArrayLineLength() {
+        return 150;
     }
 }

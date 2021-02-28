@@ -18,28 +18,38 @@ package org.cuberact.json.formatter;
 
 import org.cuberact.json.Json;
 import org.cuberact.json.JsonNumber;
+import org.cuberact.json.optimize.JsonEscape;
 import org.cuberact.json.output.JsonOutput;
-
-import static org.cuberact.json.optimize.JsonEscape.escape;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public abstract class JsonFormatterBase implements JsonFormatter {
 
-    @Override
-    public void writeObjectAttr(CharSequence attr, JsonOutput output) {
-        writeString(attr, output);
+    protected int writeString(CharSequence value, JsonOutput<?> output) {
+        int len = getStringStart().length();
+        output.write(getStringStart());
+        if (isEscapeStringValue()) {
+            len += JsonEscape.write(value, output);
+        } else {
+            len += value.length();
+            output.write(value);
+        }
+        len += getStringEnd().length();
+        output.write(getStringEnd());
+        return len;
     }
 
-    @Override
-    public void writeObjectValue(Object value, JsonOutput output) {
+    protected void writeValue(Object value, JsonOutput<?> output) {
         if (value instanceof Json) {
             ((Json) value).toOutput(this, output);
         } else if (value instanceof JsonNumber) {
             output.write(value.toString());
         } else if (value instanceof CharSequence) {
             writeString((CharSequence) value, output);
+        } else if (value instanceof Boolean) {
+            boolean b = (Boolean) value;
+            output.write(b ? getBooleanTrue() : getBooleanFalse());
         } else if (value instanceof Double || value instanceof Float) {
             output.write(String.valueOf(value).replace(',', '.'));
         } else {
@@ -47,14 +57,51 @@ public abstract class JsonFormatterBase implements JsonFormatter {
         }
     }
 
-    protected void writeString(CharSequence value, JsonOutput output) {
-        output.write("\"");
-        escape(value, output);
-        output.write("\"");
+    protected String getObjectStart() {
+        return "{";
     }
 
-    @Override
-    public void writeArrayValue(Object value, JsonOutput output) {
-        writeObjectValue(value, output);
+    protected String getObjectEnd() {
+        return "}";
+    }
+
+    protected String getArrayStart() {
+        return "[";
+    }
+
+    protected String getArrayEnd() {
+        return "]";
+    }
+
+    protected String getStringStart() {
+        return "\"";
+    }
+
+    protected String getStringEnd() {
+        return "\"";
+    }
+
+    protected String getObjectColon() {
+        return ":";
+    }
+
+    protected String getObjectComma() {
+        return ",";
+    }
+
+    protected String getArrayComma() {
+        return ",";
+    }
+
+    protected String getBooleanTrue() {
+        return "true";
+    }
+
+    protected String getBooleanFalse() {
+        return "false";
+    }
+
+    protected boolean isEscapeStringValue() {
+        return true;
     }
 }

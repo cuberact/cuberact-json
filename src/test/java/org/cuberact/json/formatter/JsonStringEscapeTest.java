@@ -69,7 +69,7 @@ public class JsonStringEscapeTest {
 
     private String escapeByFormatter(String value) {
         JsonOutputStringBuilder output = new JsonOutputStringBuilder();
-        JsonEscape.escape(value, output);
+        JsonEscape.write(value, output);
         return output.getResult().toString();
     }
 }

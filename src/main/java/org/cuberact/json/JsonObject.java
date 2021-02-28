@@ -19,6 +19,7 @@ package org.cuberact.json;
 import org.cuberact.json.formatter.JsonFormatter;
 import org.cuberact.json.output.JsonOutput;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
@@ -36,6 +37,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class JsonObject extends Json {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Object> data = new LinkedHashMap<>();
@@ -189,23 +191,23 @@ public class JsonObject extends Json {
     }
 
     @Override
-    public void toOutput(JsonFormatter formatter, JsonOutput output) {
-        formatter.writeObjectStart(output);
-        boolean addComma = false;
-        for (Entry<String, Object> entry : data.entrySet()) {
-            if (addComma) {
-                formatter.writeObjectComma(output);
-            } else {
-                addComma = true;
+    public void toOutput(JsonFormatter formatter, JsonOutput<?> output) {
+        if (formatter.writeObjectStart(this, output)) {
+            boolean addComma = false;
+            for (Entry<String, Object> entry : data.entrySet()) {
+                if (addComma) {
+                    formatter.writeObjectComma(this,output);
+                } else {
+                    addComma = true;
+                }
+                formatter.writeObjectAttr(entry.getKey(),this, output);
+                formatter.writeObjectColon(this,output);
+                formatter.writeObjectValue(entry.getValue(),this, output);
             }
-            formatter.writeObjectAttr(entry.getKey(), output);
-            formatter.writeObjectColon(output);
-            formatter.writeObjectValue(entry.getValue(), output);
+            formatter.writeObjectEnd(this,output);
         }
-        formatter.writeObjectEnd(output);
     }
 
-    @SuppressWarnings("unchecked")
     private <E> E getInternal(String attr, Class<E> type) {
         Object value = data.get(attr);
         return getValueAsType(value, type);

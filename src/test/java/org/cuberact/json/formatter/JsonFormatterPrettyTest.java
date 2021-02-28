@@ -38,36 +38,73 @@ public class JsonFormatterPrettyTest {
         String jsonAsString = "{'one':[1,2,3,{'two':2},[[]],{}],'three':null}"
                 .replace('\'', '"');
         Json json = new JsonParser().parse(jsonAsString);
-        JsonFormatterPretty.Config cfg = new JsonFormatterPretty.Config();
-        cfg.indent = "[indent]";
-        cfg.objectStart = "[obj_start]";
-        cfg.objectEnd = "[obj_end]";
-        cfg.arrayStart = "[arr_start]";
-        cfg.arrayEnd = "[arr_end]";
-        cfg.objectColon = "[obj_colon]";
-        cfg.objectComma = "[obj_comma]";
-        cfg.arrayComma = "[arr_comma]";
-        cfg.quotationMark = "[qm]";
-        cfg.lineBreak = "[line_break]";
-        String expected = "[obj_start][line_break][indent][qm]one[qm][obj_colon][arr_start]1[arr_comma]2[arr_comma]3[arr_comma][obj_start][line_break][indent][indent][qm]two[qm][obj_colon]2[line_break][indent][obj_end][arr_comma][arr_start][arr_start][arr_end][arr_end][arr_comma][obj_start][obj_end][arr_end][obj_comma][line_break][indent][qm]three[qm][obj_colon]null[line_break][obj_end]";
-        assertEquals(expected, json.toString(new JsonFormatterPretty(cfg))); //from dom
-        assertEquals(expected, new JsonParser(
-                new JsonBuilderOutput(
-                        new JsonOutputStringBuilder(),
-                        new JsonFormatterPretty(cfg)))
-                .<JsonOutput>parse(jsonAsString).getResult().toString()); //directly from input to string
+        JsonFormatterPretty customFormatter = new JsonFormatterPretty(){
+
+            @Override
+            public String getObjectStart() {
+                return "[obj_start]";
+            }
+
+            @Override
+            public String getObjectEnd() {
+                return "[obj_end]";
+            }
+
+            @Override
+            public String getArrayStart() {
+                return "[arr_start]";
+            }
+
+            @Override
+            public String getArrayEnd() {
+                return "[arr_end]";
+            }
+
+            @Override
+            public String getStringStart() {
+                return "[qm]";
+            }
+
+            @Override
+            public String getStringEnd() {
+                return "[qm]";
+            }
+
+            @Override
+            public String getObjectColon() {
+                return "[obj_colon]";
+            }
+
+            @Override
+            public String getObjectComma() {
+                return "[obj_comma]";
+            }
+
+            @Override
+            public String getArrayComma() {
+                return "[arr_comma]";
+            }
+
+            @Override
+            protected String getIndent() {
+                return "[indent]";
+            }
+
+            @Override
+            public String getLineBreak() {
+                return "[line_break]";
+            }
+
+            @Override
+            protected boolean flat() {
+                return false;
+            }
+        };
+
+        System.out.println(json.toString(new JsonFormatterPretty()));
+
+        String expected = "[obj_start][line_break][indent][qm]one[qm][obj_colon][arr_start][line_break][indent][indent]1[arr_comma][line_break][indent][indent]2[arr_comma][line_break][indent][indent]3[arr_comma][line_break][indent][indent][obj_start][line_break][indent][indent][indent][qm]two[qm][obj_colon]2[line_break][indent][indent][obj_end][arr_comma][line_break][indent][indent][arr_start][line_break][indent][indent][indent][arr_start][line_break][indent][indent][indent][arr_end][line_break][indent][indent][arr_end][arr_comma][line_break][indent][indent][obj_start][line_break][indent][indent][obj_end][line_break][indent][arr_end][obj_comma][line_break][indent][qm]three[qm][obj_colon]null[line_break][obj_end]";
+        assertEquals(expected, json.toString(customFormatter)); //from dom
     }
 
-    @Test
-    public void cloneException() {
-        assertThrows(JsonException.class, () -> {
-            JsonFormatterPretty.Config cfg = new JsonFormatterPretty.Config() {
-                @Override
-                protected Object clone() throws CloneNotSupportedException {
-                    throw new CloneNotSupportedException("simulated exception");
-                }
-            };
-            cfg.copy();
-        });
-    }
 }

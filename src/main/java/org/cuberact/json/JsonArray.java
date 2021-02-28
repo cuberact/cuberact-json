@@ -16,6 +16,7 @@
 
 package org.cuberact.json;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import org.cuberact.json.output.JsonOutput;
  */
 public class JsonArray extends Json {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final List<Object> data = new ArrayList<>();
@@ -223,18 +225,18 @@ public class JsonArray extends Json {
     }
 
     @Override
-    public void toOutput(JsonFormatter formatter, JsonOutput output) {
-        formatter.writeArrayStart(output);
-        for (int i = 0, len = data.size(); i < len; i++) {
-            if (i != 0) {
-                formatter.writeArrayComma(output);
+    public void toOutput(JsonFormatter formatter, JsonOutput<?> output) {
+        if (formatter.writeArrayStart(this, output)) {
+            for (int i = 0, len = data.size(); i < len; i++) {
+                if (i != 0) {
+                    formatter.writeArrayComma(this, output);
+                }
+                formatter.writeArrayValue(data.get(i),this,  output);
             }
-            formatter.writeArrayValue(data.get(i), output);
+            formatter.writeArrayEnd(this, output);
         }
-        formatter.writeArrayEnd(output);
     }
 
-    @SuppressWarnings("unchecked")
     private <E> E getInternal(int index, Class<E> type) {
         try {
             Object value = data.get(index);
